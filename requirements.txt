@@ -1,0 +1,5 @@
+customtkinter==5.2.2
+pexpect==4.9.0
+pillow==10.2.0
+pyinstaller==6.3.0
+PyYAML==6.0.1

@@ -1,0 +1,82 @@
+APP_NAME: Vox Launcher
+VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
+WINDOW_TITLE: "  {APP_NAME} - Don't Starve Together - Iniciador de Servidor Dedicado"
+
+TOKEN_TOOLTIP: |-
+    Você precisa de um Token de Servidor para iniciar um Servidor Dedicado.
+    Obtenha um na página de contas da Klei.
+    Clique aqui para abrir o website.
+
+CLUSTER_NAME_DEFAULT: Como funciona?
+ASK_DIRECTORY_TITLE: "  Selecione um diretório"
+
+CLUSTER_GROUP_TOOLTIP: |-
+    ➊    Selecione a pasta de instalação em {GAME_TITLE}, caso ela não esteja automaticamente selecionada.
+    ➋    Selecione o cluster do mundo em {CLUSTER_TITLE}.
+    ➌    Cole um token de servidor em {TOKEN_TITLE}. Veja o ícone ⓘ para instruções de como obter um.
+    ➍    Finalmente, clique no botão {LAUNCH} e divirta-se!
+
+CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+    - "{GAME_TITLE}"
+    - "{CLUSTER_TITLE}"
+    - "{TOKEN_TITLE}"
+    - ⓘ
+    - "{LAUNCH}"
+    - ➊
+    - ➋
+    - ➌
+    - ➍
+
+SHARD_NAME:
+    MASTER: Floresta   # Unused
+    EMPTY: Vazio
+
+LAUNCH_BUTTON:
+    LAUNCH: INICIAR
+    CANCEL: CANCELAR
+    SAVE_QUIT: SALVAR / PARAR
+    STOPPING: PARANDO
+
+SHARD_STATUS:
+    OFFLINE:    Desligado
+    STARTING:   Iniciando...
+    ONLINE:     Ligado
+    STOPPING:   Parando...
+    RESTARTING: Reiniciando...
+
+CLUSTER_STATS:
+    DAY: "Dia: "
+    SEASON: "Estação: "
+    PLAYERS: "Jogadores: "
+
+POPUP:
+    OK: Certo
+    CANCEL: Cancelar
+
+LOG_SCREEN:
+    ENTRY_PLACEHOLDER: Execute comandos de console em {shard}. Pressione ENTER para executá-los.
+    CLOSE: Voltar
+    AUTO_SCROLL: "Rolagem Automática"
+
+SMALL_BUTTON:
+    SAVE: "Salvar"
+    QUIT: "Parar"
+    RESET: "Reiniciar"
+    ROLLBACK: "Reverter"
+
+COMMAND_CONFIRMATION:
+    QUIT: Você realmente gostaria de parar o servidor sem salvar? Dados não salvos serão perdidos!
+    RESET: Você realmente gostaria de reiniciar o servidor sem salvar? Dados não salvos serão perdidos!
+    ROLLBACK: Quantos dias você gostaria de reverter?
+
+COMMAND_ANNOUNCEMENT:
+    SAVE: Salvando mundo...
+    QUIT: Parando servidor...
+    RESET: Reiniciando servidor...
+    ROLLBACK: Revertendo servidor em 5 segundos!
+
+ENTRY:
+    GAME_TITLE: Diretório do Jogo
+    CLUSTER_TITLE: Diretório do Cluster
+    TOKEN_TITLE: Token de Servidor
+    ENTRY_INVALID_INPUT: "* Entrada Inválida"

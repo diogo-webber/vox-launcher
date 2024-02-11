@@ -1,0 +1,82 @@
+APP_NAME: Vox Launcher
+VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
+WINDOW_TITLE: "  {APP_NAME} - Don't Starve Together - Dedicated Server Launcher"
+
+TOKEN_TOOLTIP: |-
+    You need a Server Token to run a Dedicated Server.
+    Generate one at the Klei Account page.
+    Click here to open the website.
+
+CLUSTER_NAME_DEFAULT: How it works?
+ASK_DIRECTORY_TITLE: "  Select Directory"
+
+CLUSTER_GROUP_TOOLTIP: |-
+    ➊    Select the game installation folder under {GAME_TITLE}, if it has not been automatically selected.
+    ➋    Select the world cluster under {CLUSTER_TITLE}.
+    ➌    Paste a server token under {TOKEN_TITLE}. Hover over the ⓘ icon for instructions on how to obtain one.
+    ➍    Finnaly, click on the {LAUNCH} button and have fun!
+
+CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+    - "{GAME_TITLE}"
+    - "{CLUSTER_TITLE}"
+    - "{TOKEN_TITLE}"
+    - ⓘ
+    - "{LAUNCH}"
+    - ➊
+    - ➋
+    - ➌
+    - ➍
+
+SHARD_NAME:
+    MASTER: Forest   # Unused
+    EMPTY: Empty Slot
+
+LAUNCH_BUTTON:
+    LAUNCH: LAUNCH
+    CANCEL: CANCEL
+    SAVE_QUIT: SAVE / STOP
+    STOPPING: STOPPING
+
+SHARD_STATUS:
+    OFFLINE:    Offline
+    STARTING:   Starting...
+    ONLINE:     Online
+    STOPPING:   Stopping...
+    RESTARTING: Reseting...
+
+CLUSTER_STATS:
+    DAY: "Day: "
+    SEASON: "Season: "
+    PLAYERS: "Players: "
+
+POPUP:
+    OK: Ok
+    CANCEL: Cancel
+
+LOG_SCREEN:
+    ENTRY_PLACEHOLDER: Run console commands on {shard}. Press ENTER to execute them.
+    CLOSE: Back
+    AUTO_SCROLL: "Auto Scroll"
+
+SMALL_BUTTON:
+    SAVE: "Save"
+    QUIT: "Stop"
+    RESET: "Restart"
+    ROLLBACK: "Rollback"
+
+COMMAND_CONFIRMATION:
+    QUIT: Would you really like to stop the server without saving? Unsaved data will be lost!
+    RESET: Would you really like to restart the server without saving? Unsaved data will be lost!
+    ROLLBACK: How many saves would you like to roll back?
+
+COMMAND_ANNOUNCEMENT:
+    SAVE: Saving world...
+    QUIT: Stopping sever...
+    RESET: Restarting server...
+    ROLLBACK: Rolling back server in 5 seconds!
+
+ENTRY:
+    GAME_TITLE: Game Directory
+    CLUSTER_TITLE: Cluster Directory
+    TOKEN_TITLE: Server Token
+    ENTRY_INVALID_INPUT: "* Invalid Input"
