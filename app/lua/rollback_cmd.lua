@@ -1,4 +1,4 @@
-if TheNet:GetPlayerCount() <= 0 then
+if TheNet:GetPlayerCount() <= 0 then -- Game is auto-paused.
     c_rollback({value})
 else
     SetServerPaused(false)

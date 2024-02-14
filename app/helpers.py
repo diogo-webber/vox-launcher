@@ -435,6 +435,10 @@ def load_lua_file(filename):
     if file.exists():
         text = file.read_text(encoding="utf-8")
 
+        # Remove single line comments.
+        comment_pattern = re.compile(r'--.*?[\r\n]')
+        text = re.sub(comment_pattern, '', text)
+
         return " ".join(text.split())
 
     else:
