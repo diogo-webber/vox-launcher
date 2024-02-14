@@ -304,14 +304,14 @@ class ShardFrame(CustomFrame):
             width=SIZE.LOGS_BUTTON.w,
             height=SIZE.LOGS_BUTTON.h,
             image_size=(SIZE.LOGS_BUTTON.w - 20, SIZE.LOGS_BUTTON.h - 20),
-            relx=0.69,
+            relx=0.68,
             y=OFFSET.LOGS_BUTTON.y,
         )
 
         self.status_circle = ColouredCircle(
             master=self,
             color=COLOR.WHITE,
-            relx = 0.81,
+            relx = 0.80,
             y = OFFSET.SHARD_STATUS_CIRCLE.y,
             size = SIZE.SHARD_STATUS_CIRCLE.w,
         )
@@ -327,7 +327,7 @@ class ShardFrame(CustomFrame):
         )
 
         self.status_msg_label.place(
-            relx = 0.85,
+            relx = 0.84,
             y = OFFSET.SHARD_STATUS_MSG.y,
         )
 
