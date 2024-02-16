@@ -12,7 +12,7 @@ ASK_DIRECTORY_TITLE: "  Selecione um diretório"
 
 CLUSTER_GROUP_TOOLTIP: |-
     ➊    Selecione a pasta de instalação em {GAME_TITLE}, caso ela não esteja automaticamente selecionada.
-    ➋    Selecione o cluster do mundo em {CLUSTER_TITLE}.
+    ➋    Crie um mundo usando o menu do jogo e selecione-o em {CLUSTER_TITLE}.
     ➌    Cole um token de servidor em {TOKEN_TITLE}. Veja o ícone ⓘ para instruções de como obter um.
     ➍    Finalmente, clique no botão {LAUNCH} e divirta-se!
 
