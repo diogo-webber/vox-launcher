@@ -24,15 +24,15 @@
 
 <br>
 <p align="left"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Instructions</b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Starting Server</b></p>
-<img align="left" src="/github_assets/offline.png" width=47.7%/>
-<img align="right" src="/github_assets/starting.png" width=47.7%/>
+<img align="left" src="/github_assets/offline.png" width=45%/>
+<img align="right" src="/github_assets/starting.png" width=45%/>
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 
 <p align="left"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Server Online</b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>Log Screen</b></p>
-<img align="left" src="/github_assets/online.png" width=47.7%/>
-<img align="right" src="/github_assets/logscreen.png" width=47.7%/>
+<img align="left" src="/github_assets/online.png" width=45%/>
+<img align="right" src="/github_assets/logscreen.png" width=45%/>
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
