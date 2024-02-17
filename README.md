@@ -31,7 +31,7 @@ From top left to bottom right: `Instructions`, `Starting Server`, `Server Online
 <img align="left" src="/github_assets/offline.png" width=45%/>
 <img align="left" src="/github_assets/starting.png" width=45%/>
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br>
 
 <img align="left" src="/github_assets/online.png" width=45%/>
 <img align="left" src="/github_assets/logscreen.png" width=45%/>
