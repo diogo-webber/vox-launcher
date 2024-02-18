@@ -56,13 +56,17 @@ POPUP:
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Run console commands on {shard}. Press ENTER to execute them.
     CLOSE: Back
-    AUTO_SCROLL: "Auto Scroll"
+    AUTO_SCROLL: Auto Scroll
+    SHARD_FOLDER: Local Files
+    SHARD_NAME_TITLE: "Shard:"
+    SHARD_MEMORY_TITLE: "Memory:"
+    SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
 
 SMALL_BUTTON:
-    SAVE: "Save"
-    QUIT: "Stop"
-    RESET: "Restart"
-    ROLLBACK: "Rollback"
+    SAVE: Save
+    QUIT: Stop
+    RESET: Restart
+    ROLLBACK: Rollback
 
 COMMAND_CONFIRMATION:
     QUIT: Would you really like to stop the server without saving? Unsaved data will be lost!

@@ -56,13 +56,17 @@ POPUP:
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Execute comandos de console em {shard}. Pressione ENTER para executá-los.
     CLOSE: Voltar
-    AUTO_SCROLL: "Rolagem Automática"
+    AUTO_SCROLL: Rolagem Automática
+    SHARD_FOLDER: Arquivos Locais
+    SHARD_NAME_TITLE: "Shard:"
+    SHARD_MEMORY_TITLE: "Memória:"
+    SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
 
 SMALL_BUTTON:
-    SAVE: "Salvar"
-    QUIT: "Parar"
-    RESET: "Reiniciar"
-    ROLLBACK: "Reverter"
+    SAVE: Salvar
+    QUIT: Parar
+    RESET: Reiniciar
+    ROLLBACK: Reverter
 
 COMMAND_CONFIRMATION:
     QUIT: Você realmente gostaria de parar o servidor sem salvar? Dados não salvos serão perdidos!

@@ -8,7 +8,7 @@ from tkinter import StringVar
 from constants import *
 from helpers import *
 from strings import STRINGS
-from fonts import Fonts
+from fonts import FONT
 
 from widgets.buttons import CustomButton
 from widgets.entries import TokenEntry, DirectoryEntry, ClusterDirectoryEntry
@@ -79,7 +79,16 @@ class App(CTk):
     def __init__(self, **kwargs):
         super().__init__( **kwargs)
 
-        self.geometry( f"{ WINDOW_WIDTH }x{ WINDOW_HEIGHT }" )
+        self.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
+
+        screen_width  = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        x = (screen_width - WINDOW_WIDTH) // 2
+        y = (screen_height - WINDOW_HEIGHT) // 2
+
+        self.geometry(f"+{x}+{y}")
+
         self.title(STRINGS.WINDOW_TITLE)
         self.iconbitmap(resource_path("assets/icon.ico"))
         self._set_appearance_mode("dark")
@@ -252,6 +261,12 @@ class App(CTk):
         if GAME_DIR and self.game_entry.get() == "":
             self.game_entry.set_text(GAME_DIR.as_posix(), load=True)
 
+        # # Debug Stuff
+        # self.save_button.show()
+        # self.quit_button.show()
+        # self.reset_button.show()
+        # self.rollback_button.show()
+
 
     def callback_launch(self):
         if not hasattr(self, "master_shard"):
@@ -314,7 +329,7 @@ class App(CTk):
 if __name__ == "__main__":
     app = App()
 
-    FONT = Fonts()
+    FONT.create_fonts()
 
     # ------------------------------------------------------------------------------------ #
 

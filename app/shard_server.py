@@ -78,7 +78,7 @@ class DedicatedServerShard():
             with StdoutMock() as sys.stdout:
                 self.process = popen_spawn.PopenSpawn(args, cwd=str(cwd), encoding="utf-8", codec_errors="ignore")
 
-            self.task = PeriodicTask(self.app, random.randrange(50, 70), 0, handle_shard_output, self)
+            self.task = PeriodicTask(self.app, random.randrange(50, 70), handle_shard_output, self, initial_time=0)
 
     def execute_command(self, command, log=True):
         if not self.is_running():

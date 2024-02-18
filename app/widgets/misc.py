@@ -1,12 +1,12 @@
 from customtkinter import CTkImage, CTkLabel, CTkToplevel, CTkButton, CTkSlider
-from tkinter import StringVar, IntVar, Toplevel, END
+from tkinter import StringVar, IntVar, DoubleVar, Toplevel, END
 from PIL import Image
 
 from strings import STRINGS
 from constants import COLOR, SIZE, POS, WINDOW_WIDTH, WINDOW_HEIGHT
 from widgets.frames import CustomFrame
 from helpers import resource_path
-from fonts import Fonts
+from fonts import FONT
 
 class ClusterStats:
     def __init__(self, master) -> None:
@@ -28,8 +28,6 @@ class ClusterStats:
         self.hide()
 
     def create_stats_label(self, textvariable, title, column):
-        FONT = Fonts()
-
         title_label =  CTkLabel(
             master=self._frame,
             height=0,
@@ -75,7 +73,6 @@ class ClusterStats:
     def hide(self):
         self._frame.place_forget()
 
-
 class Tooltip:
     def __init__(self, master, text, image, pos, image_size, onclick=None):
         self.text = text
@@ -110,8 +107,6 @@ class Tooltip:
         self.taskid = self.widget.after(250, self.show_tooltip)
 
     def show_tooltip(self):
-        FONT = Fonts()
-
         self.widget.configure(cursor="hand2")
 
         self.tooltip = Toplevel(self.widget)
@@ -157,8 +152,6 @@ class PopUp():
         self.slider_value = None
 
     def create(self, text, slider_fn=None):
-        FONT = Fonts()
-
         self.popup = CTkToplevel(self.root, fg_color=COLOR.GRAY)
         self.popup.wm_overrideredirect(True)
         self.popup.grab_set()  # Make other windows not clickable.
@@ -251,25 +244,31 @@ class PopUp():
         self.popup._ok_button.grid(    row=buttons_row, column=0, columnspan=2, padx=(20, 10), pady=(0, 20), sticky="ew")
         self.popup._cancel_button.grid(row=buttons_row, column=2, columnspan=2, padx=(10, 20), pady=(0, 20), sticky="ew")
 
-        #self.popup.update()
-        #logger.debug(f"POPUP_WIDTH = {self.popup.winfo_width()}")
-        #logger.debug(f"POPUP_HEIGHT = {self.popup.winfo_height()}")
+        self.popup.withdraw()
+        self.popup.update()
 
-        # Static size because .update() function will cause the widget to appear briefly at the wrong place.
-        POPUP_WIDTH  = 452
-        POPUP_HEIGHT = slider_fn and 246 or 178
+        popup_width = self.popup.winfo_reqwidth()
+        popup_height = self.popup.winfo_reqheight()
 
         self.popup._frame.configure(
             bg_color = COLOR.DARK_GRAY,
-            width = POPUP_WIDTH / 1.5,
-            height = POPUP_HEIGHT / 1.5,
+            width = popup_width / 1.5,
+            height = popup_height / 1.5,
         )
 
-        # Magic math :)
-        x = self.root.winfo_rootx() + WINDOW_WIDTH  * 0.75 - POPUP_WIDTH  / 2
-        y = self.root.winfo_rooty() + WINDOW_HEIGHT * 0.75 - POPUP_HEIGHT / 2
+        master_x = self.root.winfo_rootx()
+        master_y = self.root.winfo_rooty()
+        master_width = self.root.winfo_width()
+        master_height = self.root.winfo_height()
 
-        self.popup.wm_geometry(f"+{round(x)}+{round(y)}")
+        # Calculate the center position
+        x = master_x + (master_width - popup_width) // 2
+        y = master_y + (master_height - popup_height) // 2
+
+        # Set the window's position.
+        self.popup.wm_geometry('+{}+{}'.format(x, y))
+    
+        self.popup.deiconify()
 
         self.root.wait_window(self.popup)
 

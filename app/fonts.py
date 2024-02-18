@@ -1,8 +1,8 @@
 from customtkinter import CTkFont
-from tkinter.font import BOLD, NORMAL, families
+from tkinter.font import BOLD, NORMAL
 
 from constants import FONT_SIZE
-from helpers import loadfont, resource_path
+#from helpers import loadfont, resource_path
 
 # NOTES: Not using it for now.
 #loadfont(resource_path("assets/HammersmithOne-Regular.ttf").as_posix())
@@ -16,15 +16,7 @@ class CustomFont(CTkFont):
         )
 
 class Fonts:
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(Fonts, cls).__new__(cls)
-
-        return cls._instance
-
-    def __init__(self) -> None:
+    def create_fonts(self) -> None:
         self.ENTRY_TOOLTIP = CustomFont(FONT_SIZE.ENTRY_TOOLTIP            )
         self.ENTRY         = CustomFont(FONT_SIZE.ENTRY,         bold=False)
         self.INVALID_INPUT = CustomFont(FONT_SIZE.INVALID_INPUT            )
@@ -38,3 +30,6 @@ class Fonts:
         self.TEXTBOX       = CustomFont(FONT_SIZE.TEXTBOX,       bold=False)
         self.POPUP         = CustomFont(FONT_SIZE.POPUP,         bold=False)
         self.SHARD_TOOLTIP = CustomFont(FONT_SIZE.SHARD_TOOLTIP            )
+
+
+FONT = Fonts()

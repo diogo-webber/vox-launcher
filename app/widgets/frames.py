@@ -1,20 +1,132 @@
-from customtkinter import CTkFrame, CTkLabel, CTkTextbox, CTkEntry, CTkButton, CTkSwitch, CTkScrollableFrame
-from tkinter import StringVar, END, CENTER, DISABLED, BOTH
-import re
+from customtkinter import CTkFrame, CTkLabel, CTkTextbox, CTkEntry, CTkButton, CTkSwitch, CTkScrollableFrame, CTkImage
+from tkinter import Variable, StringVar, END, CENTER, DISABLED, BOTH
+import re, os
+from pathlib import Path
+from PIL import Image
 
 from strings import STRINGS
-from constants import COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, Pos
-from widgets.buttons import ImageButton, RelativeXImageButton
-from helpers import load_lua_file, read_only_bind, disable_bind, TextHightlightData
+from constants import COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, Pos, Size
+from widgets.buttons import ImageButton, RelativeXImageButton, CustomButton
+from helpers import load_lua_file, read_only_bind, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
 from shard_server import DedicatedServerShard
-from fonts import Fonts
+from fonts import FONT
+
+class LogsTopBar:
+    def __init__(self, master, server, shard) -> None:
+        self.root = master
+        self.server = server
+        self.shard = shard
+        self.memory = StringVar(value="??")
+
+        self._frame = CustomFrame(
+            master=self.root,
+            color=COLOR.GRAY,
+            size=SIZE.LOGS_TOP_BAR,
+            pos=OFFSET.LOGS_TOP_BAR,
+        )
+
+        image_size = self.root._apply_widget_scaling(12)
+        image = CTkImage(Image.open(resource_path("assets/directory.png")), size=(image_size, image_size))
+
+        self.open_folder_button = CustomButton(
+            master=self._frame,
+            text=STRINGS.LOG_SCREEN.SHARD_FOLDER,
+            command=self._open_shard_folder,
+            font=FONT.CLUSTER_STATS,
+            size=Size(100, 20),
+            pos=Pos(0, 0),
+            image=image,
+        )
+
+        self.open_folder_button.grid(
+            row = 0,
+            column = 5,
+            columnspan=3,
+            padx=(65, 0),
+            sticky="nw",
+        )
+
+        self.shard_name   = self.create_label(text=self.shard, title=STRINGS.LOG_SCREEN.SHARD_NAME_TITLE, column=0)
+        self.memory_label = self.create_label(textvariable=self.memory, title=STRINGS.LOG_SCREEN.SHARD_MEMORY_TITLE, column=3)
+
+    def create_label(self, title, column, textvariable=None, text=None):
+        title_label =  CTkLabel(
+            master=self._frame,
+            height=0,
+            anchor="center",
+            text=title,
+            text_color=COLOR.WHITE,
+            font=FONT.CLUSTER_STATS,
+        )
+
+        value_label =  CTkLabel(
+            master=self._frame,
+            height=0,
+            anchor="center",
+            text=text,
+            textvariable=textvariable,
+            text_color=COLOR.WHITE_HOVER,
+            font=FONT.CLUSTER_STATS,
+        )
+
+        title_label.grid(
+            row = 0,
+            column = column,
+            padx=(column == 0 and FRAME_GAP * 1.5 or 65, 10),
+            ipady=FONT_SIZE.CLUSTER_STATS / 3,
+            sticky="n",
+        )
+
+        value_label.grid(
+            row = 0,
+            column = column + 1,
+            ipady=FONT_SIZE.CLUSTER_STATS / 3,
+            sticky="n",
+        )
+
+    def update_memory(self):
+        if self.server.process is None:
+            return True, None
+
+        memory, memory_percent = get_memory_usage(pid=self.server.process.pid)
+
+        if not (memory and memory_percent):
+            return True, None
+
+        memory_mb = memory / 1000 / 1000
+
+        self.memory.set(STRINGS.LOG_SCREEN.SHARD_MEMORY_FMT.format(mb=round(memory_mb, 2), percent=round(memory_percent)))
+
+        return True, None
+    
+    def _open_shard_folder(self):
+        open_folder(Path(self.server.app.cluster_entry.get()) / self.shard)
+
+    def start_tracking_memory(self):
+        self.update_memory()
+        self.memory_task = PeriodicTask(self.root, time=2500, func=self.update_memory)
+
+    def stop_tracking_memory(self):
+        task = getattr(self, "memory_task", None)
+
+        if isinstance(task, PeriodicTask):
+            self.memory_task.kill()
+            self.memory_task = None
+
+    def show(self):
+        self._frame.place(
+            x=OFFSET.LOGS_TOP_BAR.x,
+            y=OFFSET.LOGS_TOP_BAR.y,
+        )
+
+    def hide(self):
+        self._frame.place_forget()
+
 
 class ShardLogPanel():
     switch_xpad = 20
 
     def __init__(self, master, shard, server) -> None:
-        FONT = Fonts()
-
         self.server = server
         self._auto_scroll = False
         self._visible = False
@@ -26,11 +138,11 @@ class ShardLogPanel():
             master=master,
             color=COLOR.GRAY,
             size=SIZE.LOGS_PANEL,
-            pos=OFFSET.LOGS_PANEL,
+            #pos=OFFSET.LOGS_PANEL,
             corner_radius=self.corner_radius,
         )
 
-        self.hide()
+        self.topbar = LogsTopBar(master=self.root, server=self.server, shard=self.shard)
 
         self.textbox = CTkTextbox(
             master = self.root,
@@ -44,7 +156,7 @@ class ShardLogPanel():
             font = FONT.TEXTBOX,
         )
 
-        self.textbox.bind("<MouseWheel>", self._mouse_scroll_event)
+        #self.textbox.bind("<MouseWheel>", self._mouse_scroll_event)
 
         self.textbox._textbox.configure(selectbackground=COLOR.GRAY)
 
@@ -102,16 +214,16 @@ class ShardLogPanel():
             y = OFFSET.LOGS_CLOSE.y,
         )
 
-        self.show_end_button = ImageButton(
-            master=self.root,
-            image="assets/arrowdown.png",
-            bg_color=COLOR.DARK_GRAY,
-            command=self.show_end,
-            width=SIZE.LOGS_SHOW_END_BUTTON.w,
-            height=SIZE.LOGS_SHOW_END_BUTTON.h,
-            image_size=(SIZE.LOGS_SHOW_END_BUTTON.w - 18, SIZE.LOGS_SHOW_END_BUTTON.h - 18),
-            pos=Pos(OFFSET.LOGS_SHOW_END_BUTTON.x, OFFSET.LOGS_SHOW_END_BUTTON.y),
-        )
+        # self.show_end_button = ImageButton(
+        #     master=self.root,
+        #     image="assets/arrowdown.png",
+        #     bg_color=COLOR.DARK_GRAY,
+        #     command=self.show_end,
+        #     width=SIZE.LOGS_SHOW_END_BUTTON.w,
+        #     height=SIZE.LOGS_SHOW_END_BUTTON.h,
+        #     image_size=(SIZE.LOGS_SHOW_END_BUTTON.w - 18, SIZE.LOGS_SHOW_END_BUTTON.h - 18),
+        #     pos=Pos(OFFSET.LOGS_SHOW_END_BUTTON.x, OFFSET.LOGS_SHOW_END_BUTTON.y),
+        # )
 
         self.auto_scroll_switch = CTkSwitch(
             master=self.root,
@@ -119,8 +231,8 @@ class ShardLogPanel():
             command=self._auto_scroll_event,
             onvalue=True,
             offvalue=False,
-            bg_color=COLOR.DARK_GRAY,
-            fg_color=COLOR.GRAY_HOVER,
+            bg_color=COLOR.GRAY,
+            fg_color=COLOR.DARK_GRAY,
             progress_color=COLOR.GREEN,
             button_color=COLOR.WHITE,
             button_hover_color=COLOR.WHITE,
@@ -138,6 +250,8 @@ class ShardLogPanel():
         self.auto_scroll_switch._canvas.grid(    row=0, column=0, sticky="",  padx=(self.switch_xpad, 10))
         self.auto_scroll_switch._text_label.grid(row=0, column=2, sticky="w", padx=(0, self.switch_xpad))
 
+        self.hide()
+
     def show(self):
         self._visible = True
 
@@ -150,10 +264,13 @@ class ShardLogPanel():
         self.show_end()
         self.highlight_text()
 
+        self.topbar.start_tracking_memory()
 
     def hide(self):
         self._visible = False
         self.root.place_forget()
+
+        self.topbar.stop_tracking_memory()
 
     def execute_command(self, *args, **kwargs):
         command = self.entry.get()
@@ -200,10 +317,11 @@ class ShardLogPanel():
                 self.textbox.tag_add(highlight.name, f"1.0+{start}c", f"1.0+{end}c")
 
     def _mouse_scroll_event(self, *args, **kwargs):
-        if self.textbox.yview()[1] > 0.995:
-            self.show_end_button.hide()
-        else:
-            self.show_end_button.show()
+        pass
+    #     if self.textbox.yview()[1] > 0.995:
+    #         self.show_end_button.hide()
+    #     else:
+    #         self.show_end_button.show()
 
     def _auto_scroll_event(self):
         self._auto_scroll = self.auto_scroll_switch.get()
@@ -212,7 +330,8 @@ class ShardLogPanel():
             self.show_end()
 
         else:
-            self._mouse_scroll_event()
+            pass
+            #self._mouse_scroll_event()
 
 
 class CustomFrame(CTkFrame):
@@ -236,8 +355,6 @@ class CustomFrame(CTkFrame):
 
 class PlaceHolderShardFrame(CustomFrame):
     def __init__(self,**kwargs):
-        FONT = Fonts()
-
         super().__init__(
             color=COLOR.DARK_GRAY,
             size=SIZE.FRAME,
@@ -262,8 +379,6 @@ class PlaceHolderShardFrame(CustomFrame):
 
 class ShardFrame(CustomFrame):
     def __init__(self, app, master, code, size, first=False, **kwargs):
-        FONT = Fonts()
-
         self.status = SERVER_STATUS.OFFLINE
         self.code = code
         self.is_master = None
@@ -340,7 +455,7 @@ class ShardFrame(CustomFrame):
         self.status_circle.set_color(COLOR.WHITE)
 
         self.logs.hide()
-        self.shard_log_panel.hide()
+        #self.shard_log_panel.hide()
         self.shard_log_panel.textbox.delete("1.0", END)
 
         if self.is_master:
@@ -362,12 +477,6 @@ class ShardFrame(CustomFrame):
             self._master.game_entry.enable()
             self._master.cluster_entry.enable()
             self._master.token_entry.enable()
-
-            # Debug Stuff
-            # app.save_button.show()
-            # app.quit_button.show()
-            # app.reset_button.show()
-            # app.rollback_button.show()
 
     def set_restarting(self):
         self.status = SERVER_STATUS.RESTARTING
@@ -460,8 +569,6 @@ class ShardFrame(CustomFrame):
 
 class TextBoxAsLabel(CTkTextbox):
     def __init__(self, master):
-        FONT = Fonts()
-
         super().__init__(
             master = master,
             width = SIZE.SHARD_GROUP.w - 10,

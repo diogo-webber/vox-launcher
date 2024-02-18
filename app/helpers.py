@@ -5,6 +5,7 @@ import ctypes.wintypes
 import webbrowser
 import re, json, sys
 import logging, locale
+import psutil, os
 from pexpect.exceptions import TIMEOUT, EOF
 
 from constants import LOGGER
@@ -168,28 +169,28 @@ class PeriodicTask():
     Args:
         app (CTk): window root widget.
         time (int, float): interval in milliseconds to execute the function.
-        initial_time (int, float): override "time" argument in the first call. Optional.
+        initial_time (int, float, None): override "time" argument in the first call. Optional.
         func (function): the function to called every "time" milliseconds.
         This function needs to return 2 values:
             success (bool, None): if not True, stops the loop.
             newtime: (int, float, None): override "time" for the next call, if not None. Optional.
         args (list): additional parameters to give as parameters to the function call.
     """
-    def __init__(self, app, time, initial_time, func, *args) -> None:
+    def __init__(self, app, time, func, *args, initial_time=None) -> None:
         self.app = app
         self.time = time
         self.func = func
         self.args = args
 
-        self.id = self.app.after(initial_time or time, self._execute, *self.args)
+        self.id = self.app.after(initial_time or time, self._execute)
 
     def _execute(self, *args):
-        success, newtime = self.func(*args)
+        success, newtime = self.func(*self.args)
 
         self.id = None
 
         if success:
-            self.id = self.app.after(newtime or self.time, self._execute, *self.args)
+            self.id = self.app.after(newtime or self.time, self._execute)
 
     def kill(self):
         """ Stops the loop. """
@@ -402,6 +403,11 @@ def open_klei_account_page(*args, **kwargs):
 
     webbrowser.open("https://accounts.klei.com/account/game/servers?game=DontStarveTogether", new=0, autoraise=True)
 
+def open_folder(path):
+    """ Opens a Windows explorer instance on this path  """
+
+    os.startfile(path)
+
 # ----------------------------------------------------------------------------------------- #
 
 def read_only_bind(event):
@@ -535,6 +541,16 @@ def get_cluster_relative_path(path):
         return match.group(1)
 
     return path.name
+
+# ----------------------------------------------------------------------------------------- #
+
+def get_memory_usage(pid):
+    process = psutil.Process(pid)
+    
+    if not process:
+        return None, None
+
+    return process.memory_info().rss, process.memory_percent()
 
 # ----------------------------------------------------------------------------------------- #
 

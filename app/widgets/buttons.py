@@ -76,8 +76,8 @@ class CustomButton(CTkButton):
         if text:
             self.text.set(text)
 
-        if fg_color and hover_color:
-            self.configure(
-                fg_color=fg_color,
-                hover_color=hover_color,
-            )
+        if fg_color:
+            self.configure(fg_color=fg_color)
+
+        if hover_color:
+            self.configure(hover_color=hover_color)

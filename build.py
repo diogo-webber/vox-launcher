@@ -63,6 +63,7 @@ command_args = [
     ONE_FILE and "--onefile" or f"--contents-directory={DATA_DIRECTORY}",
     NO_CONSOLE and "--noconsole" or "",
     "--noconfirm",
+    "--clean",
 
     f"--name={EXE_NAME}",
     f"--icon={ICON}",

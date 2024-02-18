@@ -8,14 +8,12 @@ from strings import STRINGS
 from constants import COLOR, OFFSET, SIZE, LOGGER, Pos
 from widgets.buttons import ImageButton
 from helpers import get_key_from_ini_file, get_shard_names
-from fonts import Fonts
+from fonts import FONT
 
 logger = logging.getLogger(LOGGER)
 
 class CustomEntry(CTkEntry):
     def __init__(self, master, tooltip, pos, size, **kwargs):
-        FONT = Fonts()
-
         self.entrytext = StringVar()
         self._master = master
         self.valid = None
