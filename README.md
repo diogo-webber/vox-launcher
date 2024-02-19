@@ -44,6 +44,13 @@ From top left to bottom right: `Instructions`, `Starting Server`, `Server Online
 
 Feel free to suggest features and create pull requests to fix bugs. The entry point is `app/main.py`.
 
+<br>
+
+Installing dependencies:
+```sh
+  python -m pip install -r requirements.txt
+```
+
 <br><br>
 
 ## 📜 License
