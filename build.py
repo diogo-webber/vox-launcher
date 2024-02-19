@@ -2,6 +2,7 @@ import os, shutil
 from pathlib import Path
 
 import PyInstaller.__main__ as PyInstaller
+import pyinstaller_versionfile
 
 from app.constants import APP_VERSION
 
@@ -42,14 +43,31 @@ DATA_DIRECTORY = "appdata"
 
 FILE = "app/main.py"
 
-EXE_NAME   = f"Vox Launcher"
+EXE_NAME   = "Vox Launcher"
 BUILD_NAME = APP_VERSION
-ZIP_NAME   = f"VoxLauncher.zip"
+ZIP_NAME   = "VoxLauncher.zip"
 
 ICON = "../app/assets/icon.ico"
 
+VERSION_FILE_CREATE = "versionfile.txt"
+VERSION_FILE = "../" + VERSION_FILE_CREATE
+
 ONE_FILE = False
 NO_CONSOLE = True
+
+LOG_LEVEL = "WARN"
+
+# ------------------------------------------------------------------------------ #
+
+pyinstaller_versionfile.create_versionfile(
+    output_file=VERSION_FILE_CREATE,
+    version=APP_VERSION[1:],
+    file_description="A Don\\'t Starve Dedicated Server Launcher",
+    internal_name=EXE_NAME,
+    legal_copyright="Open Source @ 2024",
+    product_name=EXE_NAME,
+    translations=[0x0409, 1200],
+)
 
 # ------------------------------------------------------------------------------ #
 
@@ -63,13 +81,15 @@ command_args = [
     ONE_FILE and "--onefile" or f"--contents-directory={DATA_DIRECTORY}",
     NO_CONSOLE and "--noconsole" or "",
     "--noconfirm",
-    "--clean",
+    #"--clean",
 
     f"--name={EXE_NAME}",
     f"--icon={ICON}",
     f"--distpath={BUILD_DIRECTORY}",
     f"--workpath={WORK_DIRECTORY}",
     f"--specpath={WORK_DIRECTORY}",
+    f"--version-file={VERSION_FILE}",
+    f"--log-level={LOG_LEVEL}",
 
     FILE,
 ]
