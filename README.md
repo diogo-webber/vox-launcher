@@ -8,6 +8,13 @@
 
 <br><br><br><br>
 
+**Vox Launcher** is a dedicated server launcher, created to replace the classic bat files. 
+
+It contains a handful of useful features such as buttons to **save**, **reset**, **rollback** and **stop** the server, a screen that shows the **logs**, a **console**, etc.
+It also shows information about the server, such as **number of players**, **day count**, **season** and **memory usage**. It supports any number of shards and it's **Windows only**.
+
+<br>
+
 ## How it works?
 
 <br>
