@@ -56,7 +56,7 @@ POPUP:
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Execute comandos de console em {shard}. Pressione ENTER para executá-los.
     CLOSE: Voltar
-    AUTO_SCROLL: Rolagem Automática
+    AUTO_SCROLL: Auto-rolagem
     SHARD_FOLDER: Arquivos Locais
     SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "Memória:"

@@ -11,10 +11,10 @@ CLUSTER_NAME_DEFAULT: How it works?
 ASK_DIRECTORY_TITLE: "  Select Directory"
 
 CLUSTER_GROUP_TOOLTIP: |-
-    ➊    Select the game installation folder under {GAME_TITLE}, if it has not been automatically selected.
+    ➊    Select the game installation folder under {GAME_TITLE}, if it has not been automatically populated.
     ➋    Create a world using the in game menu and select it under {CLUSTER_TITLE}.
     ➌    Paste a server token under {TOKEN_TITLE}. Hover over the ⓘ icon for instructions on how to obtain one.
-    ➍    Finnaly, click on the {LAUNCH} button and have fun!
+    ➍    Finally, click on the {LAUNCH} button and have fun!
 
 CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - "{GAME_TITLE}"
