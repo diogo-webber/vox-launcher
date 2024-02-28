@@ -163,7 +163,7 @@ class ShardLogPanel():
         self.add_hightlight(pattern=r'\[\d{2}:\d{2}:\d{2}\]:', name="timestamp", color=COLOR.CONSOLE_GRAY)
         self.add_hightlight(pattern=r'World \d* is now connected', name="online", color=COLOR.GREEN)
         self.add_hightlight(pattern=r'RemoteCommandInput:.*?[\n\r]+', name="remotecommand", color=COLOR.LIGHT_BLUE)
-        self.add_hightlight(pattern=r'\[Warning\].*?[\n\r]+', name="warnings", color=COLOR.YELLOW) # FIXME: bugged
+        #self.add_hightlight(pattern=r'\[Warning\].*?[\n\r]+', name="warnings", color=COLOR.YELLOW) # FIXME: bugged
 
         self.textbox.place(
             x = OFFSET.LOGS_TEXTBOX.x,
@@ -455,7 +455,7 @@ class ShardFrame(CustomFrame):
         self.status_circle.set_color(COLOR.WHITE)
 
         self.logs.hide()
-        #self.shard_log_panel.hide()
+        self.shard_log_panel.hide()
         self.shard_log_panel.textbox.delete("1.0", END)
 
         if self.is_master:
@@ -552,7 +552,7 @@ class ShardFrame(CustomFrame):
             self._master.reset_button.show()
             self._master.rollback_button.show()
 
-            self._master.master_shard.execute_command(load_lua_file("worlddata"))
+            self._master.master_shard.execute_command(load_lua_file("worlddata"), log=False)
 
     def is_starting(self):
         return self.status == SERVER_STATUS.STARTING
