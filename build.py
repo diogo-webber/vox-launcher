@@ -8,9 +8,12 @@ from app.constants import APP_VERSION
 
 # ------------------------------------------------------------------------------ #
 
-YELLOW = "\u001b[1m\u001b[38;5;214m"
-GREEN  = "\u001b[1m\u001b[38;5;64m"
-RESET  = "\u001b[0m"
+COLOR_TERM = os.getenv("COLORTERM")
+TERMINAL_SUPPORT_COLORS = COLOR_TERM is not None and COLOR_TERM.lower() in ('truecolor', '256color')
+
+YELLOW = TERMINAL_SUPPORT_COLORS and "\u001b[1m\u001b[38;5;214m" or ""
+GREEN  = TERMINAL_SUPPORT_COLORS and "\u001b[1m\u001b[38;5;64m" or ""
+RESET  = TERMINAL_SUPPORT_COLORS and "\u001b[0m" or ""
 NEW_LINE = "\n"
 
 def print_header(title, color):
@@ -62,7 +65,7 @@ LOG_LEVEL = "WARN"
 pyinstaller_versionfile.create_versionfile(
     output_file=VERSION_FILE_CREATE,
     version=APP_VERSION[1:],
-    file_description="A Don\\'t Starve Dedicated Server Launcher",
+    file_description=EXE_NAME, # It's also the Task Bar "group" name.
     internal_name=EXE_NAME,
     legal_copyright="Open Source @ 2024",
     product_name=EXE_NAME,
@@ -81,7 +84,7 @@ command_args = [
     ONE_FILE and "--onefile" or f"--contents-directory={DATA_DIRECTORY}",
     NO_CONSOLE and "--noconsole" or "",
     "--noconfirm",
-    #"--clean",
+    "--clean",
 
     f"--name={EXE_NAME}",
     f"--icon={ICON}",
