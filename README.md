@@ -19,10 +19,9 @@
 
 <br>
 
-
 <img src="/app/assets/icon.ico" align="left" width="185px"/>
 
-# Vox Launcher
+### Vox Launcher
 
 > A Don't Starve Together dedicated server launcher.
 
@@ -44,7 +43,7 @@
 
 <br>
 
-- Download the `App` zip, extract its contexts and start the `Vox Launcher` executable. [**Click here**][download] to download it.
+- Download the `App` zip, extract its contexts and start the `Vox Launcher` executable. [`Click here`][download] to download it.
 - Select the game installation folder under `Game Directory`, if it has not been automatically populated.
 - Create a world using the in game menu and select it under `Cluster Directory`.
 - Paste a server token under `Server Token`. See instructions on how to obtain one in the app.
@@ -52,7 +51,12 @@
 
 <br>
 
-Additionally, check out this amazing **[video tutorial][video_tutorial]** by Jazzy Games on YouTube.
+<dl><dd><dl>
+  
+> [!TIP]
+> Additionally, check out this amazing **[video tutorial][video_tutorial]** by Jazzy Games on YouTube.
+
+</dl></dd></dl>
 
 <br>
 
@@ -91,13 +95,15 @@ Feel free to suggest features and create pull requests to fix bugs or improve ex
 
 #### You can also help by translating the app:
 - Create a file in `app/localization/` called `locale.yaml`, where locate is the language code, which you can find in **[this website][locales]**.
+  
 - Use `en_US.yaml` as a template. Please, try to keep sentence lengths close to the English version to avoid visual issues.
+  
 - Create a **[Pull Request][pull_request]** with the title: `Added {language} ({lang_code}) localization`
 
 <br>
 
 #### Installing dependencies:
-```sh
+```ruby
   python -m pip install -r requirements.txt
 ```
 
