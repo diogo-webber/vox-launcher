@@ -1,5 +1,6 @@
 import logging, logging.config
 import yaml
+from functools import partial
 from pathlib import Path
 
 from customtkinter import CTk, CTkLabel
@@ -19,23 +20,29 @@ from widgets.misc import Tooltip, PopUp, ClusterStats
 
 COLOR_FMT = "\u001b[1m\u001b[38;5;%dm"
 
+COLOR_TERM = os.getenv("COLORTERM")
+TERMINAL_SUPPORT_COLORS = COLOR_TERM is not None and COLOR_TERM.lower() in ('truecolor', '256color')
+
 class CustomFormatter(logging.Formatter):
     """Logging Formatter to add colors to different levels"""
 
-    blue     = COLOR_FMT % 69
-    green    = COLOR_FMT % 71
-    yellow   = COLOR_FMT % 221
-    red = COLOR_FMT % 196
+    blue   = COLOR_FMT % 69
+    green  = COLOR_FMT % 71
+    yellow = COLOR_FMT % 221
+    red    = COLOR_FMT % 196
 
     #         [levelname]: message
-    _format = "{color}[%(levelname)s]:\u001b[0m \u001b[38;5;234m%(message)s\u001b[0m"
+    _format_colors = "{color}[%(levelname)s]:\u001b[0m \u001b[38;5;234m%(message)s\u001b[0m"
+    _format_nocolors = "[%(levelname)s]: %(message)s"
+
+    _format = TERMINAL_SUPPORT_COLORS and _format_colors or _format_nocolors
 
     FORMATTERS = {
         logging.DEBUG:    logging.Formatter(_format.format(color=blue    )),
-        logging.INFO:     logging.Formatter(_format.format(color=green    )),
+        logging.INFO:     logging.Formatter(_format.format(color=green   )),
         logging.WARNING:  logging.Formatter(_format.format(color=yellow  )),
         logging.ERROR:    logging.Formatter(_format.format(color=red     )),
-        logging.CRITICAL: logging.Formatter(_format.format(color=red)),
+        logging.CRITICAL: logging.Formatter(_format.format(color=red     )),
     }
 
     def format(self, record):
@@ -204,7 +211,7 @@ class App(CTk):
         self.save_button = CustomButton(
             master=self,
             text=STRINGS.SMALL_BUTTON.SAVE,
-            command=self.create_console_command_fn("c_save()", announcement=STRINGS.COMMAND_ANNOUNCEMENT.SAVE),
+            command=partial(self.execute_special_command, "c_save()", announcement=STRINGS.COMMAND_ANNOUNCEMENT.SAVE),
             font=FONT.SMALL_BUTTON,
             size=SIZE.SMALL_BUTTON,
             pos=POS.SAVE_BUTTON,
@@ -213,7 +220,7 @@ class App(CTk):
         self.quit_button = CustomButton(
             master=self,
             text=STRINGS.SMALL_BUTTON.QUIT,
-            command=self.create_console_command_fn("c_shutdown(false)", confirmation_text=STRINGS.COMMAND_CONFIRMATION.QUIT, announcement=STRINGS.COMMAND_ANNOUNCEMENT.QUIT),
+            command=partial(self.execute_special_command, "c_shutdown(false)", confirmation_text=STRINGS.COMMAND_CONFIRMATION.QUIT, announcement=STRINGS.COMMAND_ANNOUNCEMENT.QUIT),
             font=FONT.SMALL_BUTTON,
             size=SIZE.SMALL_BUTTON,
             pos=POS.QUIT_BUTTON,
@@ -222,7 +229,7 @@ class App(CTk):
         self.reset_button = CustomButton(
             master=self,
             text=STRINGS.SMALL_BUTTON.RESET,
-            command=self.create_console_command_fn("c_reset()", confirmation_text=STRINGS.COMMAND_CONFIRMATION.RESET, announcement=STRINGS.COMMAND_ANNOUNCEMENT.RESET),
+            command=partial(self.execute_special_command, "c_reset()", confirmation_text=STRINGS.COMMAND_CONFIRMATION.RESET, announcement=STRINGS.COMMAND_ANNOUNCEMENT.RESET),
             font=FONT.SMALL_BUTTON,
             size=SIZE.SMALL_BUTTON,
             pos=POS.RESET_BUTTON,
@@ -231,7 +238,7 @@ class App(CTk):
         self.rollback_button = CustomButton(
             master=self,
             text=STRINGS.SMALL_BUTTON.ROLLBACK,
-            command=self.create_console_command_fn(load_lua_file("rollback_cmd"), announcement=STRINGS.COMMAND_ANNOUNCEMENT.ROLLBACK, slider_fn=rollback_slider_fn, confirmation_text=STRINGS.COMMAND_CONFIRMATION.ROLLBACK),
+            command=partial(self.execute_special_command, load_lua_file("rollback_cmd"), announcement=STRINGS.COMMAND_ANNOUNCEMENT.ROLLBACK, slider_fn=rollback_slider_fn, confirmation_text=STRINGS.COMMAND_CONFIRMATION.ROLLBACK),
             font=FONT.SMALL_BUTTON,
             size=SIZE.SMALL_BUTTON,
             pos=POS.ROLLBACK_BUTTON,
@@ -278,26 +285,23 @@ class App(CTk):
             self.shard_group.start_all_shards()
 
 
-    def create_console_command_fn(self, command, announcement=None, slider_fn=None, confirmation_text=None):
-        def ret():
-            if confirmation_text:
-                confirmed, slider_value = self.confirmation_popup.create(confirmation_text, slider_fn)
+    def execute_special_command(self, command, announcement=None, slider_fn=None, confirmation_text=None):
+        if confirmation_text:
+            confirmed, slider_value = self.confirmation_popup.create(confirmation_text, slider_fn=slider_fn)
 
-                if confirmed:
-                    command_fmt = slider_value and command.format(value=slider_value) or command
+            if confirmed:
+                command_fmt = slider_value and command.format(value=slider_value) or command
 
-                    if announcement:
-                        self.master_shard.execute_command(ANNOUNCE_STR.format(msg=announcement), log=False)
-
-                    self.master_shard.execute_command(command_fmt)
-
-            else:
                 if announcement:
                     self.master_shard.execute_command(ANNOUNCE_STR.format(msg=announcement), log=False)
 
-                self.master_shard.execute_command(command)
+                self.master_shard.execute_command(command_fmt)
 
-        return ret
+        else:
+            if announcement:
+                self.master_shard.execute_command(ANNOUNCE_STR.format(msg=announcement), log=False)
+
+            self.master_shard.execute_command(command)
 
 
     def save_entries_data(self):
