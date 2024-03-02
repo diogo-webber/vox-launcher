@@ -34,7 +34,7 @@
 
 ### Included features:
 - Buttons to **save**, **reset**, **rollback** and **stop** the server.
-- A screen that shows server logs and have console for executing commands.
+- A screen that shows server logs and have a console for executing commands.
 - Shows information about the server, such as **number of players**, **day count**, **season** and **memory usage**.
 - Supports any number of shards.
 
@@ -89,7 +89,7 @@
 
 <dl><dd><dl><dd><dl>
  
-> You may create a issue in the [**Issues Tab**][new_issue].
+> You may create a issue in the [**Issues Tab**][new_issue].</br>Please attach the app log file when doing so. It can be found at `appdata/logs/applog.txt`.
 
 </dl></dd></dl></dd></dl>
 
