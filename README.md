@@ -5,7 +5,8 @@
 [video_tutorial]: https://youtu.be/dxl-RV0LtEA
 [locales]: https://ss64.com/locale.html
 [pull_request]: https://github.com/diogo-webber/vox-launcher/compare/
-
+[new_issue]: https://github.com/diogo-webber/vox-launcher/issues/new
+[token_website]: https://accounts.klei.com/account/game/servers?game=DontStarveTogether
 
 <h1 align="center">
 
@@ -43,7 +44,7 @@
 
 <br>
 
-- Download the `App` zip, extract its contexts and start the `Vox Launcher` executable. [`Click here`][download] to download it.
+- Download the `App` zip, extract its contexts and start the `Vox Launcher` executable. [**Click here**][download] to download it.
 - Select the game installation folder under `Game Directory`, if it has not been automatically populated.
 - Create a world using the in game menu and select it under `Cluster Directory`.
 - Paste a server token under `Server Token`. See instructions on how to obtain one in the app.
@@ -57,6 +58,40 @@
 > Additionally, check out this amazing **[video tutorial][video_tutorial]** by Jazzy Games on YouTube.
 
 </dl></dd></dl>
+
+<br>
+
+## Frequently Asked Questions
+
+<br>
+
+- **Are mods supported? What do I need to do to enable them?**
+
+<dl><dd><dl><dd><dl>
+ 
+> Yes, they are. Just enable them when you're creating the world, it's that simple!
+
+</dl></dd></dl></dd></dl>
+
+<br>
+
+- **How do I get a Cluster Token?**
+
+<dl><dd><dl><dd><dl>
+ 
+> You can create one on the [**Klei Accounts**][token_website] website.
+
+</dl></dd></dl></dd></dl>
+
+<br>
+
+- **I've found a problem in the app, where should I report it?**
+
+<dl><dd><dl><dd><dl>
+ 
+> You may create a issue in the [**Issues Tab**][new_issue].
+
+</dl></dd></dl></dd></dl>
 
 <br>
 
