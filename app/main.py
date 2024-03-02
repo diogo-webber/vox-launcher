@@ -14,7 +14,7 @@ from fonts import FONT
 from widgets.buttons import CustomButton
 from widgets.entries import TokenEntry, DirectoryEntry, ClusterDirectoryEntry
 from widgets.frames import ScrollableShardGroupFrame
-from widgets.misc import Tooltip, PopUp, ClusterStats
+from widgets.misc import Tooltip, CommandPopUp, ErrorPopUp, ClusterStats
 
 # ------------------------------------------------------------------------------------ #
 
@@ -244,7 +244,8 @@ class App(CTk):
             pos=POS.ROLLBACK_BUTTON,
         )
 
-        self.confirmation_popup = PopUp(root=self)
+        self.confirmation_popup = CommandPopUp(root=self)
+        self.error_popup = ErrorPopUp(root=self)
 
         self.version_label = CTkLabel(
             master=self,

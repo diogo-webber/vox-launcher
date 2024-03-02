@@ -693,7 +693,7 @@ class ScrollableShardGroupFrame(CTkScrollableFrame):
         self.after(50, self._parent_canvas.yview_moveto, 0)
 
     def remove_all_shards(self):
-        for frame in self.shards.values():
+        for frame in self.get_shards():
             frame.destroy()
 
             if hasattr(frame, "shard_log_panel"):
@@ -706,19 +706,19 @@ class ScrollableShardGroupFrame(CTkScrollableFrame):
         self.app.launch_button.disable()
 
     def start_all_shards(self):
-        for frame in self.shards.values():
-            if hasattr(frame, "server"):
-                frame.server.start()
+        for frame in self.get_shards():
+            frame.server.start()
 
     def stop_all_shards(self):
-        for frame in self.shards.values():
-            if hasattr(frame, "server"):
-                frame.server.stop()
+        for frame in self.get_shards():
+            frame.server.stop()
 
     def set_all_shards_restarting(self):
-        for frame in self.shards.values():
-            if hasattr(frame, "set_restarting"):
-                frame.set_restarting()
+        for frame in self.get_shards():
+            frame.server.set_restarting()
+
+    def get_shards(self):
+        return [x for x in self.shards.values() if x != "PlaceHolder"]
 
     def show_tooltip(self):
         self.tooltip.place(

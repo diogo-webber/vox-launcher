@@ -196,7 +196,7 @@ class PeriodicTask():
         """ Stops the loop. """
 
         if self.id:
-            logger.debug(f"Killing periodic task <{self.id}>")
+            #logger.debug(f"Killing periodic task <{self.id}>")
             self.app.after_cancel(self.id)
 
 # ----------------------------------------------------------------------------------------- #
@@ -227,78 +227,6 @@ def read_vox_data(server, text):
         string = matches[0].strip()
 
         return json.loads(string)
-
-def handle_shard_output(shard):
-    """
-    Reads all new data from shard.process and handle key phases.
-    Should be used in a PeriodicTask.
-
-    Args:
-        shard (DedicatedServerShard): shard to read from.
-
-    Returns:
-        success (bool, None): if not True, stops the loop. See PeriodicTask._execute.
-        newtime: (int, float, None): override PeriodicTask.time for the next call, if not None. See PeriodicTask._execute.
-    """
-
-    if not shard.is_running():
-        shard.on_stopped()
-        shard.app.stop_shards()
-
-        return False, None
-
-    text = None
-
-    try:
-        text = shard.process.read_nonblocking(size=9999, timeout=None)
-
-    except (EOF, TIMEOUT):
-        return True, 500
-
-    if not text:
-        return True, None
-
-    shard.shard_frame.shard_log_panel.append_text(text)
-
-    if shard.shard_frame.is_master:
-        vox_data = read_vox_data(shard.app.master_shard, text)
-
-        if vox_data:
-            shard.app.cluster_stats.update(vox_data)
-
-    if "World generated on build" in text:
-        logger.info(f"{shard.shard_frame.code} is now online!")
-
-        shard.shard_frame.set_online()
-
-        shard.app.token_entry.toggle_warning(True)
-
-    elif "Received world rollback request" in text:
-        shard.app.shard_group.set_all_shards_restarting()
-
-    elif "E_INVALID_TOKEN" in text or "E_EXPIRED_TOKEN" in text:
-        logger.error("Invalid Token: E_INVALID_TOKEN or E_EXPIRED_TOKEN")
-
-        shard.app.token_entry.toggle_warning(False)
-        shard.app.stop_shards()
-
-    elif "SOCKET_PORT_ALREADY_IN_USE" in text:
-        logger.error("Invalid cluster path or ports in use: SOCKET_PORT_ALREADY_IN_USE")
-
-        shard.app.stop_shards()
-
-    elif "[Error] Server failed to start!" in text:
-        logger.error(f"{shard.shard_frame.code} failed to start!")
-
-        shard.app.stop_shards()
-
-    # Runs mainly on master.
-    elif "]: Shutting down" in text:
-        logger.info(f"{shard.shard_frame.code} was shut down... Stopping")
-
-        shard.app.stop_shards()
-
-    return True, None
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -359,18 +287,17 @@ def rollback_slider_fn(app):
 
 # ----------------------------------------------------------------------------------------- #
 
-GAME_DIRECTORY_REQUIRED_CHILDREN = [ "bin64/dontstarve_dedicated_server_nullrenderer_x64.exe", "bin64/dontstarve_dedicated_server_r_x64.exe" ]
+GAME_DIRECTORY_ONE_OF_CHILDREN = [ "bin64/dontstarve_dedicated_server_nullrenderer_x64.exe", "bin64/dontstarve_dedicated_server_r_x64.exe" ]
 CLUSTER_DIRECTORY_REQUIRED_CHILDREN = [ "cluster.ini", "Master" ]
 
-
-def validate_directory(directory, required_children, one_of=False) :
+def validate_directory(directory, required_children=None, one_of_children=None) :
     """
-    Checks if directory contains all required_children subpaths.
+    Checks if directory contains all required_children subpaths and/or one_of_children subpaths.
 
     Args:
         directory (Path, str): the directory path.
-        required_children (list): the subpaths that directory must contain.
-        one_of (bool): if True, just one required_children's subpath is required. Default: False.
+        required_children (list, None): the subpaths that directory must contain.
+        one_of_children (list, None): the subpaths that directory must contain at least one of.
 
     Returns:
         valid (bool): valid or not.
@@ -382,19 +309,26 @@ def validate_directory(directory, required_children, one_of=False) :
         logger.debug(f"Validate Directory: directory '{directory}' doesn't exist...")
         return False
 
-    missing_children = list(filter(lambda child: not (directory / child).exists(), required_children))
+    if required_children:
+        for child in required_children:
+            if not (directory / child).exists():
+                logger.debug(f"Validate Directory: required child '{child}' doesn't exist in '{directory}'...")
+                return False
 
-    if (one_of and len(required_children) == len(missing_children)) or (not one_of and missing_children):
-        logger.debug(f"Validate Directory: required children '{missing_children}' doesn't exist in '{directory}'...")
-        return False
+    if one_of_children:
+        missing_children = list(filter(lambda child: not (directory / child).exists(), one_of_children))
+
+        if one_of_children == missing_children:
+            logger.debug(f"Validate Directory: missing one of these {one_of_children} in '{directory}'...")
+            return False
 
     return True
 
 def validate_game_directory(directory: str) -> bool:
-    return validate_directory(directory, GAME_DIRECTORY_REQUIRED_CHILDREN, one_of=True)
+    return validate_directory(directory, one_of_children=GAME_DIRECTORY_ONE_OF_CHILDREN)
 
 def validate_cluster_directory(directory: str) -> bool:
-    return validate_directory(directory, CLUSTER_DIRECTORY_REQUIRED_CHILDREN)
+    return validate_directory(directory, required_children=CLUSTER_DIRECTORY_REQUIRED_CHILDREN)
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -405,6 +339,11 @@ def open_klei_account_page(*args, **kwargs):
 
 def open_folder(path):
     """ Opens a Windows explorer instance on this path  """
+
+    os.startfile(path)
+
+def open_file(path):
+    """ Opens a file  """
 
     os.startfile(path)
 
@@ -498,6 +437,7 @@ def get_system_language_code():
 
 
 def sort_key(shardname):
+    """Master first, then Caves and then the others"""
     return dict(Master = 0, Caves = 1).get(shardname, 3)
 
 def get_shard_names(cluster):
@@ -522,25 +462,34 @@ def get_shard_names(cluster):
 
 # ----------------------------------------------------------------------------------------- #
 
-def get_cluster_relative_path(path):
+def get_cluster_and_user_dir_and_storage_root(path):
     """
-    Gets the cluster relative path to the Klei/DoNotStarveTogether or Klei/DoNotStarveTogetherBetaBranch.
+    Gets the cluster relative path, user dir and storage root from a cluster path.
 
     Args:
         path (Path): the cluster path.
 
     Returns:
-        relative_path (str): the relative path or path.name.
+        cluster (str): the cluster relative path.
+        user_dir (str, None): the user dir name, if exists.
+        storage_root (Path, None): the storage root path, if exists.
+
     """
 
-    regex = re.compile(r'Klei/DoNotStarveTogether(?:BetaBranch)?/(.*)')
+    regex = re.compile(r'(.*)/DoNotStarveTogether(?:BetaBranch)?/(.*)')
 
     match = regex.search(path.as_posix())
 
     if match:
-        return match.group(1)
+        files = match.group(2).split("/")
 
-    return path.name
+        user_dir = files[0].isdigit() and files[0] or None
+        cluster = user_dir and files[1:] or files
+        storage_root = Path(match.group(1))
+
+        return "/".join(cluster), user_dir, storage_root
+
+    return path.name, None, None
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -587,6 +536,36 @@ def get_game_directory():
 
     except FileNotFoundError:
         logger.debug("FileNotFoundError exception when trying to get the Game directory using: Software\\Valve\\Steam - SteamPath.")
+
+
+def get_ugc_directory():
+    try:
+        # Open the Steam App 322330 registry key.
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Software\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 322330") as key:
+            # Read the install location path from the registry
+            game_path, _ = winreg.QueryValueEx(key, "InstallLocation")
+
+            directory = Path(game_path).parent.parent / "workshop"
+
+            if directory.exists():
+                return directory
+
+    except FileNotFoundError:
+        logger.warning("FileNotFoundError exception when trying to get the UGC directory using: [...]\\Steam App 322330 - InstallLocation.")
+
+    try:
+        # Open the Steam registry key.
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam") as key:
+            # Read the Steam installation path from the registry
+            steam_path, _ = winreg.QueryValueEx(key, "SteamPath")
+
+            directory = Path(steam_path) / "steamapps/workshop/"
+
+            if directory.exists():
+                return directory
+
+    except FileNotFoundError:
+        logger.warning("FileNotFoundError exception when trying to get the UGC directory using: Software\\Valve\\Steam - SteamPath.")
 
 
 CSIDL_PERSONAL = 5       # Documents

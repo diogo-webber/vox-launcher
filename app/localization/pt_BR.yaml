@@ -52,6 +52,7 @@ CLUSTER_STATS:
 POPUP:
     OK: Certo
     CANCEL: Cancelar
+    LOG: Log
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Execute comandos de console em {shard}. Pressione ENTER para executá-los.
@@ -84,3 +85,13 @@ ENTRY:
     CLUSTER_TITLE: Diretório do Cluster
     TOKEN_TITLE: Token de Servidor
     ENTRY_INVALID_INPUT: "* Entrada Inválida"
+
+ERROR:
+    TOKEN_INVALID: O token fornecido é inválido ou expirou.
+    GENERAL: Um erro ocorreu ao iniciar o servidor, por favor verifique o log do servidor.
+    PORTS:  |-
+        As portas {ports} já estão sendo utilizadas por outro programa.
+
+        Isso geralmente acontece quando outro servidor está rodando nas mesmas portas - mesmo que tenha sido iniciado por dentro do jogo.
+
+        Caso não encontre nenhuma irregularidade, reporte o problema no repositório, pois isso pode ser sido causado pelo próprio app.

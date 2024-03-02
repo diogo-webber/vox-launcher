@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from customtkinter import CTkImage, CTkLabel, CTkToplevel, CTkButton, CTkSlider
 from tkinter import StringVar, IntVar, DoubleVar, Toplevel, END
 from PIL import Image
@@ -5,7 +7,7 @@ from PIL import Image
 from strings import STRINGS
 from constants import COLOR, SIZE, POS, WINDOW_WIDTH, WINDOW_HEIGHT
 from widgets.frames import CustomFrame
-from helpers import resource_path
+from helpers import resource_path, open_file
 from fonts import FONT
 
 class ClusterStats:
@@ -145,13 +147,19 @@ class Tooltip:
             self.tooltip.destroy()
             self.tooltip = None
 
-class PopUp():
+class PopUp:
     def __init__(self, root):
         self.root = root
+        self.popup = None
         self.confirmed = None
         self.slider_value = None
+        self.button_2_text = ""
 
     def create(self, text, slider_fn=None):
+        if self.popup is not None:
+            # Only one popup.
+            return self.confirmed, self.slider_value
+
         self.popup = CTkToplevel(self.root, fg_color=COLOR.GRAY)
         self.popup.wm_overrideredirect(True)
         self.popup.grab_set()  # Make other windows not clickable.
@@ -176,10 +184,11 @@ class PopUp():
             fg_color="transparent",
             text_color=COLOR.WHITE,
             text=text,
-            font=FONT.POPUP
+            font=FONT.POPUP,
+            justify="left",
         )
 
-        self.popup._ok_button = CTkButton(
+        self.popup.button_1 = CTkButton(
             master=self.popup,
             width=50,
             fg_color=COLOR.DARK_GRAY,
@@ -189,10 +198,10 @@ class PopUp():
             border_width=0.4,
             text=STRINGS.POPUP.OK,
             font=FONT.SMALL_BUTTON,
-            command=self._ok_event,
+            command=self.button_1_callback,
         )
 
-        self.popup._cancel_button = CTkButton(
+        self.popup.button_2 = CTkButton(
             master=self.popup,
             width=50,
             fg_color=COLOR.DARK_GRAY,
@@ -200,9 +209,9 @@ class PopUp():
             text_color=COLOR.WHITE,
             border_color=COLOR.WHITE,
             border_width=0.4,
-            text=STRINGS.POPUP.CANCEL,
+            text=self.button_2_text,
             font=FONT.SMALL_BUTTON,
-            command=self._cancel_event
+            command=self.button_2_callback
         )
 
         if slider_fn:
@@ -240,9 +249,10 @@ class PopUp():
 
         buttons_row = slider_fn and 2 or 1
 
-        self.popup._label.grid(        row=0,           column=0, columnspan=4, padx=20,       pady=20,      sticky="ew")
-        self.popup._ok_button.grid(    row=buttons_row, column=0, columnspan=2, padx=(20, 10), pady=(0, 20), sticky="ew")
-        self.popup._cancel_button.grid(row=buttons_row, column=2, columnspan=2, padx=(10, 20), pady=(0, 20), sticky="ew")
+        self.popup._label.grid(row=0, column=0, columnspan=4, padx=20, pady=20, sticky="ew")
+
+        self.popup.button_1.grid(row=buttons_row, column=0, columnspan=2, padx=(20, 10), pady=(0, 20), sticky="ew")
+        self.popup.button_2.grid(row=buttons_row, column=2, columnspan=2, padx=(10, 20), pady=(0, 20), sticky="ew")
 
         self.popup.withdraw()
         self.popup.update()
@@ -267,7 +277,7 @@ class PopUp():
 
         # Set the window's position.
         self.popup.wm_geometry('+{}+{}'.format(x, y))
-    
+
         self.popup.deiconify()
 
         self.root.wait_window(self.popup)
@@ -286,13 +296,39 @@ class PopUp():
         self.slider_value = value
         self._slider_text.set(value)
 
-    def _ok_event(self, event=None):
+    def button_1_callback(self):
+        self._close()
+
+    def button_2_callback(self):
+        self._close()
+
+class CommandPopUp(PopUp):
+    def __init__(self, root):
+        super().__init__(root)
+        self.button_2_text = STRINGS.POPUP.CANCEL
+
+    def button_1_callback(self):
         self.confirmed = True
 
         self._close()
 
-    def _cancel_event(self):
+    def button_2_callback(self):
         self.confirmed = False
 
         self._close()
 
+class ErrorPopUp(PopUp):
+    def __init__(self, root):
+        super().__init__(root)
+        self.button_2_text = STRINGS.POPUP.LOG
+
+    def button_1_callback(self):
+        self.confirmed = True
+
+        self._close()
+
+    def button_2_callback(self):
+        path = Path(self.root.cluster_entry.get()) / "Master/server_log.txt"
+
+        if path.exists():
+            open_file(path)
