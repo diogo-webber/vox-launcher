@@ -1,0 +1,97 @@
+APP_NAME: Vox 启动器
+VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
+WINDOW_TITLE: "  {APP_NAME} - 饥荒联机版 - 专用服务器启动器"
+
+TOKEN_TOOLTIP: |-
+    你需要一个服务器令牌以启动服务器。
+    服务器令牌需要在科雷账户页面生成。
+    点击这里打开科雷账户页面网站。
+
+CLUSTER_NAME_DEFAULT: 如何使用？
+ASK_DIRECTORY_TITLE: "  选择文件目录"
+
+CLUSTER_GROUP_TOOLTIP: |-
+    ➊    如果没有自动指定，请在{GAME_TITLE}中手动指定游戏文件夹。
+    ➋    在游戏中创建一个存档，并且在{CLUSTER_TITLE}中手动指定存档文件夹。
+    ➌    在{TOKEN_TITLE}中粘贴服务器令牌。将鼠标悬停在ⓘ图标上以了解如何获取令牌。
+    ➍    最后，点击{LAUNCH}按钮然后享受游戏的乐趣！
+
+CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+    - "{GAME_TITLE}"
+    - "{CLUSTER_TITLE}"
+    - "{TOKEN_TITLE}"
+    - ⓘ
+    - "{LAUNCH}"
+    - ➊
+    - ➋
+    - ➌
+    - ➍
+
+SHARD_NAME:
+    MASTER: 森林   # Unused
+    EMPTY: 空世界栏
+
+LAUNCH_BUTTON:
+    LAUNCH: 启动
+    CANCEL: 取消
+    SAVE_QUIT: 保存并退出
+    STOPPING: 关闭
+
+SHARD_STATUS:
+    OFFLINE:    离线模式
+    STARTING:   启动中...
+    ONLINE:     在线模式
+    STOPPING:   关闭中...
+    RESTARTING: 重启中...
+
+CLUSTER_STATS:
+    DAY: "天数: "
+    SEASON: "季节: "
+    PLAYERS: "玩家: "
+
+POPUP:
+    OK: 确定
+    CANCEL: 取消
+    LOG: 服务器日志
+
+LOG_SCREEN:
+    ENTRY_PLACEHOLDER: 在{shard}世界运行控制台命令。按下ENTER以执行命令。
+    CLOSE: 返回
+    AUTO_SCROLL: 自动滚动
+    SHARD_FOLDER: 本地文件
+    SHARD_NAME_TITLE: "世界名称："
+    SHARD_MEMORY_TITLE: "内存占用："
+    SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+
+SMALL_BUTTON:
+    SAVE: 保存
+    QUIT: 关闭
+    RESET: 重启
+    ROLLBACK: 回档
+
+COMMAND_CONFIRMATION:
+    QUIT: 是否要在不保存的情况下关闭服务器？未保存的数据将丢失！
+    RESET: 是否要在不保存的情况下重启服务器？未保存的数据将丢失！
+    ROLLBACK: 你想进行几次回档？
+
+COMMAND_ANNOUNCEMENT:
+    SAVE: 正在保存...
+    QUIT: 正在关闭...
+    RESET: 正在重启...
+    ROLLBACK: 5秒内回档服务器！
+
+ENTRY:
+    GAME_TITLE: 游戏文件目录
+    CLUSTER_TITLE: 存档文件目录
+    TOKEN_TITLE: 服务器令牌
+    ENTRY_INVALID_INPUT: "* 输入了无效的文件目录"
+
+ERROR:
+    TOKEN_INVALID: 提供的服务器令牌无效或者已过期。
+    GENERAL: 启动服务器时出错，请检查服务器日志。
+    PORTS:  |-
+        端口{ports}已经被另一个程序占用。
+
+        这种情况往往是因为另一个游戏服务器已经使用了相同的端口 - 即使另一个游戏服务器是从饥荒联机版内启动的。
+        
+        如果你没有任何错误操作，请在存储库中报告，因为这次错误可能是由启动器程序本身引起的。
