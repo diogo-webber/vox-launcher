@@ -7,6 +7,8 @@
 [pull_request]: https://github.com/diogo-webber/vox-launcher/compare/
 [new_issue]: https://github.com/diogo-webber/vox-launcher/issues/new
 [token_website]: https://accounts.klei.com/account/game/servers?game=DontStarveTogether
+[pyinstaller_repo]: https://github.com/pyinstaller/pyinstaller
+[windows_defender_tutorial]: https://support.microsoft.com/en-us/windows/add-an-exclusion-to-windows-security-811816c0-4dfd-af4a-47e4-c301afe13b26
 
 <h1 align="center">
 
@@ -62,6 +64,18 @@
 <br>
 
 ## Frequently Asked Questions
+
+<br>
+
+- **Windows Defender is flagging Vox Launcher as a threat, why is this happening?**
+
+<dl><dd><dl><dd><dl>
+ 
+> The tool called [**Pyinstaller**][pyinstaller_repo], which is used to bundle the app into an executable, is also used by people who actually make malicious software. Windows Defender recognizes some similar patterns in the executable and includes Vox Launcher as a threat.
+
+> Usually creating a new version solves this temporarily, but there's not much to be done in the long term other than rebuilding the whole app in another programming language, which I don't have the time or desire to do at the moment. The only thing you could do is to [**add an exclusion to Windows Defender**][windows_defender_tutorial].
+
+</dl></dd></dl></dd></dl>
 
 <br>
 
