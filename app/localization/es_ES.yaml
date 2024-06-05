@@ -1,0 +1,97 @@
+APP_NAME: Vox Launcher
+VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
+WINDOW_TITLE: "  {APP_NAME} - Don't Starve Together - Lanzador de servidores dedicados"
+
+TOKEN_TOOLTIP: |-
+    Necesitas un token para iniciar un servidor dedicado.
+    Puedes generar uno desde tu cuenta de Klei.
+    Haz clic aquí para abrir la web.
+
+CLUSTER_NAME_DEFAULT: ¿Cómo funciona?
+ASK_DIRECTORY_TITLE: "  Selecciona un directorio"
+
+CLUSTER_GROUP_TOOLTIP: |-
+    ➊    Selecciona el directorio de instalación del juego desde {GAME_TITLE}, si no está rellenado.
+    ➋    Crea un nuevo mundo desde el menú del juego y seleccionalo desde {CLUSTER_TITLE}.
+    ➌    Pega el token del servidor en {TOKEN_TITLE}. Pasa el cursor sobre el icono ⓘ para más información.
+    ➍    Por último, haz clic en el botón {LAUNCH} y ¡diviértete!
+
+CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+    - "{GAME_TITLE}"
+    - "{CLUSTER_TITLE}"
+    - "{TOKEN_TITLE}"
+    - ⓘ
+    - "{LAUNCH}"
+    - ➊
+    - ➋
+    - ➌
+    - ➍
+
+SHARD_NAME:
+    MASTER: Forest   # Unused
+    EMPTY: Campo vacío
+
+LAUNCH_BUTTON:
+    LAUNCH: INICIAR
+    CANCEL: CANCELAR
+    SAVE_QUIT: GUARDAR / CERRAR
+    STOPPING: CERRANDO
+
+SHARD_STATUS:
+    OFFLINE:    Desconectado
+    STARTING:   Iniciando...
+    ONLINE:     Conectado
+    STOPPING:   Cerrando...
+    RESTARTING: Reiniciando...
+
+CLUSTER_STATS:
+    DAY: "Día: "
+    SEASON: "Estación: "
+    PLAYERS: "Jugadores: "
+
+POPUP:
+    OK: Aceptar
+    CANCEL: Cancelar
+    LOG: Registros del servidor
+
+LOG_SCREEN:
+    ENTRY_PLACEHOLDER: Ejecuta comandos de consola en {shard}. Pulsa ENTER para ejecutarlas.
+    CLOSE: Volver
+    AUTO_SCROLL: Desplazar Auto
+    SHARD_FOLDER: Archivos Locales
+    SHARD_NAME_TITLE: "Fragmento:"
+    SHARD_MEMORY_TITLE: "Memoria:"
+    SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+
+SMALL_BUTTON:
+    SAVE: Guardar
+    QUIT: Cerrar
+    RESET: Reiniciar
+    ROLLBACK: Rebobinar
+
+COMMAND_CONFIRMATION:
+    QUIT: ¿Realmente deseas cerrar el servidor sin guardar? ¡Los datos no guardados se perderán!
+    RESET: ¿Realmente deseas reiniciar el servidor sin guardar? ¡Los datos no guardados se perderán!
+    ROLLBACK: ¿Cuántos guardados deseas rebobinar?
+
+COMMAND_ANNOUNCEMENT:
+    SAVE: Guardando el mundo...
+    QUIT: Cerrando...
+    RESET: Reiniciando...
+    ROLLBACK: ¡Rebobinando en 5 segundos!
+
+ENTRY:
+    GAME_TITLE: Directorio del Juego
+    CLUSTER_TITLE: Directorio del Cluster
+    TOKEN_TITLE: Token del Servidor
+    ENTRY_INVALID_INPUT: "* Entrada Inválida"
+
+ERROR:
+    TOKEN_INVALID: El token proporcionado no es válido o ha expirado.
+    GENERAL: Ha ocurrido un error durante el lanzamiento del servidor, por favor, comprueba los registros.
+    PORTS:  |-
+        Los puertos {ports} se encuentran ocupados por otro programa.
+
+        Esto habitualmente ocurre cuando otro servidor está iniciado sobre los mismos puertos, incluso dentro del juego.
+        
+        Si no encuentras ninguna irregularidad, por favor, reporta este problema en el repositorio, esto puede ser un fallo de la propia aplicación.
