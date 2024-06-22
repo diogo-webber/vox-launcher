@@ -1,0 +1,97 @@
+APP_NAME: Vox Launcher
+VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
+WINDOW_TITLE: "  {APP_NAME} - Don't Starve Together - Spouštěč Dedikovaných Serveru"
+
+TOKEN_TOOLTIP: |-
+    K spuštění serveru je třeba serverový token.
+    Vygeneruj si jeden na stránce Klei Account.
+    Klikněte zde pro otevření webové stránky.
+
+CLUSTER_NAME_DEFAULT: Jak to funguje?
+ASK_DIRECTORY_TITLE: "  Vyber adresář"
+
+CLUSTER_GROUP_TOOLTIP: |-
+    ➊    Vyberte složku s instalací hry pod {GAME_TITLE}, pokud nebyla automaticky vyplněna.
+    ➋    Vytvořte svět pomocí herního menu a vyberte ho pod {CLUSTER_TITLE}.
+    ➌    Vložte serverový token pod {TOKEN_TITLE}. Přejděte kurzorem myši nad ikonu ⓘ pro instrukce, jak získat token.
+    ➍    Nakonec klikněte na tlačítko {LAUNCH} a bavte se!
+
+CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+    - "{GAME_TITLE}"
+    - "{CLUSTER_TITLE}"
+    - "{TOKEN_TITLE}"
+    - ⓘ
+    - "{LAUNCH}"
+    - ➊
+    - ➋
+    - ➌
+    - ➍
+
+SHARD_NAME:
+    MASTER: Les   # Unused
+    EMPTY: Prázdný Slot
+
+LAUNCH_BUTTON:
+    LAUNCH: Spustit
+    CANCEL: Zrušit
+    SAVE_QUIT: ULOŽIT / ZASTAVIT
+    STOPPING: ZASTAVUJE SE
+
+SHARD_STATUS:
+    OFFLINE:    Offline
+    STARTING:   Spouští se...
+    ONLINE:     Online
+    STOPPING:   Zastavuje se...
+    RESTARTING: Restartuje se...
+
+CLUSTER_STATS:
+    DAY: "Den: "
+    SEASON: "Roční období: "
+    PLAYERS: "Hráči: "
+
+POPUP:
+    OK: Ok
+    CANCEL: Zrušit
+    LOG: Záznam serveru
+
+LOG_SCREEN:
+    ENTRY_PLACEHOLDER: Spouštějte příkazy konzole na {shard}. Stiskněte ENTER pro jejich provedení.
+    CLOSE: Zpět
+    AUTO_SCROLL: Automatické posouvání
+    SHARD_FOLDER: Lokální Soubory
+    SHARD_NAME_TITLE: "Shard:"
+    SHARD_MEMORY_TITLE: "Paměť:"
+    SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+
+SMALL_BUTTON:
+    SAVE: Uložit
+    QUIT: Ukončit
+    RESET: Restartovat
+    ROLLBACK: Rollback
+
+COMMAND_CONFIRMATION:
+    QUIT: Opravdu chcete server zastavit bez uložení? Neuložená data budou ztracena!
+    RESET: Opravdu chcete server restartovat bez uložení? Neuložená data budou ztracena!
+    ROLLBACK: Kolik uložených pozic chcete vrátit zpět?
+
+COMMAND_ANNOUNCEMENT:
+    SAVE: Ukládání světa...
+    QUIT: Zastavuje se...
+    RESET: Restartuje se...
+    ROLLBACK: Vrací se zpět o 5 sekund!
+
+ENTRY:
+    GAME_TITLE: Adresář hry
+    CLUSTER_TITLE: Adresář clusteru
+    TOKEN_TITLE: Serverový token
+    ENTRY_INVALID_INPUT: "* Neplatný vstup"
+
+ERROR:
+    TOKEN_INVALID: Poskytnutý token je neplatný nebo vypršel platnost.
+    GENERAL: Při spouštění serveru došlo k chybě, zkontrolujte prosím záznam serveru.
+    PORTS:  |-
+        Porty {ports} jsou již používány jiným programem.
+
+        Obvykle se to stane, když jiný server běží na stejných portech - dokonce i ve hře.
+        
+        Pokud nenajdete žádné nepravidelnosti, prosím, nahlaste to v repozitáři, protože to může být způsobeno samotnou aplikací.
