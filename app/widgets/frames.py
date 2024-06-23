@@ -565,6 +565,9 @@ class ShardFrame(CustomFrame):
 
     def is_restarting(self):
         return self.status == SERVER_STATUS.RESTARTING
+    
+    def add_text_to_log_screen(self, text):
+        self.shard_log_panel.append_text(text)
 
 
 class TextBoxAsLabel(CTkTextbox):

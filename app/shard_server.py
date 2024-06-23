@@ -44,11 +44,6 @@ class DedicatedServerShard():
         self.shard_frame = shard_frame
         self.shard = shard_frame.code
 
-        self.signal_prefix = f"VoxLauncher_{self.shard}"
-        self.signal_ids = {}
-        self.signal_created_pattern = re.compile(rf"\[IPC\] Signal '{self.signal_prefix}_(.*?)' (?:created|opened)  #(.*?)[\r\n]")
-        self.signal_sent_pattern    = re.compile(r"\[IPC\] Sending signal\.\.\. #(.*?)[\r\n]")
-
     def is_running(self):
         return self.process and self.process.proc.poll() is None or False
     
@@ -71,7 +66,6 @@ class DedicatedServerShard():
             {exe}
             -cluster {cluster}
             -shard {self.shard}
-            -sigprefix {self.signal_prefix}
             -monitor_parent_process {PROCESS_ID}
             -token {token}
         """
@@ -142,7 +136,6 @@ class DedicatedServerShard():
 
         self.shard_frame.set_offline()
 
-        self.signal_ids.clear()
         self.process = None
         self.task = None
 
@@ -190,8 +183,9 @@ class DedicatedServerShard():
         if not text:
             return True, None
 
-        self.shard_frame.shard_log_panel.append_text(text)
+        self.shard_frame.add_text_to_log_screen(text)
 
+        self.handle_output_keywords(text=text)
 
         if self.shard_frame.is_master:
             vox_data = read_vox_data(self.app.master_shard, text)
@@ -199,81 +193,9 @@ class DedicatedServerShard():
             if vox_data:
                 self.app.cluster_stats.update(vox_data)
 
-        self.handle_keywords(text=text)
-
-        if matches := self.signal_created_pattern.findall(text):
-            for match in matches:
-                name, _id = match
-
-                #logger.debug("[%s] Registering signal: %s (%s)", self.shard, name, _id)
-
-                self.signal_ids[_id.strip()] = name.strip()
-
-
-        if signal_match := self.signal_sent_pattern.search(text):
-            signal_id = signal_match.group(1).strip()
-
-            self.handle_signal(signal=self.signal_ids.get(signal_id))
-
         return True, None
 
-
-    def handle_signal(self, signal):
-        logger.debug("[%s] Received signal: %s", self.shard, signal)
-
-        if not signal:
-            return
-
-        match signal:
-            case "Kill", "ShutdownNoSave":
-                logger.info(f"{self.shard} was shut down... Stopping")
-
-                self.app.stop_shards()
-
-            case "Starting", "WorldGen":
-                pass
-
-            case "Ready":
-                logger.info(f"{self.shard} is now online!")
-
-                self.shard_frame.set_online()
-
-                # It looks like secondary shards don't send a signal after rolling back...
-                if self.shard_frame.is_master:
-                    for shard_frame in self.app.shard_group.get_shards():
-                        if shard_frame.is_restarting():
-                            shard_frame.server.handle_signal(signal)
-
-                self.app.token_entry.toggle_warning(True)
-
-            case "ErrPort":
-                logger.error("Invalid cluster path or ports in use: ErrPort signal.")
-
-                self.app.stop_shards()
-
-                cluster_directory = Path(self.app.cluster_entry.get())
-                config_file =  cluster_directory 
-                
-                ports = []
-
-                for shard in get_shard_names(cluster_directory):
-                    config_file = cluster_directory / shard / "server.ini"
-
-                    if config_file.exists:
-                        port = get_key_from_ini_file(config_file, "server_port")
-                        ports.append(f"{port} ({shard})")
-
-                self.app.error_popup.create(STRINGS.ERROR.PORTS.format(ports=", ".join(ports)))
-
-            case "ErrStartup":
-                logger.error("Error during start up: ErrStartup signal.")
-
-                self.app.stop_shards()
-
-                self.app.error_popup.create(STRINGS.ERROR.GENERAL)
-
-    
-    def handle_keywords(self, text):
+    def handle_output_keywords(self, text):
         if "E_INVALID_TOKEN" in text or "E_EXPIRED_TOKEN" in text:
             logger.error("Invalid Token: E_INVALID_TOKEN or E_EXPIRED_TOKEN")
 
@@ -282,9 +204,50 @@ class DedicatedServerShard():
 
             self.app.error_popup.create(STRINGS.ERROR.TOKEN_INVALID)
 
-            return True
-
         elif "Received world rollback request" in text:
+            logger.info(f"{self.shard} received a rollback request...")
+
             self.app.shard_group.set_all_shards_restarting()
 
-        return None
+        elif "uploads added to server." in text:
+            logger.info(f"{self.shard} is now online!")
+
+            self.shard_frame.set_online()
+
+            self.app.token_entry.toggle_warning(True)
+
+        elif "SOCKET_PORT_ALREADY_IN_USE" in text:
+            logger.error("Invalid cluster path or ports in use: SOCKET_PORT_ALREADY_IN_USE.")
+
+            self.app.stop_shards()
+
+            cluster_directory = Path(self.app.cluster_entry.get())
+            config_file =  cluster_directory 
+            
+            ports = []
+
+            for shard in get_shard_names(cluster_directory):
+                config_file = cluster_directory / shard / "server.ini"
+
+                if config_file.exists:
+                    port = get_key_from_ini_file(config_file, "server_port")
+                    ports.append(f"{port} ({shard})")
+
+            self.app.error_popup.create(STRINGS.ERROR.PORTS.format(ports=", ".join(ports)))
+
+        elif "[Error] Server failed to start!" in text:
+            logger.error(f"{self.shard_frame.code} failed to start!")
+
+            self.app.stop_shards()
+
+            self.app.error_popup.create(STRINGS.ERROR.GENERAL)
+
+        # Runs mainly on master.
+        elif "]: Shutting down" in text:
+            logger.info(f"{self.shard_frame.code} was shut down... Stopping other shards.")
+
+            self.shard_frame.set_stopping()
+            self.app.stop_shards()
+
+        elif self.shard_frame.is_master and "Sim paused" in text:
+            self.execute_command(load_lua_file("onserverpaused"), log=False)

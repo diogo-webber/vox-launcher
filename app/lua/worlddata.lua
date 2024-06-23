@@ -3,7 +3,7 @@ local function SendData(data)
 end
 
 local function GetNumPlayers()
-    return math.max(0, #TheNet:GetClientTable() - 1) .." / ".. (TheNet:GetDefaultMaxPlayers() or "?")
+    return TheNet:GetPlayerCount() .." / ".. (TheNet:GetDefaultMaxPlayers() or "?")
 end
 
 local function GetSeason()
@@ -39,13 +39,10 @@ if not TheWorld._vox_launcher then
     TheWorld:WatchWorldState("cycles", OnDayChanged)
     TheWorld:WatchWorldState("season", OnSeasonChanged)
 
-    -- Events are no longer triggered when the game auto-pauses.
-    local _OnSimPaused = OnSimPaused
-    function OnSimPaused(...) OnPlayerCountChanged() return _OnSimPaused(...) end
-
     TheWorld._vox_launcher = true
 end
 
 VoxLauncher_GetServerStats = SendInitialData
+VoxLauncher_UpdatePlayerCount = OnPlayerCountChanged
 
 SendInitialData()
