@@ -82,7 +82,7 @@ class CustomEntry(CTkEntry):
         )
 
         self.invalid_text.place(
-            x = pos.x + self.tooltip.winfo_width() + OFFSET.INVALID_INPUT.x,
+            x = pos.x + self.tooltip.winfo_reqwidth(),
             y = pos.y + OFFSET.INVALID_INPUT.y,
         )
 

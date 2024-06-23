@@ -130,8 +130,8 @@ class Tooltip:
         self.tooltip_label.update()
 
         x, y, _, _ = self.widget.bbox()
-        x += self.widget.winfo_rootx() - self.tooltip_label.winfo_width() - self.image_size[0]
-        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_height() / 4
+        x += self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - (self.image_size[0] * self.tooltip_label._apply_widget_scaling(1.5))
+        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight() / self.tooltip_label._apply_widget_scaling(1.5)
 
         self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
 
@@ -262,8 +262,8 @@ class PopUp:
 
         self.popup._frame.configure(
             bg_color = COLOR.DARK_GRAY,
-            width = popup_width / 1.5,
-            height = popup_height / 1.5,
+            width = popup_width / self.popup._frame._apply_widget_scaling(1),
+            height = popup_height / self.popup._frame._apply_widget_scaling(1),
         )
 
         master_x = self.root.winfo_rootx()
