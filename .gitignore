@@ -22,3 +22,6 @@ venv.bak/
 # Logs / Savedata
 app/savedata
 app/logs
+
+# Build helpers
+tools/
