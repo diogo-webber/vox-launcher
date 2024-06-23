@@ -52,6 +52,7 @@ CLUSTER_STATS:
 POPUP:
     OK: Ок
     CANCEL: Отмена
+    LOG: Server Log
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Запустить команду в {shard}. Нажмите ENTER для выполнения.
@@ -84,3 +85,14 @@ ENTRY:
     CLUSTER_TITLE: Папка Кластера
     TOKEN_TITLE: Токен сервера
     ENTRY_INVALID_INPUT: "* Неверные данные"
+
+ERROR:
+    TOKEN_INVALID: The provided token is invalid or has expired.
+    GENERAL: An error has occurred while launching the server, please check the server log.
+    PORTS:  |-
+        The ports {ports} are already being used by another program.
+
+        This usually happens when another server is running on the same ports - even within the game.
+        
+        If you don't find any irregularities, please report this in the repository, as it may be caused by the app itself.
+
