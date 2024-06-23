@@ -2,7 +2,7 @@ import logging, logging.config
 import yaml
 from functools import partial
 from pathlib import Path
-import traceback
+import traceback, requests
 
 from customtkinter import CTk, CTkLabel
 from tkinter import StringVar
@@ -15,7 +15,7 @@ from fonts import FONT
 from widgets.buttons import CustomButton
 from widgets.entries import TokenEntry, DirectoryEntry, ClusterDirectoryEntry
 from widgets.frames import ScrollableShardGroupFrame
-from widgets.misc import Tooltip, CommandPopUp, ServerErrorPopUp, AppExceptionPopUp, ClusterStats
+from widgets.misc import Tooltip, CommandPopUp, ServerErrorPopUp, AppExceptionPopUp, AppOutdatedPopUp, ClusterStats
 
 # ------------------------------------------------------------------------------------ #
 
@@ -248,6 +248,7 @@ class App(CTk):
         self.confirmation_popup = CommandPopUp(root=self)
         self.error_popup = ServerErrorPopUp(root=self)
         self.exception_popup = AppExceptionPopUp(root=self)
+        self.update_popup = AppOutdatedPopUp(root=self)
 
         self.version_label = CTkLabel(
             master=self,
@@ -276,6 +277,25 @@ class App(CTk):
         # self.quit_button.show()
         # self.reset_button.show()
         # self.rollback_button.show()
+
+        self.check_for_updates()
+
+    def check_for_updates(self):
+        try:
+            response = requests.get(
+                url="https://github.com/diogo-webber/vox-launcher/releases/latest/",
+                timeout=5,
+            )
+
+            response.raise_for_status()  # Raise an exception for HTTP errors.
+
+            remote_version = Path(response.url).name
+
+            if response.status_code == 200 and remote_version != APP_VERSION[1:]:
+                self.after(300, self.update_popup.create, STRINGS.UPDATE_POPUP.DESCRIPTION.DEFAULT)
+
+        except:
+            pass
 
 
     def callback_launch(self):

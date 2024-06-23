@@ -14,15 +14,6 @@ logger = logging.getLogger(LOGGER)
 
 # ----------------------------------------------------------------------------------------- #
 
-def resource_path(relative_path: str) -> Path:
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-
-    base_path = Path(getattr(sys, '_MEIPASS', Path(sys.argv[0]).absolute().parent))
-
-    return base_path / relative_path
-
-# ----------------------------------------------------------------------------------------- #
-
 @dataclass
 class TextHightlightData():
     """

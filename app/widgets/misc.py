@@ -1,11 +1,12 @@
 from pathlib import Path
 
 from customtkinter import CTkImage, CTkLabel, CTkToplevel, CTkButton, CTkSlider
-from tkinter import StringVar, IntVar, DoubleVar, Toplevel, END
+from tkinter import StringVar, IntVar, Toplevel, filedialog, DISABLED, NORMAL
 from PIL import Image
+import requests, os
 
 from strings import STRINGS
-from constants import COLOR, SIZE, POS, WINDOW_WIDTH, WINDOW_HEIGHT
+from constants import COLOR, SIZE, POS
 from widgets.frames import CustomFrame
 from helpers import resource_path, open_file, open_github_issue
 from fonts import FONT
@@ -153,6 +154,7 @@ class PopUp:
         self.popup = None
         self.confirmed = None
         self.slider_value = None
+        self.button_1_text = STRINGS.POPUP.OK
         self.button_2_text = ""
 
     def create(self, text, slider_fn=None):
@@ -196,7 +198,7 @@ class PopUp:
             text_color=COLOR.WHITE,
             border_color=COLOR.WHITE,
             border_width=0.4,
-            text=STRINGS.POPUP.OK,
+            text=self.button_1_text,
             font=FONT.SMALL_BUTTON,
             command=self.button_1_callback,
         )
@@ -345,3 +347,72 @@ class AppExceptionPopUp(PopUp):
 
     def button_2_callback(self):
         open_github_issue()
+
+class AppOutdatedPopUp(PopUp):
+    def __init__(self, root):
+        super().__init__(root)
+        self.button_1_text = STRINGS.UPDATE_POPUP.IGNORE
+        self.button_2_text = STRINGS.UPDATE_POPUP.DOWNLOAD
+
+    def button_1_callback(self):
+        self.confirmed = True
+
+        self._close()
+
+    def set_text(self, text, disabled_buttons=False):
+        self.popup._label.configure(text=text)
+
+        self.popup.button_1.configure(state=disabled_buttons and DISABLED or NORMAL)
+        self.popup.button_2.configure(state=disabled_buttons and DISABLED or NORMAL)
+
+        self.popup.update()
+
+        popup_width = self.popup.winfo_reqwidth()
+        popup_height = self.popup.winfo_reqheight()
+
+        self.popup._frame.configure(
+            width = popup_width / self.popup._frame._apply_widget_scaling(1),
+            height = popup_height / self.popup._frame._apply_widget_scaling(1),
+        )
+
+        self.popup._frame.update()
+
+    def button_2_callback(self):
+        self.set_text(text=STRINGS.UPDATE_POPUP.DESCRIPTION.DOWNLOADING, disabled_buttons=True)
+
+        try:
+            response = requests.get(
+                url="https://github.com/diogo-webber/vox-launcher/releases/latest/download/VoxLauncher.zip",
+                timeout=15,
+            )
+
+            response.raise_for_status()  # Raise an exception for HTTP errors.
+
+            if response.status_code == 200:
+                file = filedialog.asksaveasfile(
+                    mode = "wb",
+                    defaultextension = ".zip",
+                    initialdir = resource_path("").parent,
+                    initialfile = "VoxLauncher.zip",
+                    filetypes=[("Zip file", "*.zip")],
+                )
+
+                if file:
+                    file.write(response.content)
+                    file.close()
+
+                    # Opens the directory in windows explorer.
+                    os.startfile(Path(file.name).parent)
+
+                    self.confirmed = True
+                    self._close()
+
+                else:
+                    self.set_text(text=STRINGS.UPDATE_POPUP.DESCRIPTION.DEFAULT)
+            else:
+                self.set_text(text=STRINGS.UPDATE_POPUP.DESCRIPTION.FAILED)
+
+        except (requests.exceptions.Timeout, requests.exceptions.RequestException):
+                self.set_text(text=STRINGS.UPDATE_POPUP.DESCRIPTION.FAILED)
+
+        self.confirmed = False

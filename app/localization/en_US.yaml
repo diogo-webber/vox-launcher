@@ -55,6 +55,14 @@ POPUP:
     LOG: Server Log
     REPORT: Report
 
+UPDATE_POPUP:
+    DOWNLOAD: Download
+    IGNORE: Ignore
+    DESCRIPTION:
+        DEFAULT: A new version of the app has been released, please considerer downloading it.
+        DOWNLOADING: Downloading... it shouldn't take long!
+        FAILED: The download has failed... It might be a network problem on your side or on Github's servers. Please try again later.
+
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Run console commands on {shard}. Press ENTER to execute them.
     CLOSE: Back
