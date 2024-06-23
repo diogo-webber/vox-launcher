@@ -53,6 +53,7 @@ POPUP:
     OK: 确定
     CANCEL: 取消
     LOG: 服务器日志
+    REPORT: Report
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: 在{shard}世界运行控制台命令。按下ENTER以执行命令。
@@ -95,3 +96,11 @@ ERROR:
         这种情况往往是因为另一个游戏服务器已经使用了相同的端口 - 即使另一个游戏服务器是从饥荒联机版内启动的。
         
         如果你没有任何错误操作，请在存储库中报告，因为这次错误可能是由启动器程序本身引起的。
+    EXCEPTION: |-
+        An error has occurred!
+
+        {error}
+
+        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+
+        Please report the error by creating a issue on Github.

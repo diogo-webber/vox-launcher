@@ -53,6 +53,7 @@ POPUP:
     OK: Ок
     CANCEL: Отмена
     LOG: Server Log
+    REPORT: Report
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Запустить команду в {shard}. Нажмите ENTER для выполнения.
@@ -95,4 +96,11 @@ ERROR:
         This usually happens when another server is running on the same ports - even within the game.
         
         If you don't find any irregularities, please report this in the repository, as it may be caused by the app itself.
+    EXCEPTION: |-
+        An error has occurred!
 
+        {error}
+
+        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+
+        Please report the error by creating a issue on Github.

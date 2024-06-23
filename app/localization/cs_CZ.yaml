@@ -53,6 +53,7 @@ POPUP:
     OK: Ok
     CANCEL: Zrušit
     LOG: Záznam serveru
+    REPORT: Report
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Spouštějte příkazy konzole na {shard}. Stiskněte ENTER pro jejich provedení.
@@ -95,3 +96,11 @@ ERROR:
         Obvykle se to stane, když jiný server běží na stejných portech - dokonce i ve hře.
         
         Pokud nenajdete žádné nepravidelnosti, prosím, nahlaste to v repozitáři, protože to může být způsobeno samotnou aplikací.
+    EXCEPTION: |-
+        An error has occurred!
+
+        {error}
+
+        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+
+        Please report the error by creating a issue on Github.

@@ -53,6 +53,7 @@ POPUP:
     OK: Aceptar
     CANCEL: Cancelar
     LOG: Registros del servidor
+    REPORT: Report
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Ejecuta comandos de consola en {shard}. Pulsa ENTER para ejecutarlas.
@@ -95,3 +96,11 @@ ERROR:
         Esto habitualmente ocurre cuando otro servidor está iniciado sobre los mismos puertos, incluso dentro del juego.
         
         Si no encuentras ninguna irregularidad, por favor, reporta este problema en el repositorio, esto puede ser un fallo de la propia aplicación.
+    EXCEPTION: |-
+        An error has occurred!
+
+        {error}
+
+        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+
+        Please report the error by creating a issue on Github.

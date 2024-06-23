@@ -7,7 +7,7 @@ from PIL import Image
 from strings import STRINGS
 from constants import COLOR, SIZE, POS, WINDOW_WIDTH, WINDOW_HEIGHT
 from widgets.frames import CustomFrame
-from helpers import resource_path, open_file
+from helpers import resource_path, open_file, open_github_issue
 from fonts import FONT
 
 class ClusterStats:
@@ -317,7 +317,7 @@ class CommandPopUp(PopUp):
 
         self._close()
 
-class ErrorPopUp(PopUp):
+class ServerErrorPopUp(PopUp):
     def __init__(self, root):
         super().__init__(root)
         self.button_2_text = STRINGS.POPUP.LOG
@@ -332,3 +332,16 @@ class ErrorPopUp(PopUp):
 
         if path.exists():
             open_file(path)
+
+class AppExceptionPopUp(PopUp):
+    def __init__(self, root):
+        super().__init__(root)
+        self.button_2_text = STRINGS.POPUP.REPORT
+
+    def button_1_callback(self):
+        self.confirmed = True
+
+        self._close()
+
+    def button_2_callback(self):
+        open_github_issue()

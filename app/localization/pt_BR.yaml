@@ -52,7 +52,8 @@ CLUSTER_STATS:
 POPUP:
     OK: Certo
     CANCEL: Cancelar
-    LOG: Log
+    LOG: Registros
+    REPORT: Reportar
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Execute comandos de console em {shard}. Pressione ENTER para executá-los.
@@ -78,13 +79,13 @@ COMMAND_ANNOUNCEMENT:
     SAVE: Salvando mundo...
     QUIT: Parando...
     RESET: Reiniciando...
-    ROLLBACK: Reversão em 5 segundos!
+    ROLLBACK: Revertendo em 5 segundos!
 
 ENTRY:
     GAME_TITLE: Diretório do Jogo
     CLUSTER_TITLE: Diretório do Cluster
     TOKEN_TITLE: Token de Servidor
-    ENTRY_INVALID_INPUT: "* Entrada Inválida"
+    ENTRY_INVALID_INPUT: "* Campo Inválido"
 
 ERROR:
     TOKEN_INVALID: O token fornecido é inválido ou expirou.
@@ -95,3 +96,11 @@ ERROR:
         Isso geralmente acontece quando outro servidor está rodando nas mesmas portas - mesmo que tenha sido iniciado por dentro do jogo.
 
         Caso não encontre nenhuma irregularidade, reporte o problema no repositório, pois isso pode ser sido causado pelo próprio app.
+    EXCEPTION: |-
+        Um erro ocorreu!
+
+        {error}
+
+        Seu servidor será salvado e fechado. Entretanto, a interface do aplicativo pode não representar isso corretamente.
+
+        Por favor, reporte o problema criando um "issue" no Github.

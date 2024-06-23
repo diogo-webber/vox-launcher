@@ -53,6 +53,7 @@ POPUP:
     OK: Ok
     CANCEL: Cancel
     LOG: Server Log
+    REPORT: Report
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Run console commands on {shard}. Press ENTER to execute them.
@@ -89,9 +90,17 @@ ENTRY:
 ERROR:
     TOKEN_INVALID: The provided token is invalid or has expired.
     GENERAL: An error has occurred while launching the server, please check the server log.
-    PORTS:  |-
+    PORTS: |-
         The ports {ports} are already being used by another program.
 
         This usually happens when another server is running on the same ports - even within the game.
         
         If you don't find any irregularities, please report this in the repository, as it may be caused by the app itself.
+    EXCEPTION: |-
+        An error has occurred!
+
+        {error}
+
+        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+
+        Please report the error by creating a issue on Github.

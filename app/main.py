@@ -2,6 +2,7 @@ import logging, logging.config
 import yaml
 from functools import partial
 from pathlib import Path
+import traceback
 
 from customtkinter import CTk, CTkLabel
 from tkinter import StringVar
@@ -14,7 +15,7 @@ from fonts import FONT
 from widgets.buttons import CustomButton
 from widgets.entries import TokenEntry, DirectoryEntry, ClusterDirectoryEntry
 from widgets.frames import ScrollableShardGroupFrame
-from widgets.misc import Tooltip, CommandPopUp, ErrorPopUp, ClusterStats
+from widgets.misc import Tooltip, CommandPopUp, ServerErrorPopUp, AppExceptionPopUp, ClusterStats
 
 # ------------------------------------------------------------------------------------ #
 
@@ -245,7 +246,8 @@ class App(CTk):
         )
 
         self.confirmation_popup = CommandPopUp(root=self)
-        self.error_popup = ErrorPopUp(root=self)
+        self.error_popup = ServerErrorPopUp(root=self)
+        self.exception_popup = AppExceptionPopUp(root=self)
 
         self.version_label = CTkLabel(
             master=self,
@@ -328,6 +330,17 @@ class App(CTk):
 
     def stop_shards(self):
         self.shard_group.stop_all_shards()
+
+    def report_callback_exception(self, exctype, excvalue, tb): # Overrides Ctk method.
+        err: list = traceback.format_exception(exctype, excvalue, tb)
+        summary = f'{excvalue.__class__.__name__}: {" | ".join(excvalue.args)}.'
+
+        logger.error(summary)
+        logger.error(" ".join(err))
+
+        self.exception_popup.create(STRINGS.ERROR.EXCEPTION.format(error=summary))
+
+        self.stop_shards()
 
 # ------------------------------------------------------------------------------------ #
 

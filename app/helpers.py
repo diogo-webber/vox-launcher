@@ -337,6 +337,12 @@ def open_klei_account_page(*args, **kwargs):
 
     webbrowser.open("https://accounts.klei.com/account/game/servers?game=DontStarveTogether", new=0, autoraise=True)
 
+def open_github_issue(*args, **kwargs):
+    """ Opens Vox Launcher repository on Github, in the issues tab, in the default browser. """
+
+    webbrowser.open("https://github.com/diogo-webber/vox-launcher/issues/new", new=0, autoraise=True)
+
+
 def open_folder(path):
     """ Opens a Windows explorer instance on this path  """
 
@@ -364,6 +370,8 @@ def disable_bind(event):
 
 LUA_FOLDER = Path(__file__).absolute().parent / "lua"
 
+lua_file_cache = {}
+
 def load_lua_file(filename):
     """
     Loads a .lua file and returns its content, joining its lines.
@@ -377,6 +385,9 @@ def load_lua_file(filename):
 
     file = LUA_FOLDER / (filename + ".lua")
 
+    if lua_file_cache.get(file.as_posix()):
+        return lua_file_cache[file.as_posix()]
+
     if file.exists():
         text = file.read_text(encoding="utf-8")
 
@@ -384,7 +395,11 @@ def load_lua_file(filename):
         comment_pattern = re.compile(r'--.*?[\r\n]')
         text = re.sub(comment_pattern, '', text)
 
-        return " ".join(text.split())
+        text = " ".join(text.split())
+
+        lua_file_cache[file.as_posix()] = text
+
+        return text
 
     else:
         logger.error("load_lua_file: File [%s] doesn't exist...", str(file))
