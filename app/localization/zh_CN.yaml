@@ -1,3 +1,6 @@
+# Translated by:
+#     https://github.com/Noctice
+
 APP_NAME: Vox 启动器
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
 WINDOW_TITLE: "  {APP_NAME} - 饥荒联机版 - 专用服务器启动器"
