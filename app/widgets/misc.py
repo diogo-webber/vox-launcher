@@ -8,7 +8,7 @@ import requests, os
 from strings import STRINGS
 from constants import COLOR, SIZE, POS
 from widgets.frames import CustomFrame
-from helpers import resource_path, open_file, open_github_issue
+from helpers import resource_path, open_file, open_github_issue, add_folder_to_zip
 from fonts import FONT
 
 class ClusterStats:
@@ -134,7 +134,7 @@ class Tooltip:
 
         x, y, _, _ = self.widget.bbox()
         x += self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - (self.image_size[0] * self.tooltip_label._apply_widget_scaling(1.5))
-        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight() / self.tooltip_label._apply_widget_scaling(1.5)
+        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight() * self.tooltip_label._apply_widget_scaling(.25) - ipad * .25
 
         self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
 
@@ -402,6 +402,13 @@ class AppOutdatedPopUp(PopUp):
                 if file:
                     file.write(response.content)
                     file.close()
+
+                    # Copy save data from current version.
+                    savedata = resource_path("savedata")
+                    data_dir = Path("appdata")
+
+                    if savedata.exists():
+                        add_folder_to_zip(file.name, savedata, data_dir)
 
                     # Opens the directory in windows explorer.
                     os.startfile(Path(file.name).parent)

@@ -5,8 +5,7 @@ import ctypes.wintypes
 import webbrowser
 import re, json, sys
 import logging, locale
-import psutil, os
-from pexpect.exceptions import TIMEOUT, EOF
+import psutil, os, zipfile
 
 from constants import LOGGER
 
@@ -612,3 +611,16 @@ def get_clusters_directory():
             return directory
 
     return None
+
+def _add_to_zip(zipf, folder_path, base_path, arc_folder):
+    for item in folder_path.iterdir():
+        if item.is_dir():
+            _add_to_zip(zipf, item, base_path)
+
+        else:
+            arcname = arc_folder / item.relative_to(base_path.parent)
+            zipf.write(item, arcname)
+
+def add_folder_to_zip(zip_filename, folder_path, arc_folder):
+    with zipfile.ZipFile(zip_filename, "a", zipfile.ZIP_DEFLATED) as zipf:
+        _add_to_zip(zipf, folder_path, folder_path, arc_folder)
