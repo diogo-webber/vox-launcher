@@ -158,6 +158,26 @@ Feel free to suggest features and create pull requests to fix bugs or improve ex
 
 <br><br>
 
+## ❤️ Contributors
+
+<br>
+
+I would like to thank these people for helping with this project:
+
+### Translators
+
+<div align="center">
+
+<a href="https://github.com/ClifffordW"> <img align="left" src="https://avatars.githubusercontent.com/u/55302963?v=4" width=10%/> </a>
+<a href="https://github.com/Noctice"> <img align="left" src="https://avatars.githubusercontent.com/u/47233045?v=4" width=10%/> </a>
+<a href="https://github.com/VitaBh"> <img align="left" src="https://avatars.githubusercontent.com/u/148809528?v=4" width=10%/> </a>
+
+</div>
+
+<br><br><br><br>
+
+<br><br>
+
 ## 📜 License
 
 <br>
