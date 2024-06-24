@@ -140,17 +140,17 @@ class DirectoryEntry(CustomEntry):
             **kwargs
         )
 
-        button_image_size = self._apply_widget_scaling(SIZE.DIRECTORY_ENTRY.h - 23.5)
+        button_image_size = self.winfo_reqheight() / self._apply_widget_scaling(2)
 
         self.button = ImageButton(
             master=self.fixer_frame,
             image="assets/directory.png",
             command=self.open_directory_dialog,
-            width=size.h,
-            height=size.h,
+            width=0,
+            height=0,
             hover=False,
             image_size=(button_image_size, button_image_size),
-            pos=Pos(size.w - size.h - 10, -1)
+            pos=Pos(size.w - button_image_size * 2, button_image_size / 4)
         )
 
         self.button.show()
@@ -235,17 +235,17 @@ class TokenEntry(CustomEntry):
             **kwargs
         )
 
-        button_image_size = self._apply_widget_scaling(SIZE.DIRECTORY_ENTRY.h - 23.5)
+        button_image_size = self.winfo_reqheight() / self._apply_widget_scaling(2)
 
         self.button = ImageButton(
             master=self.fixer_frame,
             image="assets/eye.png",
             command=self.toggle_text_visibility,
-            width=size.h,
-            height=size.h,
+            width=0,
+            height=0,
             hover=False,
             image_size=(button_image_size, button_image_size),
-            pos=Pos(size.w - size.h - 10, 0)
+            pos=Pos(size.w - button_image_size * 2, button_image_size / 4)
         )
 
         self.button.show()

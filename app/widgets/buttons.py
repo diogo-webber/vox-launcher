@@ -16,8 +16,8 @@ class ImageButton(CTkButton):
         super().__init__(
             image=image,
             text=None,
-            corner_radius= 10,
-            border_spacing = 0.01,
+            corner_radius=10,
+            border_spacing=0.01,
             fg_color=COLOR.GRAY,
             hover_color=COLOR.GRAY_HOVER,
             **kwargs
