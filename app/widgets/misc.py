@@ -126,13 +126,15 @@ class Tooltip:
             wraplength=330,
         )
 
-        self.tooltip_label.pack(ipadx=20, ipady=20)
+        ipad = self.tooltip_label._apply_widget_scaling(12.5)
+
+        self.tooltip_label.pack(ipadx=ipad, ipady=ipad)
 
         self.tooltip_label.update()
 
         x, y, _, _ = self.widget.bbox()
-        x += self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - (self.image_size[0] * 2.25)
-        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight() / 2
+        x += self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - (self.image_size[0] * self.tooltip_label._apply_widget_scaling(1.5))
+        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight() / self.tooltip_label._apply_widget_scaling(1.5)
 
         self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
 
