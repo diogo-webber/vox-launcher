@@ -131,8 +131,8 @@ class Tooltip:
         self.tooltip_label.update()
 
         x, y, _, _ = self.widget.bbox()
-        x += self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - (self.image_size[0] * self.tooltip_label._apply_widget_scaling(1.5))
-        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight() / self.tooltip_label._apply_widget_scaling(1.5)
+        x += self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - (self.image_size[0] * 2.25)
+        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight() / 2
 
         self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
 
@@ -351,10 +351,10 @@ class AppExceptionPopUp(PopUp):
 class AppOutdatedPopUp(PopUp):
     def __init__(self, root):
         super().__init__(root)
-        self.button_1_text = STRINGS.UPDATE_POPUP.IGNORE
-        self.button_2_text = STRINGS.UPDATE_POPUP.DOWNLOAD
+        self.button_1_text = STRINGS.UPDATE_POPUP.DOWNLOAD
+        self.button_2_text = STRINGS.UPDATE_POPUP.IGNORE
 
-    def button_1_callback(self):
+    def button_2_callback(self):
         self.confirmed = True
 
         self._close()
@@ -377,7 +377,7 @@ class AppOutdatedPopUp(PopUp):
 
         self.popup._frame.update()
 
-    def button_2_callback(self):
+    def button_1_callback(self):
         self.set_text(text=STRINGS.UPDATE_POPUP.DESCRIPTION.DOWNLOADING, disabled_buttons=True)
 
         try:

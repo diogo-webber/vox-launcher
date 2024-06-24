@@ -5,8 +5,9 @@ from pathlib import Path
 import logging
 
 from strings import STRINGS
-from constants import COLOR, OFFSET, SIZE, LOGGER, Pos
+from constants import COLOR, OFFSET, SIZE, LOGGER, Pos, Size
 from widgets.buttons import ImageButton
+from widgets.frames import CustomFrame
 from helpers import get_key_from_ini_file, get_shard_names
 from fonts import FONT
 
@@ -53,27 +54,27 @@ class CustomEntry(CTkEntry):
             y=-1,
         )
 
-        self.tooltip = CTkLabel(
+        self._tooltip_frame = CustomFrame(
             master=self._master,
+            color=COLOR.DARK_GRAY,
+            size=Size(0, 0),
+            pos=Pos(pos.x + OFFSET.ENTRY_TOOLTIP.x, pos.y + OFFSET.ENTRY_TOOLTIP.y),
+        )
+
+        self.tooltip = CTkLabel(
+            master=self._tooltip_frame,
             height=0,
-            anchor="nw",
+            anchor="center",
             text=tooltip,
             text_color=COLOR.WHITE,
             fg_color="transparent",
             font=FONT.ENTRY_TOOLTIP,
         )
 
-        self.tooltip.place(
-            x= pos.x + OFFSET.ENTRY_TOOLTIP.x,
-            y= pos.y + OFFSET.ENTRY_TOOLTIP.y,
-        )
-
-        self.tooltip.update()
-
         self.invalid_text = CTkLabel(
-            master=self._master,
+            master=self._tooltip_frame,
             height=0,
-            anchor="nw",
+            anchor="center",
             text=STRINGS.ENTRY.ENTRY_INVALID_INPUT,
             text_color=COLOR.RED,
             text_color_disabled=COLOR.DARK_GRAY,
@@ -81,9 +82,17 @@ class CustomEntry(CTkEntry):
             font=FONT.INVALID_INPUT,
         )
 
-        self.invalid_text.place(
-            x = pos.x + self.tooltip.winfo_reqwidth(),
-            y = pos.y + OFFSET.INVALID_INPUT.y,
+        self.tooltip.grid(
+            row = 0,
+            column = 0,
+            padx=(0, OFFSET.INVALID_INPUT.x),
+            sticky="s",
+        )
+
+        self.invalid_text.grid(
+            row = 0,
+            column = 1,
+            sticky="s",
         )
 
         self.toggle_warning(True)

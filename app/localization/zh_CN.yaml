@@ -93,7 +93,7 @@ ENTRY:
     GAME_TITLE: 游戏文件目录
     CLUSTER_TITLE: 存档文件目录
     TOKEN_TITLE: 服务器令牌
-    ENTRY_INVALID_INPUT: "* 输入了无效的文件目录"
+    ENTRY_INVALID_INPUT: "✱ 输入了无效的文件目录"
 
 ERROR:
     TOKEN_INVALID: 提供的服务器令牌无效或者已过期。

@@ -93,7 +93,7 @@ ENTRY:
     GAME_TITLE: Папка Игры
     CLUSTER_TITLE: Папка Кластера
     TOKEN_TITLE: Токен сервера
-    ENTRY_INVALID_INPUT: "* Неверные данные"
+    ENTRY_INVALID_INPUT: "✱ Неверные данные"
 
 ERROR:
     TOKEN_INVALID: The provided token is invalid or has expired.

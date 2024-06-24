@@ -140,12 +140,14 @@ class App(CTk):
             pos=POS.TOKEN_ENTRY,
         )
 
+        tooltip_image_offset = self.token_entry._apply_widget_scaling(-3.5)
+
         self.token_tooltip = Tooltip(
             master=self,
             text=STRINGS.TOKEN_TOOLTIP,
             image="assets/info.png",
-            pos=POS.TOKEN_TOOLTIP,
-            image_size=(SIZE.TOKEN_TOOLTIP.w - 5, SIZE.TOKEN_TOOLTIP.h - 5),
+            pos=Pos(POS.TOKEN_TOOLTIP.x, POS.TOKEN_TOOLTIP.y - tooltip_image_offset / 2),
+            image_size=(SIZE.TOKEN_TOOLTIP.w + tooltip_image_offset, SIZE.TOKEN_TOOLTIP.h + tooltip_image_offset),
             onclick=open_klei_account_page,
         )
 

@@ -50,8 +50,8 @@ CLUSTER_STATS:
     PLAYERS: "Jogadores: "
 
 POPUP:
-    OK: Certo
-    CANCEL: Cancelar
+    OK: Ok
+    CANCEL: Fechar
     LOG: Registros
     REPORT: Reportar
 
@@ -59,9 +59,9 @@ UPDATE_POPUP:
     DOWNLOAD: Baixar
     IGNORE: Ignorar
     DESCRIPTION:
-        DEFAULT: Uma nova versão do aplicativo está disponível, por favor considere baixa-lá.
+        DEFAULT: Uma nova versão do aplicativo está disponível, por favor, considere baixa-lá.
         DOWNLOADING: Baixando... isso não deve demorar muito!
-        FAILED: Infelizmente houve um erro... Talvez seja um problema com a sua conexão ou nos servidor do Github. Por favor tente novamente mais tarde.
+        FAILED: Infelizmente houve um erro... Talvez seja um problema com a sua conexão ou nos servidor do Github. Por favor, tente novamente mais tarde.
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Execute comandos de console em {shard}. Pressione ENTER para executá-los.
@@ -93,11 +93,11 @@ ENTRY:
     GAME_TITLE: Diretório do Jogo
     CLUSTER_TITLE: Diretório do Cluster
     TOKEN_TITLE: Token de Servidor
-    ENTRY_INVALID_INPUT: "* Campo Inválido"
+    ENTRY_INVALID_INPUT: "✱ Campo Inválido"
 
 ERROR:
     TOKEN_INVALID: O token fornecido é inválido ou expirou.
-    GENERAL: Um erro ocorreu ao iniciar o servidor, por favor verifique o log do servidor.
+    GENERAL: Um erro ocorreu ao iniciar o servidor, por favor verifique os registros do servidor.
     PORTS:  |-
         As portas {ports} já estão sendo utilizadas por outro programa.
 

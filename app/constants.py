@@ -33,7 +33,7 @@ class FONT_SIZE:
 
 # ------------------------------------------------------------------------------------ #
 
-APP_VERSION = "v1.1.0"
+APP_VERSION = "v1.2.0"
 
 # ------------------------------------------------------------------------------------ #
 
@@ -83,7 +83,7 @@ assert SIZE.SMALL_BUTTON.h > FONT_SIZE.SMALL_BUTTON + 10, f"SIZE.SMALL_BUTTON.h=
 
 class OFFSET:
     ENTRY_TOOLTIP = Pos(10, -25)
-    INVALID_INPUT = Pos(2.5, -25 + (FONT_SIZE.ENTRY_TOOLTIP - FONT_SIZE.INVALID_INPUT))
+    INVALID_INPUT = Pos(20, 0)
     SHARD_TYPE = Pos(SMALL_GAP, SIZE.FRAME.h / 2 - FONT_SIZE.SHARD_TYPE / 2)
     SHARD_STATUS_MSG = Pos(SIZE.FRAME.w * 0.85, SIZE.FRAME.h / 2 - FONT_SIZE.SHARD_STATUS / 2)
     LOGS_PANEL = Pos(FRAME_GAP, FRAME_GAP)

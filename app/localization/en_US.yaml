@@ -93,7 +93,7 @@ ENTRY:
     GAME_TITLE: Game Directory
     CLUSTER_TITLE: Cluster Directory
     TOKEN_TITLE: Server Token
-    ENTRY_INVALID_INPUT: "* Invalid Input"
+    ENTRY_INVALID_INPUT: "✱ Invalid Input"
 
 ERROR:
     TOKEN_INVALID: The provided token is invalid or has expired.
