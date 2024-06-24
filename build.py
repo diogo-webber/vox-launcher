@@ -52,8 +52,8 @@ ZIP_NAME   = "VoxLauncher.zip"
 
 ICON = "../app/assets/icon.ico"
 
-VERSION_FILE_CREATE = "versionfile.txt"
-VERSION_FILE = "../" + VERSION_FILE_CREATE
+VERSION_FILE_CREATE = WORK_DIRECTORY + "/versionfile.txt"
+VERSION_FILE = "versionfile.txt" # Relative to WORK_DIRECTORY
 
 ONE_FILE = False
 NO_CONSOLE = True
