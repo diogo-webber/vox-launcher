@@ -61,7 +61,7 @@ UPDATE_POPUP:
     DESCRIPTION:
         DEFAULT: Uma nova versão do aplicativo está disponível, por favor, considere baixa-lá.
         DOWNLOADING: Baixando... isso não deve demorar muito!
-        FAILED: Infelizmente houve um erro... Talvez seja um problema com a sua conexão ou nos servidor do Github. Por favor, tente novamente mais tarde.
+        FAILED: Infelizmente houve um erro... Talvez seja um problema com a sua conexão ou nos servidores do Github. Por favor, tente novamente mais tarde.
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Execute comandos de console em {shard}. Pressione ENTER para executá-los.
