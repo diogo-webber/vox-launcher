@@ -46,7 +46,7 @@
 
 <br>
 
-- Download the `App` zip, extract its contexts and start the `Vox Launcher` executable. [**Click here**][download] to download it.
+- Download the `App` zip, extract its contents and start the `Vox Launcher` executable. [**Click here**][download] to download it.
 - Select the game installation folder under `Game Directory`, if it has not been automatically populated.
 - Create a world using the in game menu and select it under `Cluster Directory`.
 - Paste a server token under `Server Token`. See instructions on how to obtain one in the app.
