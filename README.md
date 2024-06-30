@@ -174,6 +174,17 @@ I would like to thank these people for helping with this project:
 
 </div>
 
+<br><br><br><br><br>
+
+### Testers
+
+<div align="center">
+
+<a href="https://steamcommunity.com/profiles/76561198797720910"> <img align="left" src="https://avatars.akamai.steamstatic.com/f999d2d7a22aacaef6e6f2f74f2d50053a2e60c4_full.jpg" width=10%/> </a>
+<a href="https://steamcommunity.com/profiles/76561198367734754"> <img align="left" src="https://avatars.akamai.steamstatic.com/ea742646678653121528572356e8f287892734c7_full.jpg" width=10%/> </a>
+
+</div>
+
 <br><br><br><br>
 
 <br><br>
