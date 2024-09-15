@@ -467,40 +467,34 @@ def get_shard_names(cluster):
 
 # ----------------------------------------------------------------------------------------- #
 
-def get_cluster_and_user_dir_and_storage_root(path):
+def get_cluster_name(path):
     """
-    Gets the cluster relative path, user dir and storage root from a cluster path.
+    Gets the cluster relative path.
 
     Args:
         path (Path): the cluster path.
 
     Returns:
         cluster (str): the cluster relative path.
-        user_dir (str, None): the user dir name, if exists.
-        storage_root (Path, None): the storage root path, if exists.
 
     """
 
-    regex = re.compile(r'(.*)/DoNotStarveTogether(?:BetaBranch)?/(.*)')
+    regex = re.compile(r'/DoNotStarveTogether(?:BetaBranch)?/(.*)')
 
     match = regex.search(path.as_posix())
 
     if match:
-        files = match.group(2).split("/")
+        files = match.group(1).split("/")
 
-        user_dir = files[0].isdigit() and files[0] or None
-        cluster = user_dir and files[1:] or files
-        storage_root = Path(match.group(1))
+        return "/".join(files[0].isdigit() and files[1:] or files)
 
-        return "/".join(cluster), user_dir, storage_root
-
-    return path.name, None, None
+    return path.name
 
 # ----------------------------------------------------------------------------------------- #
 
 def get_memory_usage(pid):
     process = psutil.Process(pid)
-    
+
     if not process:
         return None, None
 
@@ -542,37 +536,6 @@ def get_game_directory():
     except FileNotFoundError:
         logger.debug("FileNotFoundError exception when trying to get the Game directory using: Software\\Valve\\Steam - SteamPath.")
 
-
-def get_ugc_directory():
-    try:
-        # Open the Steam App 322330 registry key.
-        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Software\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 322330") as key:
-            # Read the install location path from the registry
-            game_path, _ = winreg.QueryValueEx(key, "InstallLocation")
-
-            directory = Path(game_path).parent.parent / "workshop"
-
-            if directory.exists():
-                return directory
-
-    except FileNotFoundError:
-        logger.warning("FileNotFoundError exception when trying to get the UGC directory using: [...]\\Steam App 322330 - InstallLocation.")
-
-    try:
-        # Open the Steam registry key.
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam") as key:
-            # Read the Steam installation path from the registry
-            steam_path, _ = winreg.QueryValueEx(key, "SteamPath")
-
-            directory = Path(steam_path) / "steamapps/workshop/"
-
-            if directory.exists():
-                return directory
-
-    except FileNotFoundError:
-        logger.warning("FileNotFoundError exception when trying to get the UGC directory using: Software\\Valve\\Steam - SteamPath.")
-
-
 CSIDL_PERSONAL = 5       # Documents
 SHGFP_TYPE_CURRENT = 0   # Get current, not default value
 
@@ -609,6 +572,49 @@ def get_clusters_directory():
     for directory in dst_directory.iterdir():
         if directory.is_dir() and directory.name.isdigit() and (directory / "client.ini").exists():
             return directory
+
+    return None
+
+def _find_command_line_argument(text, arg):
+    pattern = re.compile(rf'-{arg}\s*(.+?)\s-') # -arg value -
+
+    match = pattern.search(text)
+
+    if match:
+        return match.group(1).strip()
+
+    return ""
+
+def retrieve_launch_data(cluster_dir, save_loader):
+    """
+    Retrieve launch data from the cluster's log file, also saving it.
+
+    Args:
+        cluster_dir (str): the cluster path.
+        save_loader (SaveLoader): save load instance.
+
+    Returns:
+        data (DotDict | None): the retrieved data or None.
+
+    """
+
+    log_path = Path(cluster_dir) / "Master/server_log.txt"
+
+    if not log_path.exists():
+        return None
+
+    text  = log_path.read_text(encoding="utf-8")
+
+    if _find_command_line_argument(text, "backup_log_count"):
+        # If this one exists, it means this was launched outside of Vox.
+
+        save_loader.save(
+            persistent_storage_root = _find_command_line_argument(text, "persistent_storage_root"),
+            ownerdir = _find_command_line_argument(text, "ownerdir"),
+            ugc_directory = _find_command_line_argument(text, "ugc_directory"),
+        )
+
+        return save_loader.load()
 
     return None
 

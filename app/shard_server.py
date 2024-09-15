@@ -46,14 +46,13 @@ class DedicatedServerShard():
 
     def is_running(self):
         return self.process and self.process.proc.poll() is None or False
-    
-    def get_arguments(self):
+
+    def get_arguments(self, launch_data):
         game_directory    = Path(self.app.game_entry.get()   )
         cluster_directory = Path(self.app.cluster_entry.get())
 
         token = self.app.token_entry.get()
-        cluster, user_dir, storage_root = get_cluster_and_user_dir_and_storage_root(cluster_directory)
-        ugc_directory = get_ugc_directory()
+        cluster = get_cluster_name(cluster_directory)
 
         cwd = (game_directory / "bin64").resolve()
         exe = (cwd / "dontstarve_dedicated_server_nullrenderer_x64").resolve()
@@ -72,21 +71,21 @@ class DedicatedServerShard():
 
         args = args.split()
 
-        if user_dir is not None:
+        if launch_data.ownerdir:
             args.append("-ownerdir")
-            args.append(user_dir)
+            args.append(launch_data.ownerdir)
         else:
             logger.warning("Starting shard: missing user dir.")
 
-        if storage_root is not None:
+        if launch_data.persistent_storage_root:
             args.append("-persistent_storage_root")
-            args.append(storage_root.as_posix())
+            args.append(launch_data.persistent_storage_root)
         else:
             logger.warning("Starting shard: missing storage root.")
 
-        if ugc_directory is not None:
+        if launch_data.ugc_directory:
             args.append("-ugc_directory")
-            args.append(ugc_directory.as_posix())
+            args.append(launch_data.ugc_directory)
         else:
             logger.warning("Starting shard: missing mods directory.")
 
@@ -97,15 +96,28 @@ class DedicatedServerShard():
             logger.warning(f"Shard {self.shard} is already running...")
             return
 
-        game_directory_valid       = self.app.game_entry.validate_text()
-        cluster_directory_valid    = self.app.cluster_entry.validate_text()
+        game_directory_valid    = self.app.game_entry.validate_text()
+        cluster_directory_valid = self.app.cluster_entry.validate_text()
 
         if game_directory_valid and cluster_directory_valid:
+            launch_data = self.app.launch_data_save_loader.load()
+
+            if launch_data is None:
+                if self.shard_frame.is_master:
+                    launch_data = retrieve_launch_data(self.app.cluster_entry.get(), self.app.launch_data_save_loader)
+
+                    if launch_data is None:
+                        self.app.launch_data_popup.create(STRINGS.ERROR.LAUNCH_DATA_INVALID)
+
+                        return
+                else:
+                    return
+
             logger.info(f"Starting {self.shard} shard...")
 
             self.shard_frame.set_starting()
 
-            args, cwd = self.get_arguments()
+            args, cwd = self.get_arguments(launch_data)
 
             #logger.debug("Starting server with these arguments: %s", " ".join(args))
 

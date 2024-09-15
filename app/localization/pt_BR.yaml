@@ -54,6 +54,7 @@ POPUP:
     CANCEL: Fechar
     LOG: Registros
     REPORT: Reportar
+    RETRY: Atualizar
 
 UPDATE_POPUP:
     DOWNLOAD: Baixar
@@ -112,3 +113,7 @@ ERROR:
         Seu servidor será salvado e fechado. Entretanto, a interface do aplicativo pode não representar isso corretamente.
 
         Por favor, reporte o problema criando um "issue" no Github.
+    LAUNCH_DATA_INVALID: |-
+        Antes de usar o Vox Launcher pela primeira vez, por favor inicie este cluster pelo menu do jogo e feche-o.
+
+        Depois disso, clique no botão atualizar abaixo.

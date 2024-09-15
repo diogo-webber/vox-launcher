@@ -58,6 +58,7 @@ POPUP:
     CANCEL: Cancelar
     LOG: Registros del servidor
     REPORT: Report
+    RETRY: Try Again
 
 UPDATE_POPUP:
     DOWNLOAD: Download
@@ -116,3 +117,7 @@ ERROR:
         Your server will be saved and shutdown. However, the app's UI may not show it properly.
 
         Please report the error by creating a issue on Github.
+    LAUNCH_DATA_INVALID: |-
+        Before using Vox Launcher for the first time, please launch this cluster via the in-game menu and stop it.
+
+        After that, click on the try again button bellow.

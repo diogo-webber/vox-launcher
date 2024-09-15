@@ -350,6 +350,23 @@ class AppExceptionPopUp(PopUp):
     def button_2_callback(self):
         open_github_issue()
 
+class LaunchDataPopUp(PopUp):
+    def __init__(self, root):
+        super().__init__(root)
+        self.button_1_text = STRINGS.POPUP.RETRY
+        self.button_2_text = STRINGS.POPUP.CANCEL
+
+    def button_1_callback(self):
+        self.root.shard_group.start_all_shards()
+
+        if self.root.master_shard.is_running():
+            self._close()
+
+    def button_2_callback(self):
+        self.confirmed = False
+
+        self._close()
+
 class AppOutdatedPopUp(PopUp):
     def __init__(self, root):
         super().__init__(root)

@@ -15,7 +15,7 @@ from fonts import FONT
 from widgets.buttons import CustomButton
 from widgets.entries import TokenEntry, DirectoryEntry, ClusterDirectoryEntry
 from widgets.frames import ScrollableShardGroupFrame
-from widgets.misc import Tooltip, CommandPopUp, ServerErrorPopUp, AppExceptionPopUp, AppOutdatedPopUp, ClusterStats
+from widgets.misc import Tooltip, CommandPopUp, ServerErrorPopUp, AppExceptionPopUp, AppOutdatedPopUp, LaunchDataPopUp, ClusterStats
 
 # ------------------------------------------------------------------------------------ #
 
@@ -105,6 +105,7 @@ class App(CTk):
         self.resizable(False, False)
 
         self.entries_save_loader = SaveLoader(filename="entries.json")
+        self.launch_data_save_loader = SaveLoader(filename="launchdata.json")
 
     def create_widgets(self):
         """
@@ -251,6 +252,7 @@ class App(CTk):
         self.error_popup = ServerErrorPopUp(root=self)
         self.exception_popup = AppExceptionPopUp(root=self)
         self.update_popup = AppOutdatedPopUp(root=self)
+        self.launch_data_popup = LaunchDataPopUp(root=self)
 
         self.version_label = CTkLabel(
             master=self,
