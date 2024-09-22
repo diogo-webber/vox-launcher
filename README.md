@@ -30,15 +30,15 @@
 
 <br><br><br><br><br>
 
-`Vox Launcher` is a Windows only dedicated server launcher, created with the aim of simplifying their creation and usage.
+A windows only launcher that simplify the creation and usage of dedicated servers.
 
 <br>
 
 ### Included features:
 - Buttons to **save**, **reset**, **rollback** and **stop** the server.
-- A screen that shows server logs and have a console for executing commands.
+- A screen that shows server logs and has a console for executing commands.
 - Shows information about the server, such as **number of players**, **day count**, **season** and **memory usage**.
-- Supports any number of shards.
+- Supports mods and any number of shards.
 
 <br>
 
@@ -46,9 +46,10 @@
 
 <br>
 
-- Download the `App` zip, extract its contents and start the `Vox Launcher` executable. [**Click here**][download] to download it.
+-  Download the `App` zip clicking [**here**][download].
+- Extract its contents and start the `Vox Launcher` executable.
 - Select the game installation folder under `Game Directory`, if it has not been automatically populated.
-- Create a world using the in game menu and select it under `Cluster Directory`.
+- Create a world using the in-game menu and select it under `Cluster Directory`.
 - Paste a server token under `Server Token`. See instructions on how to obtain one in the app.
 - Finally, click on the `LAUNCH` button and have fun!
 
@@ -84,6 +85,17 @@
 <dl><dd><dl><dd><dl>
  
 > Yes, they are. Just enable them when you're creating the world, it's that simple!
+
+</dl></dd></dl></dd></dl>
+
+<br>
+
+- **How can I change something about the world? Like the server name or the enabled mods?**
+
+<dl><dd><dl><dd><dl>
+ 
+> Just edit these in the in-game menu and launch the world via the in-game menu once.<br>
+> Launching it through the game is essential for saving the changes!
 
 </dl></dd></dl></dd></dl>
 
