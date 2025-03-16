@@ -23,5 +23,5 @@ venv.bak/
 app/savedata
 app/logs
 
-# Build helpers
-tools/
+# Scripts
+playground/
