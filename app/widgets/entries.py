@@ -218,6 +218,10 @@ class ClusterDirectoryEntry(DirectoryEntry):
 
                     if single_shard:
                         self._master.shard_group.add_placeholder_shard()
+                else:
+                    # I hate this a lot, thinking about rebuilding at least the log panel.
+                    for shard in self._master.shard_group.shards.values():
+                        shard.cleanup_state()
 
                 return
 

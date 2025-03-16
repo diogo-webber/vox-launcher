@@ -69,6 +69,7 @@ UPDATE_POPUP:
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Spouštějte příkazy konzole na {shard}. Stiskněte ENTER pro jejich provedení.
+    ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
     CLOSE: Zpět
     AUTO_SCROLL: Automatické posouvání
     SHARD_FOLDER: Lokální Soubory

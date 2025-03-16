@@ -69,6 +69,7 @@ UPDATE_POPUP:
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: 在{shard}世界运行控制台命令。按下ENTER以执行命令。
+    ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
     CLOSE: 返回
     AUTO_SCROLL: 自动滚动
     SHARD_FOLDER: 本地文件

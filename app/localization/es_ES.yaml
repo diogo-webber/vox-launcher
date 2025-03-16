@@ -70,6 +70,7 @@ UPDATE_POPUP:
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Ejecuta comandos de consola en {shard}. Pulsa ENTER para ejecutarlas.
+    ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
     CLOSE: Volver
     AUTO_SCROLL: Desplazar Auto
     SHARD_FOLDER: Archivos Locales

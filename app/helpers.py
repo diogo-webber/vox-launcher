@@ -345,14 +345,6 @@ def open_file(path):
 
 # ----------------------------------------------------------------------------------------- #
 
-def read_only_bind(event):
-    """ Widget key binding that makes a text widget read-only, but allows copying ( CTRL + C ). """
-
-    if event.state == 12 and event.keysym == "c":
-        return
-
-    return "break"
-
 def disable_bind(event):
     return "break"
 

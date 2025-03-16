@@ -1,22 +1,24 @@
 from customtkinter import CTkFrame, CTkLabel, CTkTextbox, CTkEntry, CTkButton, CTkSwitch, CTkScrollableFrame, CTkImage
-from tkinter import Variable, StringVar, END, CENTER, DISABLED, BOTH
-import re, os
+from tkinter import Variable, StringVar, END, CENTER, DISABLED, NORMAL, BOTH
+import re, logging
 from pathlib import Path
 from PIL import Image
 
 from strings import STRINGS
-from constants import COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, Pos, Size
+from constants import COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
 from widgets.buttons import ImageButton, RelativeXImageButton, CustomButton
-from helpers import load_lua_file, read_only_bind, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
+from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
 from shard_server import DedicatedServerShard
 from fonts import FONT
+
+logger = logging.getLogger(LOGGER)
 
 class LogsTopBar:
     def __init__(self, master, server, shard) -> None:
         self.root = master
         self.server = server
         self.shard = shard
-        self.memory = StringVar(value="??")
+        self.memory = StringVar(value="--")
 
         self._frame = CustomFrame(
             master=self.root,
@@ -46,7 +48,20 @@ class LogsTopBar:
             sticky="nw",
         )
 
-        self.shard_name   = self.create_label(text=self.shard, title=STRINGS.LOG_SCREEN.SHARD_NAME_TITLE, column=0)
+        self.status_circle = ColouredCircle(
+            master=self._frame,
+            color=COLOR.WHITE,
+            size = SIZE.SHARD_STATUS_CIRCLE.w - 4,
+        )
+
+        self.status_circle.grid(
+            row = 0,
+            column = 0,
+            padx=(15, 10),
+            #sticky="n",
+        )
+
+        self.shard_name   = self.create_label(text=self.shard, title=STRINGS.LOG_SCREEN.SHARD_NAME_TITLE, column=1)
         self.memory_label = self.create_label(textvariable=self.memory, title=STRINGS.LOG_SCREEN.SHARD_MEMORY_TITLE, column=3)
 
     def create_label(self, title, column, textvariable=None, text=None):
@@ -72,7 +87,7 @@ class LogsTopBar:
         title_label.grid(
             row = 0,
             column = column,
-            padx=(column == 0 and FRAME_GAP * 1.5 or 65, 10),
+            padx=(column == 1 and FRAME_GAP * 1.5 or 65, 10),
             ipady=FONT_SIZE.CLUSTER_STATS / 3,
             sticky="n",
         )
@@ -85,7 +100,9 @@ class LogsTopBar:
         )
 
     def update_memory(self):
-        if self.server.process is None:
+        if not self.server.is_running():
+            self.memory.set("--")
+
             return True, None
 
         memory, memory_percent = get_memory_usage(pid=self.server.process.pid)
@@ -112,6 +129,8 @@ class LogsTopBar:
         if isinstance(task, PeriodicTask):
             self.memory_task.kill()
             self.memory_task = None
+
+            self.memory.set("--")
 
     def show(self):
         self._frame.place(
@@ -154,6 +173,7 @@ class ShardLogPanel():
             scrollbar_button_color = COLOR.GRAY,
             scrollbar_button_hover_color = COLOR.GRAY_HOVER,
             font = FONT.TEXTBOX,
+            state = DISABLED,
         )
 
         #self.textbox.bind("<MouseWheel>", self._mouse_scroll_event)
@@ -169,8 +189,6 @@ class ShardLogPanel():
             x = OFFSET.LOGS_TEXTBOX.x,
             y = OFFSET.LOGS_TEXTBOX.y,
         )
-
-        self.textbox.bind("<Key>", read_only_bind)
 
         self.entry = CTkEntry(
             master = self.root,
@@ -252,6 +270,8 @@ class ShardLogPanel():
 
         self.hide()
 
+        self.server.shard_frame.add_status_change_callback(self.on_server_status_changed)
+
     def show(self):
         self._visible = True
 
@@ -261,16 +281,54 @@ class ShardLogPanel():
         )
 
         self.root.lift()
-        self.show_end()
         self.highlight_text()
 
-        self.topbar.start_tracking_memory()
+        if self.server.is_running():
+            self.show_end()
+
+            self.topbar.start_tracking_memory()
+
+        elif not self.textbox.get("1.0", END).strip(): # If empty.
+            log_path = Path(self.server.app.cluster_entry.get()) / self.shard / "server_log.txt"
+
+            if log_path.exists():
+                self.reset_text()
+                self.append_text(log_path.read_text(encoding="utf-8"))
+
+                logger.debug(f"Loading log file for {self.shard}.")
+
 
     def hide(self):
         self._visible = False
         self.root.place_forget()
 
         self.topbar.stop_tracking_memory()
+
+    def on_server_status_changed(self, *args):
+        if self.server.shard_frame.is_starting():
+            self.reset_text()
+
+            # Needs to enable it before setting the string.
+            self.entry.configure(state=NORMAL)
+            self.entry.configure(placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER.format(shard = self.shard))
+
+            self.topbar.status_circle.set_color(COLOR.YELLOW)
+
+        elif self.server.shard_frame.is_stopping() or self.server.shard_frame.is_restarting():
+            self.topbar.status_circle.set_color(COLOR.YELLOW)
+
+        elif self.server.shard_frame.is_online():
+            self.topbar.status_circle.set_color(COLOR.GREEN)
+
+        elif self.server.shard_frame.is_offline():
+            # Needs to set the string before disabling it.
+            self.entry.delete(0, END)
+            self.entry.configure(placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER_OFFLINE)
+            self.entry.configure(state=DISABLED)
+
+            self.topbar.stop_tracking_memory()
+
+            self.topbar.status_circle.set_color(COLOR.WHITE)
 
     def execute_command(self, *args, **kwargs):
         command = self.entry.get()
@@ -281,7 +339,9 @@ class ShardLogPanel():
             self.show_end()
 
     def append_text(self, text):
+        self.textbox.configure(state=NORMAL) # To be able to insert text!
         self.textbox.insert(END, text)
+        self.textbox.configure(state=DISABLED)
 
         if self._visible:
             self.highlight_text()
@@ -291,6 +351,11 @@ class ShardLogPanel():
 
             else:
                 self._mouse_scroll_event()
+
+    def reset_text(self):
+        self.textbox.configure(state=NORMAL) # To be able to delete text!
+        self.textbox.delete("1.0", END)
+        self.textbox.configure(state=DISABLED)
 
     def show_end(self):
         self.textbox.see(END)
@@ -379,7 +444,7 @@ class PlaceHolderShardFrame(CustomFrame):
 
 class ShardFrame(CustomFrame):
     def __init__(self, app, master, code, size, first=False, **kwargs):
-        self.status = SERVER_STATUS.OFFLINE
+        self.status = StringVar(value=SERVER_STATUS.OFFLINE)
         self.code = code
         self.is_master = None
         self._master = app
@@ -423,6 +488,8 @@ class ShardFrame(CustomFrame):
             y=OFFSET.LOGS_BUTTON.y,
         )
 
+        self.logs.show()
+
         self.status_circle = ColouredCircle(
             master=self,
             color=COLOR.WHITE,
@@ -449,14 +516,10 @@ class ShardFrame(CustomFrame):
         self.set_offline()
 
     def set_offline(self):
-        self.status = SERVER_STATUS.OFFLINE
+        self.status.set(SERVER_STATUS.OFFLINE)
 
         self.status_msg.set(STRINGS.SHARD_STATUS.OFFLINE)
         self.status_circle.set_color(COLOR.WHITE)
-
-        self.logs.hide()
-        self.shard_log_panel.hide()
-        self.shard_log_panel.textbox.delete("1.0", END)
 
         if self.is_master:
             self._master.launch_button.update(
@@ -479,7 +542,7 @@ class ShardFrame(CustomFrame):
             self._master.token_entry.enable()
 
     def set_restarting(self):
-        self.status = SERVER_STATUS.RESTARTING
+        self.status.set(SERVER_STATUS.RESTARTING)
 
         self.status_msg.set(STRINGS.SHARD_STATUS.RESTARTING)
         self.status_circle.set_color(COLOR.YELLOW)
@@ -498,12 +561,10 @@ class ShardFrame(CustomFrame):
 
 
     def set_starting(self):
-        self.status = SERVER_STATUS.STARTING
+        self.status.set(SERVER_STATUS.STARTING)
 
         self.status_msg.set(STRINGS.SHARD_STATUS.STARTING)
         self.status_circle.set_color(COLOR.YELLOW)
-
-        self.logs.show()
 
         if self.is_master:
             self._master.launch_button.update(
@@ -517,7 +578,7 @@ class ShardFrame(CustomFrame):
             self._master.token_entry.disable()
 
     def set_stopping(self):
-        self.status = SERVER_STATUS.STOPPING
+        self.status.set(SERVER_STATUS.STOPPING)
 
         self.status_msg.set(STRINGS.SHARD_STATUS.STOPPING)
         self.status_circle.set_color(COLOR.YELLOW)
@@ -539,7 +600,7 @@ class ShardFrame(CustomFrame):
             self._master.cluster_stats.hide()
 
     def set_online(self):
-        self.status = SERVER_STATUS.ONLINE
+        self.status.set(SERVER_STATUS.ONLINE)
 
         self.status_msg.set(STRINGS.SHARD_STATUS.ONLINE)
         self.status_circle.set_color(COLOR.GREEN)
@@ -555,19 +616,28 @@ class ShardFrame(CustomFrame):
             self._master.master_shard.execute_command(load_lua_file("worlddata"), log=False)
 
     def is_starting(self):
-        return self.status == SERVER_STATUS.STARTING
+        return self.status.get() == SERVER_STATUS.STARTING
 
     def is_online(self):
-        return self.status == SERVER_STATUS.ONLINE
+        return self.status.get() == SERVER_STATUS.ONLINE
 
     def is_stopping(self):
-        return self.status == SERVER_STATUS.STOPPING
+        return self.status.get() == SERVER_STATUS.STOPPING
 
     def is_restarting(self):
-        return self.status == SERVER_STATUS.RESTARTING
+        return self.status.get() == SERVER_STATUS.RESTARTING
+
+    def is_offline(self):
+        return self.status.get() == SERVER_STATUS.OFFLINE
     
     def add_text_to_log_screen(self, text):
         self.shard_log_panel.append_text(text)
+
+    def add_status_change_callback(self, cb):
+        self.status.trace_add("write", cb)
+
+    def cleanup_state(self):
+        self.shard_log_panel.reset_text()
 
 
 class TextBoxAsLabel(CTkTextbox):
@@ -762,7 +832,7 @@ class ScrollableShardGroupFrame(CTkScrollableFrame):
 
 
 class ColouredCircle(CTkFrame):
-    def __init__(self, color, relx, y, size, **kwargs):
+    def __init__(self, color, size, relx=None, y=None, **kwargs):
         super().__init__(
             border_color=color,
             fg_color=color,
@@ -771,7 +841,8 @@ class ColouredCircle(CTkFrame):
             width=size,
             **kwargs)
 
-        self.place(relx=relx, y=y - size/2)
+        if relx and y:
+            self.place(relx=relx, y=y - size/2)
 
     def set_color(self, color):
         self.configure(

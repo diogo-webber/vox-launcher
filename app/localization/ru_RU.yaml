@@ -69,6 +69,7 @@ UPDATE_POPUP:
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Запустить команду в {shard}. Нажмите ENTER для выполнения.
+    ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
     CLOSE: Назад
     AUTO_SCROLL: Авто-Прокрутка
     SHARD_FOLDER: Локальные файлы
