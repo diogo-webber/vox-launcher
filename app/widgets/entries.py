@@ -38,7 +38,7 @@ class CustomEntry(CTkEntry):
             master = self.fixer_frame,
             corner_radius=10,
             border_color=COLOR.GRAY,
-            text_color=COLOR.WHITE,
+            text_color=COLOR.WHITE_HOVER,
             fg_color=COLOR.GRAY,
             font=FONT.ENTRY,
             border_width=0,
