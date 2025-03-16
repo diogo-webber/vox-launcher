@@ -7,7 +7,7 @@ import re, json, sys
 import logging, locale
 import psutil, os, zipfile
 
-from constants import LOGGER
+from constants import LOGGER, APP_VERSION
 
 logger = logging.getLogger(LOGGER)
 
@@ -367,19 +367,21 @@ def load_lua_file(filename):
 
     file = LUA_FOLDER / (filename + ".lua")
 
-    if lua_file_cache.get(file.as_posix()):
-        return lua_file_cache[file.as_posix()]
+    if lua_file_cache.get(file):
+        return lua_file_cache[file]
 
     if file.exists():
         text = file.read_text(encoding="utf-8")
 
         # Remove single line comments.
-        comment_pattern = re.compile(r'--.*?[\r\n]')
-        text = re.sub(comment_pattern, '', text)
+        text = re.sub(r'--.*?[\r\n]', '', text)
+
+        # Try to replace formatter by available variables.
+        text = re.sub(r"\{\{(\w+)\}\}", lambda m: str(globals().get(m.group(1), m.group(0))), text)
 
         text = " ".join(text.split())
 
-        lua_file_cache[file.as_posix()] = text
+        lua_file_cache[file] = text
 
         return text
 

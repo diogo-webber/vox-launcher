@@ -34,10 +34,27 @@ local function OnDayChanged(world, cycles)
     SendData({ day = GetCurrentDay() })
 end
 
+local VOX_SERVER_TAG = "vox launcher {{APP_VERSION}}"
+
+local function HookServerTagsBuilder()
+    local _BuildTagsStringCommon = BuildTagsStringCommon
+
+    BuildTagsStringCommon = function(tags, ...)
+        table.insert(tags, VOX_SERVER_TAG)
+
+        return _BuildTagsStringCommon(tags, ...)
+    end
+
+    -- Force an update!
+    UpdateServerTagsString()
+end
+
 if not TheWorld._vox_launcher then
     TheWorld:ListenForEvent("ms_playercounts", OnPlayerCountChanged)
     TheWorld:WatchWorldState("cycles", OnDayChanged)
     TheWorld:WatchWorldState("season", OnSeasonChanged)
+
+    HookServerTagsBuilder()
 
     TheWorld._vox_launcher = true
 end
