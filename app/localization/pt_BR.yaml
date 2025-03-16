@@ -89,6 +89,7 @@ COMMAND_ANNOUNCEMENT:
     QUIT: Parando...
     RESET: Reiniciando...
     ROLLBACK: Revertendo em 5 segundos!
+    SAVE_QUIT: Salvando mundo e parando...
 
 ENTRY:
     GAME_TITLE: Diretório do Jogo
@@ -117,3 +118,7 @@ ERROR:
         Antes de usar o Vox Launcher pela primeira vez, por favor inicie este cluster pelo menu do jogo e feche-o.
 
         Depois disso, clique no botão atualizar abaixo.
+    SERVER_CRASH: |-
+        Houve um erro no servidor, cheque os arquivos de registro do jogo para saber mais detalhes.
+
+        Este é um erro do jogo, não um problema com o Vox Launcher. Considere checar os seus mods habilitados e reportar o problema para a Klei.

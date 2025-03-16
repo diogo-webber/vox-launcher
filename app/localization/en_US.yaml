@@ -89,6 +89,7 @@ COMMAND_ANNOUNCEMENT:
     QUIT: Stopping...
     RESET: Restarting...
     ROLLBACK: Rolling back in 5 seconds!
+    SAVE_QUIT: Saving world and stopping...
 
 ENTRY:
     GAME_TITLE: Game Directory
@@ -117,3 +118,7 @@ ERROR:
         Before using Vox Launcher for the first time, please launch this cluster via the in-game menu and stop it.
 
         After that, click on the try again button bellow.
+    SERVER_CRASH: |-
+        Your server has crashed, please refer to the game's log files for more information.
+
+        This is game crash, not a Vox Launcher issue. Consider checking your enabled mods and reporting the issue to Klei.

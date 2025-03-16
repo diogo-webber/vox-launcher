@@ -1,6 +1,6 @@
 import logging
 
-import sys, os
+import sys, os, psutil
 import random
 import logging, logging.config
 
@@ -8,7 +8,7 @@ from pathlib import Path
 from io import TextIOWrapper
 
 from pexpect import popen_spawn
-from signal import SIGTERM
+from pexpect.exceptions import TIMEOUT, EOF
 
 from constants import *
 from helpers import *
@@ -156,14 +156,20 @@ class DedicatedServerShard():
             return
 
         if self.shard_frame.is_starting() or self.shard_frame.is_restarting():
-            self.process.kill(SIGTERM)
+            try:
+                if psutil.pid_exists(self.process.pid):
+                    psutil.Process(self.process.pid).terminate()
+
+            except psutil.NoSuchProcess:
+                logger.warning(f"NoSuchProcess exception while stopping {self.shard} shard.")
+
             self.on_stopped()
             self.app.stop_shards()
 
         elif self.shard_frame.is_online():
             self.shard_frame.set_stopping()
 
-            self.execute_command(ANNOUNCE_STR.format(msg="Saving and closing!"), log=False)
+            self.execute_command(ANNOUNCE_STR.format(msg=STRINGS.COMMAND_ANNOUNCEMENT.SAVE_QUIT), log=False)
             self.execute_command(f"c_shutdown()")
 
             logger.info(f"Stopping {self.shard} shard...")
@@ -254,12 +260,18 @@ class DedicatedServerShard():
 
             self.app.error_popup.create(STRINGS.ERROR.GENERAL)
 
-        # Runs mainly on master.
-        elif "]: Shutting down" in text:
+        elif self.shard_frame.is_master and "Sim paused" in text:
+            self.execute_command(load_lua_file("onserverpaused"), log=False)
+
+        elif "LUA ERROR stack traceback" in text:
+            logger.warning(f"{self.shard_frame.code} shard has crashed!")
+
+            self.app.error_popup.create(STRINGS.ERROR.SERVER_CRASH)
+
+        # Runs mainly on master, too important to be in the main if block.
+        if "]: Shutting down" in text:
             logger.info(f"{self.shard_frame.code} was shut down... Stopping other shards.")
 
             self.shard_frame.set_stopping()
             self.app.stop_shards()
 
-        elif self.shard_frame.is_master and "Sim paused" in text:
-            self.execute_command(load_lua_file("onserverpaused"), log=False)
