@@ -367,8 +367,8 @@ def load_lua_file(filename):
 
     file = LUA_FOLDER / (filename + ".lua")
 
-    if lua_file_cache.get(file):
-        return lua_file_cache[file]
+    if lua_file_cache.get(filename):
+        return lua_file_cache[filename]
 
     if file.exists():
         text = file.read_text(encoding="utf-8")
@@ -381,7 +381,7 @@ def load_lua_file(filename):
 
         text = " ".join(text.split())
 
-        lua_file_cache[file] = text
+        lua_file_cache[filename] = text
 
         return text
 
