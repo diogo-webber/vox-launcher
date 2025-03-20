@@ -48,7 +48,7 @@ body:
   - type: textarea
     id: traceback
     attributes:
-      label: Crash Traceback (auto-filled)
+      label: Crash Traceback [auto-filled]
       description: |
         This field was auto-filled based on available data.
       render: python
