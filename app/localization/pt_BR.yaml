@@ -33,7 +33,8 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: Floresta  # Unused
+    MASTER: Floresta
+    CAVES: Cavernas
     EMPTY: Vazio
 
 LAUNCH_BUTTON:

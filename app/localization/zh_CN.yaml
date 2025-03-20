@@ -34,7 +34,8 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: 森林   # Unused
+    MASTER: 森林
+    CAVES: 洞穴
     EMPTY: 空世界栏
 
 LAUNCH_BUTTON:

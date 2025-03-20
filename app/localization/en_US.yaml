@@ -1,6 +1,6 @@
 APP_NAME: Vox Launcher
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
-WINDOW_TITLE: "  {APP_NAME}r"
+WINDOW_TITLE: "  {APP_NAME}"
 
 # These are pre-translated and only in this file.
 # Ordened by popularity.
@@ -39,7 +39,8 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: Forest   # Unused
+    MASTER: Forest
+    CAVES: Caves
     EMPTY: Empty Slot
 
 LAUNCH_BUTTON:

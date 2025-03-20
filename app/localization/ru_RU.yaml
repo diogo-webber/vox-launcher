@@ -34,8 +34,9 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: Лес # Unused
-    EMPTY: Тут пока пусто...
+    MASTER: Лес
+    CAVES: Пещеры
+    EMPTY: Пустой слот
 
 LAUNCH_BUTTON:
     LAUNCH: НАЧАТЬ

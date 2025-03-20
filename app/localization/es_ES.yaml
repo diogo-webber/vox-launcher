@@ -35,7 +35,8 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: Bosque   # Unused
+    MASTER: Bosque
+    CAVES: Cuevas
     EMPTY: Campo vacío
 
 LAUNCH_BUTTON:

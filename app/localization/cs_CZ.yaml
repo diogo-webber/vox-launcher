@@ -34,8 +34,9 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: Les   # Unused
-    EMPTY: Prázdný Slot
+    MASTER: Les
+    CAVES: Jeskyně
+    EMPTY: Prázdný slot
 
 LAUNCH_BUTTON:
     LAUNCH: Spustit

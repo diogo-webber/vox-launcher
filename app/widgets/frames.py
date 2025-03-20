@@ -61,7 +61,7 @@ class LogsTopBar:
             #sticky="n",
         )
 
-        self.shard_name   = self.create_label(text=self.shard, title=STRINGS.LOG_SCREEN.SHARD_NAME_TITLE, column=1)
+        self.shard_name   = self.create_label(text=STRINGS.SHARD_NAME[self.shard.upper()] or self.shard, title=STRINGS.LOG_SCREEN.SHARD_NAME_TITLE, column=1)
         self.memory_label = self.create_label(textvariable=self.memory, title=STRINGS.LOG_SCREEN.SHARD_MEMORY_TITLE, column=3)
 
     def create_label(self, title, column, textvariable=None, text=None):
@@ -202,7 +202,7 @@ class ShardLogPanel():
             border_width=0,
             width=SIZE.LOGS_ENTRY.w,
             height=SIZE.LOGS_ENTRY.h,
-            placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER.format(shard = self.shard),
+            placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER.format(shard=STRINGS.SHARD_NAME[self.shard.upper()] or self.shard),
         )
 
         self.entry._entry.configure(selectbackground=COLOR.GRAY)
@@ -321,7 +321,7 @@ class ShardLogPanel():
 
             # Needs to enable it before setting the string.
             self.entry.configure(state=NORMAL)
-            self.entry.configure(placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER.format(shard = self.shard))
+            self.entry.configure(placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER.format(shard=STRINGS.SHARD_NAME[self.shard.upper()] or self.shard))
 
             self.topbar.status_circle.set_color(COLOR.YELLOW)
 
@@ -476,7 +476,7 @@ class ShardFrame(CustomFrame):
             master=self,
             height=0,
             anchor="nw",
-            text=code,
+            text=STRINGS.SHARD_NAME[code.upper()] or self.code,
             text_color=COLOR.WHITE,
             fg_color="transparent",
             font=FONT.SHARD_TYPE,
