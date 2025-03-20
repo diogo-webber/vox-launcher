@@ -4,39 +4,51 @@ title: "[Crash]: "
 labels: [crash]
 
 body:
-    - type: markdown
-      attributes:
-        value: |
-            ## 💥 Crash Report
+  - type: markdown
+    attributes:
+      value: |
+        ## 💥 Crash Report
 
-            Thanks for reporting an application crash! Please fill out the details below to help us diagnose the issue.
+        Thanks for reporting an application crash! Please fill out the details below to help us diagnose the issue.
 
-    - type: textarea
-      id: description
-      attributes:
-          label: Crash Description
-          description: "Provide a clear and concise description of what happened when the app crashed."
-          placeholder: "Describe what you were doing when the crash occurred."
-      validations:
-          required: true
+        ---
 
-    - type: textarea
-      id: steps_to_reproduce
-      attributes:
-          label: Steps to Reproduce
-          description: "List the steps that consistently reproduce the crash."
-          placeholder: |
-              1. Open the app
-              2. Click on '...'
-              3. Perform '...'
-              4. App crashes
-      validations:
-          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Crash Description
+      description: "Provide a clear and concise description of what happened when the app crashed."
+      placeholder: "Describe what you were doing when the crash occurred."
+    validations:
+      required: true
 
-    - type: textarea
-      id: traceback
-      attributes:
-        label: Error Traceback
-        description: |
-            This field was auto-filled based on available data.
-        render: python
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: "List the steps that consistently reproduce the crash."
+      placeholder: |
+        1. Open the app
+        2. Click on '...'
+        3. Perform '...'
+        4. App crashes
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Crash Traceback (auto-filled)
+      description: |
+        This field was auto-filled based on available data.
+      render: python
