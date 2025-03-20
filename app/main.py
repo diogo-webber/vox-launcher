@@ -368,6 +368,7 @@ class App(CTk):
         # Restart the process and exit the current instance.
         subprocess.Popen([sys.executable] + sys.argv, close_fds=True)
 
+        self.destroy() # Close the windows before exiting program.
         sys.exit(0)
 
     def report_callback_exception(self, exctype, excvalue, tb): # Overrides Ctk method.
