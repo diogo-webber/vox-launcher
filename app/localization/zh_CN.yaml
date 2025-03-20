@@ -1,5 +1,6 @@
 # Translated by:
-#     https://github.com/Noctice
+#    https://github.com/Noctice
+#    Machine translation.
 
 APP_NAME: Vox 启动器
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
@@ -58,21 +59,21 @@ POPUP:
     OK: 确定
     CANCEL: 取消
     LOG: 服务器日志
-    REPORT: Report
-    RETRY: Try Again
-    RESTART: Restart
+    REPORT: 报告
+    RETRY: 重试
+    RESTART: 重启
 
 UPDATE_POPUP:
-    DOWNLOAD: Download
-    IGNORE: Ignore
+    DOWNLOAD: 下载
+    IGNORE: 忽略
     DESCRIPTION:
-        DEFAULT: A new version of the app has been released, please considerer downloading it.
-        DOWNLOADING: Downloading... it shouldn't take long!
-        FAILED: The download has failed... It might be a network problem on your side or on Github's servers. Please try again later.
+        DEFAULT: 应用程序有新版本发布，请考虑下载。
+        DOWNLOADING: 正在下载... 应该不会花太长时间！
+        FAILED: 下载失败... 可能是您的网络问题或Github服务器问题。请稍后再试。
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: 在{shard}世界运行控制台命令。按下ENTER以执行命令。
-    ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
+    ENTRY_PLACEHOLDER_OFFLINE: 此世界离线。启动服务器以运行命令。
     CLOSE: 返回
     AUTO_SCROLL: 自动滚动
     SHARD_FOLDER: 本地文件
@@ -96,7 +97,7 @@ COMMAND_ANNOUNCEMENT:
     QUIT: 正在关闭...
     RESET: 正在重启...
     ROLLBACK: 5秒内回档服务器！
-    SAVE_QUIT: Saving world and stopping...
+    SAVE_QUIT: 正在保存并关闭...
 
 ENTRY:
     GAME_TITLE: 游戏文件目录
@@ -114,37 +115,37 @@ ERROR:
         
         如果你没有任何错误操作，请在存储库中报告，因为这次错误可能是由启动器程序本身引起的。
     EXCEPTION: |-
-        An error has occurred!
+        发生了错误！
 
         {error}
 
-        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+        服务器将会被保存并关闭。但应用程序界面可能不会正确显示。
 
-        Please report the error by creating a issue on Github.
+        请在Github仓库创建issue以报告此错误。
     LAUNCH_DATA_INVALID: |-
-        Before using Vox Launcher for the first time, please launch this cluster via the in-game menu and stop it.
+        在首次使用Vox启动器之前，请通过游戏内菜单启动该存档一次并关闭。
 
-        After that, click on the try again button bellow.
+        然后，点击下方的重试按钮。
     SERVER_CRASH: |-
-        Your server has crashed, please refer to the game's log files for more information.
+        服务器已崩溃，请查看游戏日志文件以获取更多信息。
 
-        This is game crash, not a Vox Launcher issue. Consider checking your enabled mods and reporting the issue to Klei.
+        这是游戏崩溃，与Vox启动器无关。建议检查已启用的模组并向科雷报告问题。
 
 SETTINGS_SCREEN:
     BUTTONS:
-        APP_LOG: App Logs
-        LOCAL_FILES: Local Files
-        REPORT_ISSUE: Report Issue
+        APP_LOG: 应用日志
+        LOCAL_FILES: 本地文件
+        REPORT_ISSUE: 报告问题
 
     LANGUAGE:
-        TITLE: Language
-        DESC: Choose the app's language.
+        TITLE: 语言
+        DESC: 选择应用程序的语言。
 
     LAUNCH_OPTIONS:
-        TITLE: Launch Options
-        DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+        TITLE: 启动参数
+        DESC: 高级用户可以输入服务器启动参数。不正确使用可能导致异常行为。
 
-    CLOSE: Back
+    CLOSE: 返回
 
     RESTART_REQUIRED: |-
-            Applying these settings requires restarting the application. Would you like to restart now?
+        应用这些设置需要重启应用程序。是否现在重启？

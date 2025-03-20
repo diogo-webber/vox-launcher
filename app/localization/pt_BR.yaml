@@ -1,3 +1,6 @@
+# Translated by:
+#   The author.
+
 APP_NAME: Vox Launcher
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
 WINDOW_TITLE: "  {APP_NAME}"
@@ -30,7 +33,7 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: Floresta   # Unused
+    MASTER: Floresta  # Unused
     EMPTY: Vazio
 
 LAUNCH_BUTTON:
@@ -63,7 +66,7 @@ UPDATE_POPUP:
     DOWNLOAD: Baixar
     IGNORE: Ignorar
     DESCRIPTION:
-        DEFAULT: Uma nova versão do aplicativo está disponível, por favor, considere baixa-lá.
+        DEFAULT: Uma nova versão do aplicativo está disponível, por favor, considere baixá-la.
         DOWNLOADING: Baixando... isso não deve demorar muito!
         FAILED: Infelizmente houve um erro... Talvez seja um problema com a sua conexão ou nos servidores do Github. Por favor, tente novamente mais tarde.
 
@@ -115,7 +118,7 @@ ERROR:
 
         {error}
 
-        Seu servidor será salvado e fechado. Entretanto, a interface do aplicativo pode não representar isso corretamente.
+        Seu servidor será salvo e fechado. Entretanto, a interface do aplicativo pode não representar isso corretamente.
 
         Por favor, reporte o problema criando um "issue" no Github.
     LAUNCH_DATA_INVALID: |-
@@ -129,19 +132,19 @@ ERROR:
 
 SETTINGS_SCREEN:
     BUTTONS:
-        APP_LOG: App Logs
-        LOCAL_FILES: Local Files
-        REPORT_ISSUE: Report Issue
+        APP_LOG: Logs do Aplicativo
+        LOCAL_FILES: Arquivos Locais
+        REPORT_ISSUE: Reportar Problema
 
     LANGUAGE:
-        TITLE: Language
-        DESC: Choose the app's language.
+        TITLE: Idioma
+        DESC: Escolha o idioma do aplicativo.
 
     LAUNCH_OPTIONS:
-        TITLE: Launch Options
-        DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+        TITLE: Opções de Inicialização
+        DESC: Usuários avançados podem inserir opções de inicialização do servidor. O uso inadequado pode levar a comportamentos inesperados.
 
-    CLOSE: Back
+    CLOSE: Voltar
 
     RESTART_REQUIRED: |-
-            Applying these settings requires restarting the application. Would you like to restart now?
+            Aplicar essas configurações requer reiniciar o aplicativo. Você gostaria de reiniciar agora?

@@ -1,5 +1,6 @@
 # Translated by:
-#     https://github.com/MisterKIgorge
+#   https://github.com/MisterKIgorge
+#   Machine translation.
 
 APP_NAME: Vox Launcher
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
@@ -8,18 +9,18 @@ WINDOW_TITLE: "  {APP_NAME}"
 # LANGUAGES - These are pre-translated and only in the en_US file.
 
 TOKEN_TOOLTIP: |-
-    Тебе нужен сервер токен для запуска Выделеного сервера.
-    Создайте его на странице учетной записи Klei.
-    Нажмите, чтобы открыть веб-сайт.
+    Тебе нужен токен сервера для запуска выделенного сервера.
+    Получи его на странице учётной записи Klei.
+    Нажми сюда, чтобы открыть сайт.
 
 CLUSTER_NAME_DEFAULT: Как это работает?
-ASK_DIRECTORY_TITLE: "  Выбрать директорию"
+ASK_DIRECTORY_TITLE: "  Выберите директорию"
 
 CLUSTER_GROUP_TOOLTIP: |-
     ➊    Выберите папку установки игры в разделе {GAME_TITLE}, если она не была выбрана автоматически.
     ➋    Создайте мир в игровом меню и выберите его в разделе {CLUSTER_TITLE}.
     ➌    Вставьте токен сервера в поле {TOKEN_TITLE}. Наведите курсор на значок ⓘ, чтобы получить инструкции по его получению.
-    ➍    Вот и всё, нажмите на кнопку {LAUNCH} и играйте с удовольствием!
+    ➍    Вот и всё, нажмите на кнопку {LAUNCH} и наслаждайтесь игрой!
 
 CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - "{GAME_TITLE}"
@@ -33,13 +34,13 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: Forest   # Unused
+    MASTER: Лес # Unused
     EMPTY: Тут пока пусто...
 
 LAUNCH_BUTTON:
     LAUNCH: НАЧАТЬ
-    CANCEL: ОСТАНОВИТЬ
-    SAVE_QUIT: ОСТАНОВИТЬ
+    CANCEL: ОТМЕНА
+    SAVE_QUIT: СОХРАНИТЬ / ОСТАНОВИТЬ
     STOPPING: ОСТАНОВКА
 
 SHARD_STATUS:
@@ -47,7 +48,7 @@ SHARD_STATUS:
     STARTING:   Запуск...
     ONLINE:     Запущен
     STOPPING:   Остановка...
-    RESTARTING: Перезагрузка...
+    RESTARTING: Перезапуск...
 
 CLUSTER_STATS:
     DAY: "День: "
@@ -57,24 +58,24 @@ CLUSTER_STATS:
 POPUP:
     OK: Ок
     CANCEL: Отмена
-    LOG: Server Log
-    REPORT: Report
-    RETRY: Try Again
-    RESTART: Restart
+    LOG: Логи сервера
+    REPORT: Сообщить
+    RETRY: Повторить
+    RESTART: Перезапустить
 
 UPDATE_POPUP:
-    DOWNLOAD: Download
-    IGNORE: Ignore
+    DOWNLOAD: Скачать
+    IGNORE: Игнорировать
     DESCRIPTION:
-        DEFAULT: A new version of the app has been released, please considerer downloading it.
-        DOWNLOADING: Downloading... it shouldn't take long!
-        FAILED: The download has failed... It might be a network problem on your side or on Github's servers. Please try again later.
+        DEFAULT: Доступна новая версия приложения, пожалуйста, скачайте её.
+        DOWNLOADING: Скачивание... это займёт немного времени!
+        FAILED: Скачивание не удалось... Возможно, проблема с вашим интернет-соединением или с серверами Github. Попробуйте позже.
 
 LOG_SCREEN:
-    ENTRY_PLACEHOLDER: Запустить команду в {shard}. Нажмите ENTER для выполнения.
-    ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
+    ENTRY_PLACEHOLDER: Введите команду для {shard}. Нажмите ENTER для выполнения.
+    ENTRY_PLACEHOLDER_OFFLINE: Этот шард офлайн. Запустите сервер, чтобы выполнять команды.
     CLOSE: Назад
-    AUTO_SCROLL: Авто-Прокрутка
+    AUTO_SCROLL: Авто-прокрутка
     SHARD_FOLDER: Локальные файлы
     SHARD_NAME_TITLE: "Шард:"
     SHARD_MEMORY_TITLE: "Память:"
@@ -87,64 +88,64 @@ SMALL_BUTTON:
     ROLLBACK: Откатить
 
 COMMAND_CONFIRMATION:
-    QUIT: Вы действительно хотите остановить сервер без сохранения? Несохраненные данные будут потеряны!
-    RESET: Вы действительно хотите перезапустить сервер без сохранения? Несохраненные данные будут потеряны!
-    ROLLBACK: Сколько сохранений вы хотите откатить?
+    QUIT: Вы действительно хотите остановить сервер без сохранения? Несохранённые данные будут потеряны!
+    RESET: Вы действительно хотите перезапустить сервер без сохранения? Несохранённые данные будут потеряны!
+    ROLLBACK: На сколько дней вы хотите откатить?
 
 COMMAND_ANNOUNCEMENT:
     SAVE: Сохранение мира...
     QUIT: Остановка...
     RESET: Перезапуск...
     ROLLBACK: Откат через 5 секунд!
-    SAVE_QUIT: Saving world and stopping...
+    SAVE_QUIT: Сохранение мира и остановка...
 
 ENTRY:
-    GAME_TITLE: Папка Игры
-    CLUSTER_TITLE: Папка Кластера
+    GAME_TITLE: Папка игры
+    CLUSTER_TITLE: Папка кластера
     TOKEN_TITLE: Токен сервера
     ENTRY_INVALID_INPUT: "✱ Неверные данные"
 
 ERROR:
-    TOKEN_INVALID: The provided token is invalid or has expired.
-    GENERAL: An error has occurred while launching the server, please check the server log.
+    TOKEN_INVALID: Указанный токен недействителен или срок его действия истёк.
+    GENERAL: Произошла ошибка при запуске сервера, пожалуйста, проверьте лог сервера.
     PORTS:  |-
-        The ports {ports} are already being used by another program.
+        Порты {ports} уже используются другим приложением.
 
-        This usually happens when another server is running on the same ports - even within the game.
+        Обычно это происходит, если другой сервер уже запущен на этих портах — даже если он был запущен из игры.
         
-        If you don't find any irregularities, please report this in the repository, as it may be caused by the app itself.
+        Если вы не обнаружили проблем, сообщите об этом в репозитории. Возможно, это ошибка приложения.
     EXCEPTION: |-
-        An error has occurred!
+        Произошла ошибка!
 
         {error}
 
-        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+        Ваш сервер будет сохранён и остановлен. Однако, интерфейс приложения может это отобразить неправильно.
 
-        Please report the error by creating a issue on Github.
+        Пожалуйста, создайте issue на Github и сообщите об ошибке.
     LAUNCH_DATA_INVALID: |-
-        Before using Vox Launcher for the first time, please launch this cluster via the in-game menu and stop it.
+        Прежде чем использовать Vox Launcher в первый раз, запустите этот кластер через игровое меню и остановите его.
 
-        After that, click on the try again button bellow.
+        После этого нажмите кнопку «Повторить» ниже.
     SERVER_CRASH: |-
-        Your server has crashed, please refer to the game's log files for more information.
+        Ваш сервер аварийно завершил работу. Проверьте лог-файлы игры для получения дополнительной информации.
 
-        This is game crash, not a Vox Launcher issue. Consider checking your enabled mods and reporting the issue to Klei.
+        Это ошибка самой игры, а не Vox Launcher. Проверьте включённые моды и сообщите о проблеме в Klei.
 
 SETTINGS_SCREEN:
     BUTTONS:
-        APP_LOG: App Logs
-        LOCAL_FILES: Local Files
-        REPORT_ISSUE: Report Issue
+        APP_LOG: Логи приложения
+        LOCAL_FILES: Локальные файлы
+        REPORT_ISSUE: Сообщить о проблеме
 
     LANGUAGE:
-        TITLE: Language
-        DESC: Choose the app's language.
+        TITLE: Язык
+        DESC: Выберите язык приложения.
 
     LAUNCH_OPTIONS:
-        TITLE: Launch Options
-        DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+        TITLE: Параметры запуска
+        DESC: Опытные пользователи могут указать параметры запуска сервера. Некорректное использование может привести к ошибкам.
 
-    CLOSE: Back
+    CLOSE: Назад
 
     RESTART_REQUIRED: |-
-            Applying these settings requires restarting the application. Would you like to restart now?
+        Чтобы применить эти настройки, нужно перезапустить приложение. Перезапустить сейчас?

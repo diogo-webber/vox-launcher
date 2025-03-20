@@ -1,5 +1,6 @@
 # Translated by:
-#     https://github.com/ClifffordW
+#   https://github.com/ClifffordW
+#   Machine translation.
 
 APP_NAME: Vox Launcher
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
@@ -9,14 +10,14 @@ WINDOW_TITLE: "  {APP_NAME}"
 
 TOKEN_TOOLTIP: |-
     K spuštění serveru je třeba serverový token.
-    Vygeneruj si jeden na stránce Klei Account.
+    Vygenerujte si jeden na stránce Klei Account.
     Klikněte zde pro otevření webové stránky.
 
 CLUSTER_NAME_DEFAULT: Jak to funguje?
-ASK_DIRECTORY_TITLE: "  Vyber adresář"
+ASK_DIRECTORY_TITLE: "  Vyberte adresář"
 
 CLUSTER_GROUP_TOOLTIP: |-
-    ➊    Vyberte složku s instalací hry pod {GAME_TITLE}, pokud nebyla automaticky vyplněna.
+    ➊    Vyberte složku s instalací hry {GAME_TITLE}, pokud nebyla automaticky vyplněna.
     ➋    Vytvořte svět pomocí herního menu a vyberte ho pod {CLUSTER_TITLE}.
     ➌    Vložte serverový token pod {TOKEN_TITLE}. Přejděte kurzorem myši nad ikonu ⓘ pro instrukce, jak získat token.
     ➍    Nakonec klikněte na tlačítko {LAUNCH} a bavte se!
@@ -58,24 +59,24 @@ POPUP:
     OK: Ok
     CANCEL: Zrušit
     LOG: Záznam serveru
-    REPORT: Report
-    RETRY: Try Again
-    RESTART: Restart
+    REPORT: Nahlásit
+    RETRY: Zkusit znovu
+    RESTART: Restartovat
 
 UPDATE_POPUP:
-    DOWNLOAD: Download
-    IGNORE: Ignore
+    DOWNLOAD: Stáhnout
+    IGNORE: Ignorovat
     DESCRIPTION:
-        DEFAULT: A new version of the app has been released, please considerer downloading it.
-        DOWNLOADING: Downloading... it shouldn't take long!
-        FAILED: The download has failed... It might be a network problem on your side or on Github's servers. Please try again later.
+        DEFAULT: Byla vydána nová verze aplikace, zvažte prosím její stažení.
+        DOWNLOADING: Stahuje se... nemělo by to trvat dlouho!
+        FAILED: Stažení se nezdařilo... Může to být problém s vaší sítí nebo na serverech Githubu. Zkuste to prosím později.
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Spouštějte příkazy konzole na {shard}. Stiskněte ENTER pro jejich provedení.
-    ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
+    ENTRY_PLACEHOLDER_OFFLINE: Tento shard je offline. Spusťte server pro spuštění příkazů.
     CLOSE: Zpět
     AUTO_SCROLL: Automatické posouvání
-    SHARD_FOLDER: Lokální Soubory
+    SHARD_FOLDER: Lokální soubory
     SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "Paměť:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
@@ -84,19 +85,19 @@ SMALL_BUTTON:
     SAVE: Uložit
     QUIT: Ukončit
     RESET: Restartovat
-    ROLLBACK: Rollback
+    ROLLBACK: Vrátit zpět
 
 COMMAND_CONFIRMATION:
     QUIT: Opravdu chcete server zastavit bez uložení? Neuložená data budou ztracena!
     RESET: Opravdu chcete server restartovat bez uložení? Neuložená data budou ztracena!
-    ROLLBACK: Kolik uložených pozic chcete vrátit zpět?
+    ROLLBACK: O kolik uložených pozic chcete vrátit zpět?
 
 COMMAND_ANNOUNCEMENT:
     SAVE: Ukládání světa...
     QUIT: Zastavuje se...
     RESET: Restartuje se...
     ROLLBACK: Vrací se zpět o 5 sekund!
-    SAVE_QUIT: Saving world and stopping...
+    SAVE_QUIT: Ukládání světa a zastavování...
 
 ENTRY:
     GAME_TITLE: Adresář hry
@@ -105,7 +106,7 @@ ENTRY:
     ENTRY_INVALID_INPUT: "✱ Neplatný vstup"
 
 ERROR:
-    TOKEN_INVALID: Poskytnutý token je neplatný nebo vypršel platnost.
+    TOKEN_INVALID: Poskytnutý token je neplatný nebo jeho platnost vypršela.
     GENERAL: Při spouštění serveru došlo k chybě, zkontrolujte prosím záznam serveru.
     PORTS:  |-
         Porty {ports} jsou již používány jiným programem.
@@ -114,37 +115,37 @@ ERROR:
         
         Pokud nenajdete žádné nepravidelnosti, prosím, nahlaste to v repozitáři, protože to může být způsobeno samotnou aplikací.
     EXCEPTION: |-
-        An error has occurred!
+        Došlo k chybě!
 
         {error}
 
-        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+        Váš server bude uložen a vypnut. Nicméně, uživatelské rozhraní aplikace to nemusí zobrazit správně.
 
-        Please report the error by creating a issue on Github.
+        Prosím, nahlaste chybu vytvořením issue na Githubu.
     LAUNCH_DATA_INVALID: |-
-        Before using Vox Launcher for the first time, please launch this cluster via the in-game menu and stop it.
+        Před použitím Vox Launcheru poprvé spusťte tento cluster přes herní menu a zastavte ho.
 
-        After that, click on the try again button bellow.
+        Poté klikněte na tlačítko zkusit znovu níže.
     SERVER_CRASH: |-
-        Your server has crashed, please refer to the game's log files for more information.
+        Váš server havaroval, prosím, podívejte se na logovací soubory hry pro více informací.
 
-        This is game crash, not a Vox Launcher issue. Consider checking your enabled mods and reporting the issue to Klei.
+        Toto je pád hry, nikoli problém Vox Launcheru. Zvažte kontrolu povolených modů a nahlášení problému Klei.
 
 SETTINGS_SCREEN:
     BUTTONS:
-        APP_LOG: App Logs
-        LOCAL_FILES: Local Files
-        REPORT_ISSUE: Report Issue
+        APP_LOG: Logy aplikace
+        LOCAL_FILES: Lokální soubory
+        REPORT_ISSUE: Nahlásit problém
 
     LANGUAGE:
-        TITLE: Language
-        DESC: Choose the app's language.
+        TITLE: Jazyk
+        DESC: Vyberte jazyk aplikace.
 
     LAUNCH_OPTIONS:
-        TITLE: Launch Options
-        DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+        TITLE: Možnosti spuštění
+        DESC: Pokročilí uživatelé mohou zadat možnosti spuštění serveru. Nesprávné použití může vést k neočekávanému chování.
 
-    CLOSE: Back
+    CLOSE: Zpět
 
     RESTART_REQUIRED: |-
-            Applying these settings requires restarting the application. Would you like to restart now?
+            Aplikace těchto nastavení vyžaduje restartování aplikace. Chcete nyní restartovat?

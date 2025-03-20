@@ -1,6 +1,7 @@
 # Translated by:
-#     https://github.com/bitasuperactive
-#     https://github.com/VitaBh
+#   https://github.com/bitasuperactive
+#   https://github.com/VitaBh
+#   Machine translation.
 
 APP_NAME: Vox Launcher
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
@@ -18,7 +19,7 @@ ASK_DIRECTORY_TITLE: "  Selecciona un directorio"
 
 CLUSTER_GROUP_TOOLTIP: |-
     ➊    Selecciona el directorio de instalación del juego desde {GAME_TITLE}, si no está rellenado.
-    ➋    Crea un nuevo mundo desde el menú del juego y seleccionalo desde {CLUSTER_TITLE}.
+    ➋    Crea un nuevo mundo desde el menú del juego y selecciónalo desde {CLUSTER_TITLE}.
     ➌    Pega el token del servidor en {TOKEN_TITLE}. Pasa el cursor sobre el icono ⓘ para más información.
     ➍    Por último, haz clic en el botón {LAUNCH} y ¡diviértete!
 
@@ -34,7 +35,7 @@ CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
     - ➍
 
 SHARD_NAME:
-    MASTER: Forest   # Unused
+    MASTER: Bosque   # Unused
     EMPTY: Campo vacío
 
 LAUNCH_BUTTON:
@@ -59,24 +60,24 @@ POPUP:
     OK: Aceptar
     CANCEL: Cancelar
     LOG: Registros del servidor
-    REPORT: Report
-    RETRY: Try Again
-    RESTART: Restart
+    REPORT: Reportar
+    RETRY: Intentar de nuevo
+    RESTART: Reiniciar
 
 UPDATE_POPUP:
-    DOWNLOAD: Download
-    IGNORE: Ignore
+    DOWNLOAD: Descargar
+    IGNORE: Ignorar
     DESCRIPTION:
-        DEFAULT: A new version of the app has been released, please considerer downloading it.
-        DOWNLOADING: Downloading... it shouldn't take long!
-        FAILED: The download has failed... It might be a network problem on your side or on Github's servers. Please try again later.
+        DEFAULT: Se ha lanzado una nueva versión de la aplicación, por favor considera descargarla.
+        DOWNLOADING: Descargando... ¡no debería tardar mucho!
+        FAILED: La descarga ha fallado... Puede ser un problema de red de tu lado o en los servidores de Github. Inténtalo de nuevo más tarde.
 
 LOG_SCREEN:
-    ENTRY_PLACEHOLDER: Ejecuta comandos de consola en {shard}. Pulsa ENTER para ejecutarlas.
-    ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
+    ENTRY_PLACEHOLDER: Ejecuta comandos de consola en {shard}. Pulsa ENTER para ejecutarlos.
+    ENTRY_PLACEHOLDER_OFFLINE: Este fragmento está desconectado. Inicia el servidor para ejecutar comandos.
     CLOSE: Volver
     AUTO_SCROLL: Desplazar Auto
-    SHARD_FOLDER: Archivos Locales
+    SHARD_FOLDER: Archivos locales
     SHARD_NAME_TITLE: "Fragmento:"
     SHARD_MEMORY_TITLE: "Memoria:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
@@ -97,11 +98,11 @@ COMMAND_ANNOUNCEMENT:
     QUIT: Cerrando...
     RESET: Reiniciando...
     ROLLBACK: ¡Rebobinando en 5 segundos!
-    SAVE_QUIT: Saving world and stopping...
+    SAVE_QUIT: Guardando el mundo y cerrando...
 
 ENTRY:
     GAME_TITLE: Directorio del Juego
-    CLUSTER_TITLE: Directorio del Cluster
+    CLUSTER_TITLE: Directorio del Clúster
     TOKEN_TITLE: Token del Servidor
     ENTRY_INVALID_INPUT: "✱ Entrada Inválida"
 
@@ -112,40 +113,40 @@ ERROR:
         Los puertos {ports} se encuentran ocupados por otro programa.
 
         Esto habitualmente ocurre cuando otro servidor está iniciado sobre los mismos puertos, incluso dentro del juego.
-        
+
         Si no encuentras ninguna irregularidad, por favor, reporta este problema en el repositorio, esto puede ser un fallo de la propia aplicación.
     EXCEPTION: |-
-        An error has occurred!
+        ¡Ocurrió un error!
 
         {error}
 
-        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+        Tu servidor será guardado y apagado. Sin embargo, la interfaz de la aplicación podría no mostrarlo correctamente.
 
-        Please report the error by creating a issue on Github.
+        Por favor reporta el error creando un issue en Github.
     LAUNCH_DATA_INVALID: |-
-        Before using Vox Launcher for the first time, please launch this cluster via the in-game menu and stop it.
+        Antes de usar Vox Launcher por primera vez, por favor lanza este clúster desde el menú del juego y detenlo.
 
-        After that, click on the try again button bellow.
+        Después de eso, haz clic en el botón intentar de nuevo a continuación.
     SERVER_CRASH: |-
-        Your server has crashed, please refer to the game's log files for more information.
+        Tu servidor ha fallado, por favor revisa los archivos de registro del juego para más información.
 
-        This is game crash, not a Vox Launcher issue. Consider checking your enabled mods and reporting the issue to Klei.
+        Este es un fallo del juego, no de Vox Launcher. Considera revisar los mods habilitados y reportar el problema a Klei.
 
 SETTINGS_SCREEN:
     BUTTONS:
-        APP_LOG: App Logs
-        LOCAL_FILES: Local Files
-        REPORT_ISSUE: Report Issue
+        APP_LOG: Registros de la aplicación
+        LOCAL_FILES: Archivos locales
+        REPORT_ISSUE: Reportar problema
 
     LANGUAGE:
-        TITLE: Language
-        DESC: Choose the app's language.
+        TITLE: Idioma
+        DESC: Elige el idioma de la aplicación.
 
     LAUNCH_OPTIONS:
-        TITLE: Launch Options
-        DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+        TITLE: Opciones de lanzamiento
+        DESC: Los usuarios avanzados pueden introducir opciones de lanzamiento del servidor. Un uso incorrecto puede causar un comportamiento inesperado.
 
-    CLOSE: Back
+    CLOSE: Volver
 
     RESTART_REQUIRED: |-
-            Applying these settings requires restarting the application. Would you like to restart now?
+            Aplicar estos ajustes requiere reiniciar la aplicación. ¿Deseas reiniciar ahora?
