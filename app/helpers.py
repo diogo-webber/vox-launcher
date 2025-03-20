@@ -335,13 +335,21 @@ def open_github_issue(*args, **kwargs):
 
 def open_folder(path):
     """ Opens a Windows explorer instance on this path  """
+    if isinstance(path, str):
+        path = Path(path)
 
-    os.startfile(path)
+    if path.exists():
+        os.startfile(path)
 
 def open_file(path):
     """ Opens a file  """
 
-    os.startfile(path)
+    if isinstance(path, str):
+        path = Path(path)
+
+    if path.exists():
+        os.startfile(path)
+    
 
 # ----------------------------------------------------------------------------------------- #
 
