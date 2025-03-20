@@ -3,6 +3,7 @@ import yaml
 from functools import partial
 from pathlib import Path
 import traceback, requests
+import subprocess
 
 from customtkinter import CTk, CTkLabel
 from tkinter import StringVar
@@ -11,11 +12,13 @@ from constants import *
 from helpers import *
 from strings import STRINGS
 from fonts import FONT
+from settings_manager import SettingsManager, Settings
 
-from widgets.buttons import CustomButton
+from widgets.buttons import CustomButton, ImageButton
 from widgets.entries import TokenEntry, DirectoryEntry, ClusterDirectoryEntry
 from widgets.frames import ScrollableShardGroupFrame
-from widgets.misc import Tooltip, CommandPopUp, ServerErrorPopUp, AppExceptionPopUp, AppOutdatedPopUp, LaunchDataPopUp, ClusterStats
+from widgets.misc import Tooltip, CommandPopUp, ServerErrorPopUp, AppExceptionPopUp, AppOutdatedPopUp, LaunchDataPopUp, ClusterStats, RestartRequiredPopUp
+from widgets.settings_screen import SettingsScreen
 
 # ------------------------------------------------------------------------------------ #
 
@@ -96,6 +99,9 @@ class App(CTk):
         y = (screen_height - WINDOW_HEIGHT) // 2
 
         self.geometry(f"+{x}+{y}")
+
+        self.settings = SettingsManager(app=self, enum_cls=Settings)
+        self.settings.load()
 
         self.title(STRINGS.WINDOW_TITLE)
         self.iconbitmap(resource_path("assets/icon.ico"))
@@ -253,20 +259,21 @@ class App(CTk):
         self.exception_popup = AppExceptionPopUp(root=self)
         self.update_popup = AppOutdatedPopUp(root=self)
         self.launch_data_popup = LaunchDataPopUp(root=self)
+        self.restart_popup = RestartRequiredPopUp(root=self)
 
-        self.version_label = CTkLabel(
+        self.settings_screen = SettingsScreen(master=app)
+
+        self.settings_button = ImageButton(
             master=self,
-            height=0,
-            anchor="sw",
-            text=STRINGS.VERSION_LABEL,
-            text_color=COLOR.WHITE,
-            font=FONT.VERSION,
+            image="assets/settings.png",
+            command=self.settings_screen.show,
+            width=SIZE.LOGS_BUTTON.w,
+            height=SIZE.LOGS_BUTTON.h,
+            image_size=(SIZE.LOGS_BUTTON.w - 20, SIZE.LOGS_BUTTON.h - 20),
+            pos=Pos(WINDOW_MARGIN, WINDOW_HEIGHT - WINDOW_MARGIN - SIZE.LOGS_BUTTON.h)
         )
 
-        self.version_label.place(
-            x = WINDOW_MARGIN,
-            y = WINDOW_HEIGHT - WINDOW_MARGIN - FONT_SIZE.VERSION,
-        )
+        self.settings_button.show()
 
         # ---------------------------------------------------------------------- #
 
@@ -311,7 +318,6 @@ class App(CTk):
         else:
             self.shard_group.start_all_shards()
 
-
     def execute_special_command(self, command, announcement=None, slider_fn=None, confirmation_text=None):
         if confirmation_text:
             confirmed, slider_value = self.confirmation_popup.create(confirmation_text, slider_fn=slider_fn)
@@ -355,12 +361,21 @@ class App(CTk):
     def stop_shards(self):
         self.shard_group.stop_all_shards()
 
+    def restart_application(self):
+        """Restart the PyInstaller-exe or Python script safely."""
+        logger.info("Restarting the application.")
+
+        # Restart the process and exit the current instance.
+        subprocess.Popen([sys.executable] + sys.argv, close_fds=True)
+
+        sys.exit(0)
+
     def report_callback_exception(self, exctype, excvalue, tb): # Overrides Ctk method.
         err: list = traceback.format_exception(exctype, excvalue, tb)
-        summary = f'{excvalue.__class__.__name__}: {" | ".join(excvalue.args)}.'
 
-        logger.error(summary)
         logger.error(" ".join(err))
+
+        summary = f'{exctype.__name__}: {excvalue}.'
 
         self.exception_popup.create(STRINGS.ERROR.EXCEPTION.format(error=summary))
 
@@ -371,7 +386,8 @@ class App(CTk):
 if __name__ == "__main__":
     app = App()
 
-    FONT.create_fonts()
+    STRINGS.load_strings(app.settings.get_setting(Settings.LANGUAGE))
+    FONT.create_fonts() # Needs to run after string loading.
 
     # ------------------------------------------------------------------------------------ #
 

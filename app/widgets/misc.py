@@ -367,6 +367,24 @@ class LaunchDataPopUp(PopUp):
 
         self._close()
 
+class RestartRequiredPopUp(PopUp):
+    def __init__(self, root):
+        super().__init__(root)
+        self.button_1_text = STRINGS.POPUP.RESTART
+        self.button_2_text = STRINGS.POPUP.CANCEL
+
+    def button_1_callback(self):
+        self.confirmed = True
+
+        self._close()
+
+        self.root.restart_application()
+
+    def button_2_callback(self):
+        self.confirmed = False
+
+        self._close()
+
 class AppOutdatedPopUp(PopUp):
     def __init__(self, root):
         super().__init__(root)

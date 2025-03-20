@@ -1,6 +1,17 @@
 APP_NAME: Vox Launcher
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
-WINDOW_TITLE: "  {APP_NAME} - Don't Starve Together - Dedicated Server Launcher"
+WINDOW_TITLE: "  {APP_NAME}r"
+
+# These are pre-translated and only in this file.
+# Ordened by popularity.
+LANGUAGES:
+    en_US: English (United States)
+    zh_CN: 中文 (简体)
+    es_ES: Español (España)
+    pt_BR: Português (Brasil)
+    ru_RU: Русский
+    cs_CZ: Čeština
+
 
 TOKEN_TOOLTIP: |-
     You need a Server Token to run a Dedicated Server.
@@ -55,6 +66,7 @@ POPUP:
     LOG: Server Log
     REPORT: Report
     RETRY: Try Again
+    RESTART: Restart
 
 UPDATE_POPUP:
     DOWNLOAD: Download
@@ -123,3 +135,22 @@ ERROR:
         Your server has crashed, please refer to the game's log files for more information.
 
         This is game crash, not a Vox Launcher issue. Consider checking your enabled mods and reporting the issue to Klei.
+
+SETTINGS_SCREEN:
+    BUTTONS:
+        APP_LOG: App Logs
+        LOCAL_FILES: Local Files
+        REPORT_ISSUE: Report Issue
+
+    LANGUAGE:
+        TITLE: Language
+        DESC: Choose the app's language.
+
+    LAUNCH_OPTIONS:
+        TITLE: Launch Options
+        DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+
+    CLOSE: Back
+
+    RESTART_REQUIRED: |-
+            Applying these settings requires restarting the application. Would you like to restart now?

@@ -40,12 +40,13 @@ class CustomEntry(CTkEntry):
             border_color=COLOR.GRAY,
             text_color=COLOR.WHITE_HOVER,
             fg_color=COLOR.GRAY,
-            font=FONT.ENTRY,
+            font=FONT.ENTRY_ARIAL,
             border_width=0,
             height=size.h,
             width=size.w - size.h - 8,
             textvariable=self.entrytext,
-            **kwargs)
+            **kwargs
+        )
 
         self._entry.configure(selectbackground=COLOR.DARK_GRAY)
 

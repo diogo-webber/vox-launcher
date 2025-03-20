@@ -3,7 +3,9 @@
 
 APP_NAME: Vox 启动器
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
-WINDOW_TITLE: "  {APP_NAME} - 饥荒联机版 - 专用服务器启动器"
+WINDOW_TITLE: "  {APP_NAME}"
+
+# LANGUAGES - These are pre-translated and only in the en_US file.
 
 TOKEN_TOOLTIP: |-
     你需要一个服务器令牌以启动服务器。
@@ -58,6 +60,7 @@ POPUP:
     LOG: 服务器日志
     REPORT: Report
     RETRY: Try Again
+    RESTART: Restart
 
 UPDATE_POPUP:
     DOWNLOAD: Download
@@ -126,3 +129,22 @@ ERROR:
         Your server has crashed, please refer to the game's log files for more information.
 
         This is game crash, not a Vox Launcher issue. Consider checking your enabled mods and reporting the issue to Klei.
+
+SETTINGS_SCREEN:
+    BUTTONS:
+        APP_LOG: App Logs
+        LOCAL_FILES: Local Files
+        REPORT_ISSUE: Report Issue
+
+    LANGUAGE:
+        TITLE: Language
+        DESC: Choose the app's language.
+
+    LAUNCH_OPTIONS:
+        TITLE: Launch Options
+        DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+
+    CLOSE: Back
+
+    RESTART_REQUIRED: |-
+            Applying these settings requires restarting the application. Would you like to restart now?

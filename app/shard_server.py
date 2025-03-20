@@ -13,6 +13,7 @@ from pexpect.exceptions import TIMEOUT, EOF
 from constants import *
 from helpers import *
 from strings import STRINGS
+from settings_manager import Settings
 
 # ------------------------------------------------------------------------------------ #
 
@@ -88,6 +89,10 @@ class DedicatedServerShard():
             args.append(launch_data.ugc_directory)
         else:
             logger.warning("Starting shard: missing mods directory.")
+
+        extra_args = self.app.settings.get_setting(Settings.LAUNCH_OPTIONS).split()
+
+        args = args + extra_args
 
         return args, str(cwd)
 
@@ -247,7 +252,7 @@ class DedicatedServerShard():
             for shard in get_shard_names(cluster_directory):
                 config_file = cluster_directory / shard / "server.ini"
 
-                if config_file.exists:
+                if config_file.exists():
                     port = get_key_from_ini_file(config_file, "server_port")
                     ports.append(f"{port} ({shard})")
 

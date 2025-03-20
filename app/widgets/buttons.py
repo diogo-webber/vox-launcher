@@ -7,7 +7,7 @@ from tkinter import DISABLED
 from helpers import resource_path
 
 class ImageButton(CTkButton):
-    def __init__(self, image, image_size, pos, **kwargs):
+    def __init__(self, image, image_size, pos, text=None, corner_radius=10, **kwargs):
         self.x = pos.x
         self.y = pos.y
 
@@ -15,8 +15,8 @@ class ImageButton(CTkButton):
 
         super().__init__(
             image=image,
-            text=None,
-            corner_radius=10,
+            text=text,
+            corner_radius=corner_radius,
             border_spacing=0.01,
             fg_color=COLOR.GRAY,
             hover_color=COLOR.GRAY_HOVER,
@@ -46,12 +46,12 @@ class RelativeXImageButton(ImageButton):
         self.place( relx=self.relx, y=self.y )
 
 class CustomButton(CTkButton):
-    def __init__(self, pos, size, **kwargs):
+    def __init__(self, pos, size, corner_radius=15, **kwargs):
         self.x = pos.x
         self.y = pos.y
 
         super().__init__(
-            corner_radius=15,
+            corner_radius = corner_radius,
             fg_color=COLOR.GRAY,
             hover_color=COLOR.GRAY_HOVER,
             text_color=COLOR.WHITE,

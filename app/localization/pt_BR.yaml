@@ -1,6 +1,8 @@
 APP_NAME: Vox Launcher
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
-WINDOW_TITLE: "  {APP_NAME} - Don't Starve Together - Iniciador de Servidor Dedicado"
+WINDOW_TITLE: "  {APP_NAME}"
+
+# LANGUAGES - These are pre-translated and only in the en_US file.
 
 TOKEN_TOOLTIP: |-
     Você precisa de um Token de Servidor para iniciar um Servidor Dedicado.
@@ -55,6 +57,7 @@ POPUP:
     LOG: Registros
     REPORT: Reportar
     RETRY: Atualizar
+    RESTART: Reiniciar
 
 UPDATE_POPUP:
     DOWNLOAD: Baixar
@@ -123,3 +126,22 @@ ERROR:
         Houve um erro no servidor, cheque os arquivos de registro do jogo para saber mais detalhes.
 
         Este é um erro do jogo, não um problema com o Vox Launcher. Considere checar os seus mods habilitados e reportar o problema para a Klei.
+
+SETTINGS_SCREEN:
+    BUTTONS:
+        APP_LOG: App Logs
+        LOCAL_FILES: Local Files
+        REPORT_ISSUE: Report Issue
+
+    LANGUAGE:
+        TITLE: Language
+        DESC: Choose the app's language.
+
+    LAUNCH_OPTIONS:
+        TITLE: Launch Options
+        DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+
+    CLOSE: Back
+
+    RESTART_REQUIRED: |-
+            Applying these settings requires restarting the application. Would you like to restart now?

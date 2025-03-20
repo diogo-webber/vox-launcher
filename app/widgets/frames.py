@@ -147,6 +147,8 @@ class ShardLogPanel():
 
     def __init__(self, master, shard, server) -> None:
         self.server = server
+        self.master = master
+        self.bind = None
         self._auto_scroll = False
         self._visible = False
         self.shard = shard
@@ -172,7 +174,7 @@ class ShardLogPanel():
             text_color = COLOR.WHITE,
             scrollbar_button_color = COLOR.GRAY,
             scrollbar_button_hover_color = COLOR.GRAY_HOVER,
-            font = FONT.TEXTBOX,
+            font = FONT.TEXTBOX_ARIAL,
             state = DISABLED,
         )
 
@@ -272,13 +274,15 @@ class ShardLogPanel():
 
         self.server.shard_frame.add_status_change_callback(self.on_server_status_changed)
 
-    def show(self):
+    def show(self, *args, **kwargs):
         self._visible = True
 
         self.root.place(
             x=OFFSET.LOGS_PANEL.x,
             y=OFFSET.LOGS_PANEL.y,
         )
+
+        self.bind = self.master.bind("<Escape>", self.hide)
 
         self.root.lift()
         self.highlight_text()
@@ -298,11 +302,18 @@ class ShardLogPanel():
                 logger.debug(f"Loading log file for {self.shard}.")
 
 
-    def hide(self):
+    def hide(self, *args, **kwargs):
+        if self.master.grab_current() is not None:
+            return # Not in focus...
+
         self._visible = False
         self.root.place_forget()
 
         self.topbar.stop_tracking_memory()
+
+        if self.bind:
+            self.master.unbind("<Escape>", self.bind)
+            self.bind = None
 
     def on_server_status_changed(self, *args):
         if self.server.shard_frame.is_starting():
@@ -375,6 +386,8 @@ class ShardLogPanel():
         text = self.textbox.get("1.0", END)
 
         for highlight in self.hightlight_data:
+            self.textbox.tag_remove(highlight.name, "1.0", END)
+
             matches = highlight.pattern.finditer(text)
 
             for match in matches:
