@@ -131,8 +131,8 @@ From top left to bottom right: `Instructions`, `Starting Server`, `Server Online
 
 <div align="center">
 
-<img align="left" src="/github_assets/offline.png" width=45%/>
-<img align="left" src="/github_assets/starting.png" width=45%/>
+<img align="left" src="/.github/readme_assets/offline.png" width=45%/>
+<img align="left" src="/.github/readme_assets/starting.png" width=45%/>
 
 </div>
 
@@ -140,8 +140,8 @@ From top left to bottom right: `Instructions`, `Starting Server`, `Server Online
 
 <div align="center">
 
-<img align="left" src="/github_assets/online.png" width=45%/>
-<img align="left" src="/github_assets/logscreen.png" width=45%/>
+<img align="left" src="/.github/readme_assets/online.png" width=45%/>
+<img align="left" src="/.github/readme_assets/logscreen.png" width=45%/>
 
 </div>
 
