@@ -348,7 +348,7 @@ class AppExceptionPopUp(PopUp):
         self._close()
 
     def button_2_callback(self):
-        open_github_issue()
+        open_github_issue(template="app_crash_report")
 
 class LaunchDataPopUp(PopUp):
     def __init__(self, root):

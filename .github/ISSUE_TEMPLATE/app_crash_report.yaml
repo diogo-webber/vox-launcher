@@ -1,0 +1,52 @@
+name: Crash Report
+description: Report an application crash
+title: "[Crash]: "
+labels: [crash]
+
+body:
+    - type: markdown
+      attributes:
+        value: |
+            ## 💥 Crash Report
+
+            Thanks for reporting an application crash! Please fill out the details below to help us diagnose the issue.
+
+            ---
+            ### 📂 **Log Files Information**
+            - **App Log File:**
+            Located at: `/appdata/logs/applog.txt`
+
+            Please attach or paste relevant logs in the section below.
+
+    - type: textarea
+      id: description
+      attributes:
+          label: Crash Description
+          description: "Provide a clear and concise description of what happened when the app crashed."
+          placeholder: "Describe what you were doing when the crash occurred."
+      validations:
+          required: true
+
+    - type: textarea
+      id: steps_to_reproduce
+      attributes:
+          label: Steps to Reproduce
+          description: "List the steps that consistently reproduce the crash."
+          placeholder: |
+              1. Open the app
+              2. Click on '...'
+              3. Perform '...'
+              4. App crashes
+      validations:
+          required: true
+
+    - type: textarea
+      id: logs
+      attributes:
+        label: Log Files or Screenshots
+        description: |
+            Please paste relevant parts of:
+            - App Log (`applog.txt`)
+
+            You may also attach screenshots if necessary.
+        render: shell

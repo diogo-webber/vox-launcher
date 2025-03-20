@@ -14,8 +14,7 @@ body:
             ---
             ### 📂 **Log Files Information**
             - **App Log File:**
-            Located at:
-            `/appdata/logs/applog.txt`
+            Located at: `/appdata/logs/applog.txt`
 
             - **Server Log Files:**
             These are located inside each cluster folder, typically under:

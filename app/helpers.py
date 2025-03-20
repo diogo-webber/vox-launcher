@@ -327,10 +327,10 @@ def open_klei_account_page(*args, **kwargs):
 
     webbrowser.open("https://accounts.klei.com/account/game/servers?game=DontStarveTogether", new=0, autoraise=True)
 
-def open_github_issue(*args, **kwargs):
+def open_github_issue(template="bug_report"):
     """ Opens Vox Launcher repository on Github, in the issues tab, in the default browser. """
 
-    webbrowser.open("https://github.com/diogo-webber/vox-launcher/issues/new", new=0, autoraise=True)
+    webbrowser.open(f"https://github.com/diogo-webber/vox-launcher/issues/new?template={template}.yml", new=0, autoraise=True)
 
 
 def open_folder(path):
