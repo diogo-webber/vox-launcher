@@ -39,4 +39,4 @@ body:
         label: Error Traceback
         description: |
             This field was auto-filled based on available data.
-        render: shell
+        render: python
