@@ -184,54 +184,38 @@ class SettingsScreen():
         )
 
         button_image_size = (SIZE.SMALL_BUTTON_LONG.h - 5) / self.root._apply_widget_scaling(1)
+        button_image_size = (button_image_size, button_image_size)
 
-        self.app_log_button = ImageButton(
-            master=self.button_menu,
-            text=STRINGS.SETTINGS_SCREEN.BUTTONS.APP_LOG,
-            image="assets/file.png",
-            image_size=(button_image_size, button_image_size),
-            command=lambda: open_folder(resource_path("logs")),
-            font=FONT.SETTING_LONG_BUTTON,
-            width=SIZE.SMALL_BUTTON_LONG.w,
-            height=SIZE.SMALL_BUTTON_LONG.h,
-            pos=Pos(0, 0),
-            corner_radius=self.corner_radius,
-        )
+        buttons = [
+            ("APP_LOG",      "assets/file.png",      lambda: open_folder(resource_path("logs"))    ),
+            ("LOCAL_FILES",  "assets/directory.png", lambda: open_folder(resource_path("savedata"))),
+            ("REPORT_ISSUE", "assets/bug.png",       open_github_issue                             ),
+        ]
 
-        self.local_files = ImageButton(
-            master=self.button_menu,
-            text=STRINGS.SETTINGS_SCREEN.BUTTONS.LOCAL_FILES,
-            image="assets/directory.png",
-            image_size=(button_image_size, button_image_size),
-            command=lambda: open_folder(resource_path("savedata")),
-            font=FONT.SETTING_LONG_BUTTON,
-            width=SIZE.SMALL_BUTTON_LONG.w,
-            height=SIZE.SMALL_BUTTON_LONG.h,
-            pos=Pos(0, 0),
-            corner_radius=self.corner_radius,
-        )
+        for text, img, cmd in buttons:
+            btn = ImageButton(
+                master=self.button_menu,
+                text=STRINGS.SETTINGS_SCREEN.BUTTONS[text],
+                image=img,
+                image_size=button_image_size,
+                command=cmd,
+                font=FONT.SETTING_LONG_BUTTON,
+                width=SIZE.SMALL_BUTTON_LONG.w,
+                height=SIZE.SMALL_BUTTON_LONG.h,
+                pos=Pos(0, 0),
+                corner_radius=self.corner_radius,
+            )
 
-        self.report_issue_button = ImageButton(
-            master=self.button_menu,
-            text=STRINGS.SETTINGS_SCREEN.BUTTONS.REPORT_ISSUE,
-            image="assets/bug.png",
-            image_size=(button_image_size, button_image_size),
-            command=open_github_issue,
-            font=FONT.SETTING_LONG_BUTTON,
-            width=SIZE.SMALL_BUTTON_LONG.w,
-            height=SIZE.SMALL_BUTTON_LONG.h,
-            pos=Pos(0, 0),
-            corner_radius=self.corner_radius,
-        )
+            btn.pack(fill="both", expand=True, pady=5, ipadx=15)
+
+        self.button_menu.update()
+
+        menu_width = self.button_menu.winfo_reqwidth() / self.root._apply_widget_scaling(1)
 
         self.button_menu.place(
-            x = WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - SIZE.SMALL_BUTTON_LONG.w * 1.25 ,
+            x = WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - menu_width * 1.25,
             y = SETTINGS_WINDOW_MARGIN + 250,
         )
-
-        self.app_log_button.pack(pady=5)
-        self.local_files.pack(pady=5)
-        self.report_issue_button.pack(pady=5)
 
         # -------------------------- #
 
