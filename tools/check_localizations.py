@@ -15,6 +15,10 @@ LOCALIZATION_DIR = "app/localization"
 BASE_FILE = "en_US.yaml"
 BASE_PATH = os.path.join(LOCALIZATION_DIR, BASE_FILE)
 
+IGNORED_KEYS = [
+    "LANGUAGES"
+]
+
 def read_yaml(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return yaml.safe_load(file) or {}
@@ -25,7 +29,7 @@ def compare_keys(base_dict, target_dict, prefix=""):
     for key, value in base_dict.items():
         full_key = prefix and f"{prefix}.{key}" or key
 
-        if key not in target_dict:
+        if key not in target_dict and not key in IGNORED_KEYS:
             missing.append(full_key)
 
         elif isinstance(value, dict) and isinstance(target_dict.get(key), dict):
