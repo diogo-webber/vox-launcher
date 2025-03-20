@@ -11,13 +11,6 @@ body:
 
             Thanks for reporting an application crash! Please fill out the details below to help us diagnose the issue.
 
-            ---
-            ### 📂 **Log Files Information**
-            - **App Log File:**
-            Located at: `/appdata/logs/applog.txt`
-
-            Please attach or paste relevant logs in the section below.
-
     - type: textarea
       id: description
       attributes:
@@ -41,12 +34,9 @@ body:
           required: true
 
     - type: textarea
-      id: logs
+      id: traceback
       attributes:
-        label: Log Files or Screenshots
+        label: Error Traceback
         description: |
-            Please paste relevant parts of:
-            - App Log (`applog.txt`)
-
-            You may also attach screenshots if necessary.
+            This field was auto-filled based on available data.
         render: shell
