@@ -454,6 +454,9 @@ class PlaceHolderShardFrame(CustomFrame):
             anchor=CENTER,
         )
 
+    def cleanup_state(self):
+        pass
+
 
 class ShardFrame(CustomFrame):
     def __init__(self, app, master, code, size, first=False, **kwargs):
