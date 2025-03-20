@@ -46,7 +46,7 @@ LAUNCH_BUTTON:
     STOPPING: CERRANDO
 
 SHARD_STATUS:
-    OFFLINE:    Desconectado
+    OFFLINE:    Offline
     STARTING:   Iniciando...
     ONLINE:     Conectado
     STOPPING:   Cerrando...
@@ -135,7 +135,7 @@ ERROR:
 
 SETTINGS_SCREEN:
     BUTTONS:
-        APP_LOG: Registros de la aplicación
+        APP_LOG: Registros app
         LOCAL_FILES: Archivos locales
         REPORT_ISSUE: Reportar problema
 
