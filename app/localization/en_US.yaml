@@ -3,7 +3,7 @@ VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
 WINDOW_TITLE: "  {APP_NAME}"
 
 # These are pre-translated and only in this file.
-# Ordened by popularity.
+# Ordered by popularity.
 LANGUAGES:
     en_US: English (United States)
     zh_CN: 中文 (简体)
@@ -12,18 +12,17 @@ LANGUAGES:
     ru_RU: Русский
     cs_CZ: Čeština
 
-
 TOKEN_TOOLTIP: |-
     You need a Server Token to run a Dedicated Server.
-    Generate one at the Klei Account page.
+    Generate one on the Klei Account page.
     Click here to open the website.
 
-CLUSTER_NAME_DEFAULT: How it works?
+CLUSTER_NAME_DEFAULT: How does it work?
 ASK_DIRECTORY_TITLE: "  Select Directory"
 
 CLUSTER_GROUP_TOOLTIP: |-
-    ➊    Select the game installation folder under {GAME_TITLE}, if it has not been automatically populated.
-    ➋    Create a world using the in game menu and select it under {CLUSTER_TITLE}.
+    ➊    Select the game installation folder under {GAME_TITLE}, if it hasn't been automatically populated.
+    ➋    Create a world using the in-game menu and select it under {CLUSTER_TITLE}.
     ➌    Paste a server token under {TOKEN_TITLE}. Hover over the ⓘ icon for instructions on how to obtain one.
     ➍    Finally, click on the {LAUNCH} button and have fun!
 
@@ -73,12 +72,12 @@ UPDATE_POPUP:
     DOWNLOAD: Download
     IGNORE: Ignore
     DESCRIPTION:
-        DEFAULT: A new version of the app has been released, please considerer downloading it.
-        DOWNLOADING: Downloading... it shouldn't take long!
-        FAILED: The download has failed... It might be a network problem on your side or on Github's servers. Please try again later.
+        DEFAULT: A new version of the app is available. Please consider downloading it.
+        DOWNLOADING: Downloading... It shouldn't take long!
+        FAILED: The download has failed. It might be a network issue on your side or on Github's servers. Please try again later.
 
 LOG_SCREEN:
-    ENTRY_PLACEHOLDER: Run console commands on {shard}. Press ENTER to execute them.
+    ENTRY_PLACEHOLDER: Run console commands on {shard}. Press ENTER to execute.
     ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
     CLOSE: Back
     AUTO_SCROLL: Auto Scroll
@@ -94,8 +93,8 @@ SMALL_BUTTON:
     ROLLBACK: Rollback
 
 COMMAND_CONFIRMATION:
-    QUIT: Would you really like to stop the server without saving? Unsaved data will be lost!
-    RESET: Would you really like to restart the server without saving? Unsaved data will be lost!
+    QUIT: Are you sure you want to stop the server without saving? Unsaved data will be lost!
+    RESET: Are you sure you want to restart the server without saving? Unsaved data will be lost!
     ROLLBACK: How many saves would you like to roll back?
 
 COMMAND_ANNOUNCEMENT:
@@ -113,18 +112,18 @@ ENTRY:
 
 ERROR:
     TOKEN_INVALID: The provided token is invalid or has expired.
-    GENERAL: An error has occurred while launching the server, please check the server log.
+    GENERAL: An error occurred while launching the server. Please check the server log.
     PORTS: |-
-        The server has failed to start due to one of the following reasons:
+        The server failed to start due to one of the following reasons:
 
         • The cluster is not in the same directory as the worlds generated in-game.
 
-        • One or more ports {ports} are already in use by another program, including in-game servers.
+        • One or more of the following ports {ports} are already in use by another program, including in-game servers.
 
         If neither applies, please report the issue.
         It may be caused by the launcher itself.
     EXCEPTION: |-
-        An unexpected error has occurred!
+        An unexpected error occurred!
 
         > {error}
 
@@ -132,15 +131,15 @@ ERROR:
 
         If a server is currently running, it will be saved and safely shut down.
 
-        Please considerer reporting this error by creating a issue on Github.
+        Please consider reporting this error by creating an issue on Github.
     LAUNCH_DATA_INVALID: |-
-        Before using {APP_NAME} for the first time, please launch any cluster from within the in-game menu and stop it.
-        
+        Before using {APP_NAME} for the first time, please launch any cluster from the in-game menu and stop it.
+
         Once done, click the Try Again button below.
     SERVER_CRASH: |-
-        Your server has crashed, please refer to the game's log files for more information.
+        Your server has crashed. Please refer to the game's log files for more information.
 
-        This is game crash, not a {APP_NAME} issue. Consider checking your enabled mods and reporting the issue to Klei.
+        This is a game crash, not a {APP_NAME} issue. Consider checking your enabled mods or reporting the issue to Klei.
 
 SETTINGS_SCREEN:
     BUTTONS:
@@ -159,4 +158,4 @@ SETTINGS_SCREEN:
     CLOSE: Back
 
     RESTART_REQUIRED: |-
-            Applying these settings requires restarting the application. Would you like to restart now?
+        Applying these settings requires restarting the application. Would you like to restart now?
