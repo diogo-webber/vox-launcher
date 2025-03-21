@@ -16,7 +16,7 @@
   &ensp;
   ![GitHub Downloads][download_count]
   &ensp;
-  ![Python Version)][python_version]
+  ![Python Version][python_version]
 
 </h1>
 
@@ -26,39 +26,39 @@
 
 ### Vox Launcher
 
-> A Don't Starve Together dedicated server launcher.
+> A dedicated server launcher for Don't Starve Together.
 
 <br><br><br><br><br>
 
-A windows only launcher that simplify the creation and usage of dedicated servers.
+Vox Launcher is a Windows-only app designed to simplify creating and managing Don't Starve Together dedicated servers.
 
 <br>
 
-### Included features:
-- Buttons to **save**, **reset**, **rollback** and **stop** the server.
-- A screen that shows server logs and has a console for executing commands.
-- Shows information about the server, such as **number of players**, **day count**, **season** and **memory usage**.
+### Features:
+- Buttons to **save**, **reset**, **rollback**, and **stop** the server.
+- A screen that shows server logs and has a console for running commands.
+- Displays key server info, such as **player count**, **day**, **season**, and **memory usage**.
 - Supports mods and any number of shards.
 
 <br>
 
-## How it works?
+## Quick Start
 
 <br>
 
--  Download the `App` zip clicking [**here**][download].
-- Extract its contents and start the `Vox Launcher` executable.
-- Select the game installation folder under `Game Directory`, if it has not been automatically populated.
-- Create a world using the in-game menu and select it under `Cluster Directory`.
-- Paste a server token under `Server Token`. See instructions on how to obtain one in the app.
-- Finally, click on the `LAUNCH` button and have fun!
+- Download the `App` by clicking [**here**][download].
+- Extract the zip contents and run `Vox Launcher.exe`.
+- Select your game installation folder under `Game Directory`, if it has not been automatically populated.
+- Create a world in-game and select it under `Cluster Directory`.
+- Paste your server token under `Server Token`. See instructions on how to obtain one in the app.
+- Click on the `LAUNCH` button and have fun!
 
 <br>
 
 <dl><dd><dl>
-  
-> [!TIP]
-> Additionally, check out this amazing **[video tutorial][video_tutorial]** by Jazzy Games on YouTube.
+
+> [!TIP]  
+> Additionally, check out this amazing **[video tutorial][video_tutorial]** by Jazzy Games on YouTube for a step-by-step guide.
 
 </dl></dd></dl>
 
@@ -68,23 +68,25 @@ A windows only launcher that simplify the creation and usage of dedicated server
 
 <br>
 
-- **Windows Defender is flagging Vox Launcher as a threat, why is this happening?**
+- **Why is Windows Defender flagging Vox Launcher as a threat?**
 
 <dl><dd><dl><dd><dl>
- 
-> The tool called [**Pyinstaller**][pyinstaller_repo], which is used to bundle the app into an executable, is also used by people who actually make malicious software. Windows Defender recognizes some similar patterns in the executable and includes Vox Launcher as a threat.
 
-> Usually creating a new version solves this temporarily, but there's not much to be done in the long term other than rebuilding the whole app in another programming language, which I don't have the time or desire to do at the moment. The only thing you could do is to [**add an exclusion to Windows Defender**][windows_defender_tutorial].
+> The launcher is packaged using [**PyInstaller**][pyinstaller_repo], a tool often used to bundle Python apps into executables. Unfortunately, malicious software also uses PyInstaller, causing false positives.
+>  
+> A new release usually resolves the issue temporarily. Long-term, the solution would involve rewriting the app in another language — something I currently don't plan to do.
+>  
+> You can safely [**add an exclusion in Windows Defender**][windows_defender_tutorial].
 
 </dl></dd></dl></dd></dl>
 
 <br>
 
-- **Are mods supported? What do I need to do to enable them?**
+- **Are mods supported? How do I enable them?**
 
 <dl><dd><dl><dd><dl>
- 
-> Yes, they are. Just enable them when you're creating the world, it's that simple!
+
+> Yes! Simply enable them when creating your world in-game. That’s all you need to do.
 
 </dl></dd></dl></dd></dl>
 
@@ -93,8 +95,8 @@ A windows only launcher that simplify the creation and usage of dedicated server
 - **How can I change something about the world? Like the server name or the enabled mods?**
 
 <dl><dd><dl><dd><dl>
- 
-> Just edit these in the in-game menu and launch the world via the in-game menu once.<br>
+
+> Edit these via the in-game menu, then launch the world once from within the game to apply the changes.
 > Launching it through the game is essential for saving the changes!
 
 </dl></dd></dl></dd></dl>
@@ -104,18 +106,19 @@ A windows only launcher that simplify the creation and usage of dedicated server
 - **How do I get a Cluster Token?**
 
 <dl><dd><dl><dd><dl>
- 
-> You can create one on the [**Klei Accounts**][token_website] website.
+
+> You can create one on the [**Klei Accounts**][token_website] page.
 
 </dl></dd></dl></dd></dl>
 
 <br>
 
-- **I've found a problem in the app, where should I report it?**
+- **I found a bug. Where should I report it?**
 
 <dl><dd><dl><dd><dl>
- 
-> You may create a issue in the [**Issues Tab**][new_issue].</br>Please attach the app log file when doing so. It can be found at `appdata/logs/applog.txt`.
+
+> Report issues in the [**Issues Tab**][new_issue].  
+> Please include the app log file (`appdata/logs/applog.txt`).
 
 </dl></dd></dl></dd></dl>
 
@@ -145,27 +148,26 @@ From top left to bottom right: `Instructions`, `Starting Server`, `Server Online
 
 </div>
 
-
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 ## 📌 Contributing
 
 <br>
 
-Feel free to suggest features and create pull requests to fix bugs or improve existing code. The entry point is `app/main.py`.
+Contributions are welcome! Feel free to suggest new features, submit pull requests, or fix bugs. The entry point is `app/main.py`.
 
 #### You can also help by translating the app:
-- Create a file in `app/localization/` called `locale.yaml`, where locate is the language code, which you can find in **[this website][locales]**.
+- Add a file in `app/localization/` named `{locale}.yaml`, where `{locale}` is the language code (see **[this list][locales]**).
   
-- Use `en_US.yaml` as a template. Please, try to keep sentence lengths close to the English version to avoid visual issues.
+- Use `en_US.yaml` as a template. Try to keep translations similar in length to avoid layout issues.
   
-- Create a **[Pull Request][pull_request]** with the title: `Added {language} ({lang_code}) localization`
+- Submit a **[Pull Request][pull_request]** titled: `Added {Language} ({locale}) localization`.
 
 <br>
 
 #### Installing dependencies:
 ```ruby
-  python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 <br><br>
@@ -174,7 +176,7 @@ Feel free to suggest features and create pull requests to fix bugs or improve ex
 
 <br>
 
-I would like to thank these people for helping with this project:
+Big thanks to everyone who contributed to this project:
 
 ### Translators
 
