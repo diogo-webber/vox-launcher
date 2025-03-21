@@ -369,7 +369,7 @@ def open_file(path):
 
     if path.exists():
         os.startfile(path)
-    
+
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -609,31 +609,60 @@ def _find_command_line_argument(text, arg):
 
 def retrieve_launch_data(cluster_dir, save_loader):
     """
-    Retrieve launch data from the cluster's log file, also saving it.
+    Retrieve launch data from the cluster's log file or any sibling cluster log files.
 
     Args:
         cluster_dir (str): the cluster path.
-        save_loader (SaveLoader): save load instance.
+        save_loader (SaveLoader): save loader instance.
 
     Returns:
         data (DotDict | None): the retrieved data or None.
-
     """
 
-    log_path = Path(cluster_dir) / "Master/server_log.txt"
+    cluster_path = Path(cluster_dir)
+
+    # First, check current cluster.
+    data = _check_log_file(cluster_path, save_loader)
+
+    if data:
+        return data
+
+    # Then, check sibling clusters in parent folder.
+    for sibling_cluster in cluster_path.parent.iterdir():
+        if sibling_cluster.is_dir() and sibling_cluster != cluster_path:
+            data = _check_log_file(sibling_cluster, save_loader)
+
+            if data:
+                return data
+
+    return None
+
+
+def _check_log_file(cluster_path, save_loader):
+    """
+    Checks the Master/server_log.txt in a cluster folder.
+
+    Args:
+        cluster_path (Path): path to the cluster.
+        save_loader (SaveLoader): save loader instance.
+
+    Returns:
+        data (DotDict | None): retrieved data or None.
+    """
+
+    log_path = cluster_path / "Master/server_log.txt"
 
     if not log_path.exists():
         return None
 
-    text  = log_path.read_text(encoding="utf-8")
+    text = log_path.read_text(encoding="utf-8")
 
     if _find_command_line_argument(text, "backup_log_count"):
-        # If this one exists, it means this was launched outside of Vox.
-
+        # If backup_log_count exists, it's likely that this cluster was launched outside of Vox.
         save_loader.save(
-            persistent_storage_root = _find_command_line_argument(text, "persistent_storage_root"),
-            ownerdir = _find_command_line_argument(text, "ownerdir"),
-            ugc_directory = _find_command_line_argument(text, "ugc_directory"),
+            persistent_storage_root=_find_command_line_argument(text, "persistent_storage_root"),
+            ownerdir=_find_command_line_argument(text, "ownerdir"),
+            ugc_directory=_find_command_line_argument(text, "ugc_directory"),
         )
 
         return save_loader.load()
