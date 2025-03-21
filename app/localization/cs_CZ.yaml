@@ -109,28 +109,33 @@ ENTRY:
 ERROR:
     TOKEN_INVALID: Poskytnutý token je neplatný nebo jeho platnost vypršela.
     GENERAL: Při spouštění serveru došlo k chybě, zkontrolujte prosím záznam serveru.
-    PORTS:  |-
-        Porty {ports} jsou již používány jiným programem.
+    PORTS: |-
+        Server se nepodařilo spustit z jednoho z následujících důvodů:
 
-        Obvykle se to stane, když jiný server běží na stejných portech - dokonce i ve hře.
-        
-        Pokud nenajdete žádné nepravidelnosti, prosím, nahlaste to v repozitáři, protože to může být způsobeno samotnou aplikací.
+        • Cluster není ve stejném adresáři jako světy vytvořené ve hře.
+
+        • Jeden nebo více z následujících portů {ports} již používá jiný program, včetně serverů ve hře.
+
+        Pokud se žádný z těchto důvodů neaplikuje, nahlaste prosím problém.
+        Může být způsoben samotným launcherem.
     EXCEPTION: |-
-        Došlo k chybě!
+        Došlo k neočekávané chybě!
 
-        {error}
+        > {error}
 
-        Váš server bude uložen a vypnut. Nicméně, uživatelské rozhraní aplikace to nemusí zobrazit správně.
+        Aplikace bude restartována.
 
-        Prosím, nahlaste chybu vytvořením issue na Githubu.
+        Pokud právě běží server, bude uložen a bezpečně vypnut.
+
+        Zvažte prosím nahlášení této chyby vytvořením issue na Githubu.
     LAUNCH_DATA_INVALID: |-
-        Před použitím Vox Launcheru poprvé spusťte tento cluster přes herní menu a zastavte ho.
+        Před prvním použitím {APP_NAME} spusťte jakýkoli cluster z herního menu a zastavte jej.
 
-        Poté klikněte na tlačítko zkusit znovu níže.
+        Poté klikněte na tlačítko Zkusit znovu níže.
     SERVER_CRASH: |-
-        Váš server havaroval, prosím, podívejte se na logovací soubory hry pro více informací.
+        Váš server havaroval. Pro více informací se podívejte do log souborů hry.
 
-        Toto je pád hry, nikoli problém Vox Launcheru. Zvažte kontrolu povolených modů a nahlášení problému Klei.
+        Toto je pád hry, nikoli problém {APP_NAME}. Zvažte kontrolu povolených modů nebo nahlášení problému Klei.
 
 SETTINGS_SCREEN:
     BUTTONS:

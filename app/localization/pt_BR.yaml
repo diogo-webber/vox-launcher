@@ -108,28 +108,33 @@ ENTRY:
 ERROR:
     TOKEN_INVALID: O token fornecido é inválido ou expirou.
     GENERAL: Um erro ocorreu ao iniciar o servidor, por favor verifique os registros do servidor.
-    PORTS:  |-
-        As portas {ports} já estão sendo utilizadas por outro programa.
+    PORTS: |-
+        O servidor não pôde ser iniciado devido a uma das seguintes razões:
 
-        Isso geralmente acontece quando outro servidor está rodando nas mesmas portas - mesmo que tenha sido iniciado por dentro do jogo.
+        • O cluster não está no mesmo diretório que os mundos gerados pelo menu do jogo.
 
-        Caso não encontre nenhuma irregularidade, reporte o problema no repositório, pois isso pode ser sido causado pelo próprio app.
+        • Uma ou mais das seguintes portas {ports} já estão sendo usadas por outro programa, incluindo servidores iniciados pelo jogo.
+
+        Se nenhuma das opções se aplica, por favor, reporte o problema.
+        Esse problema pode ter sido causado pelo próprio launcher.
     EXCEPTION: |-
-        Um erro ocorreu!
+        Um erro inesperado ocorreu!
 
-        {error}
+        > {error}
 
-        Seu servidor será salvo e fechado. Entretanto, a interface do aplicativo pode não representar isso corretamente.
+        O aplicativo será reiniciado.
 
-        Por favor, reporte o problema criando um "issue" no Github.
+        Se um servidor estiver em execução, ele será salvo e desligado com segurança.
+
+        Por favor, considere reportar este erro criando um issue no GitHub.
     LAUNCH_DATA_INVALID: |-
-        Antes de usar o Vox Launcher pela primeira vez, por favor inicie este cluster pelo menu do jogo e feche-o.
+        Antes de usar o {APP_NAME} pela primeira vez, por favor, inicie qualquer cluster pelo menu do jogo e pare-o.
 
-        Depois disso, clique no botão atualizar abaixo.
+        Depois disso, clique no botão Atualizar abaixo.
     SERVER_CRASH: |-
-        Houve um erro no servidor, cheque os arquivos de registro do jogo para saber mais detalhes.
+        Seu servidor crashou. Por favor, consulte os arquivos de log do jogo para mais informações.
 
-        Este é um erro do jogo, não um problema com o Vox Launcher. Considere checar os seus mods habilitados e reportar o problema para a Klei.
+        Este é um crash do jogo, não um problema do {APP_NAME}. Considere verificar os mods habilitados ou relatar o problema à Klei.
 
 SETTINGS_SCREEN:
     BUTTONS:

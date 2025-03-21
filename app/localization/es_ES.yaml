@@ -110,28 +110,33 @@ ENTRY:
 ERROR:
     TOKEN_INVALID: El token proporcionado no es válido o ha expirado.
     GENERAL: Ha ocurrido un error durante el lanzamiento del servidor, por favor, comprueba los registros.
-    PORTS:  |-
-        Los puertos {ports} se encuentran ocupados por otro programa.
+    PORTS: |-
+        El servidor no pudo iniciarse debido a una de las siguientes razones:
 
-        Esto habitualmente ocurre cuando otro servidor está iniciado sobre los mismos puertos, incluso dentro del juego.
+        • El clúster no está en el mismo directorio que los mundos generados en el juego.
 
-        Si no encuentras ninguna irregularidad, por favor, reporta este problema en el repositorio, esto puede ser un fallo de la propia aplicación.
+        • Uno o más de los siguientes puertos {ports} ya están siendo utilizados por otro programa, incluidos los servidores del juego.
+
+        Si ninguna de las anteriores aplica, por favor, informe del problema.
+        Podría ser causado por el propio lanzador.
     EXCEPTION: |-
-        ¡Ocurrió un error!
+        ¡Ocurrió un error inesperado!
 
-        {error}
+        > {error}
 
-        Tu servidor será guardado y apagado. Sin embargo, la interfaz de la aplicación podría no mostrarlo correctamente.
+        La aplicación se reiniciará.
 
-        Por favor reporta el error creando un issue en Github.
+        Si un servidor está en funcionamiento, se guardará y se cerrará de forma segura.
+
+        Por favor, considere informar de este error creando un issue en GitHub.
     LAUNCH_DATA_INVALID: |-
-        Antes de usar Vox Launcher por primera vez, por favor lanza este clúster desde el menú del juego y detenlo.
+        Antes de usar {APP_NAME} por primera vez, por favor, inicie cualquier clúster desde el menú del juego y deténgalo.
 
-        Después de eso, haz clic en el botón intentar de nuevo a continuación.
+        Una vez hecho esto, haga clic en el botón Reintentar a continuación.
     SERVER_CRASH: |-
-        Tu servidor ha fallado, por favor revisa los archivos de registro del juego para más información.
+        Su servidor ha fallado. Por favor, consulte los archivos de registro del juego para obtener más información.
 
-        Este es un fallo del juego, no de Vox Launcher. Considera revisar los mods habilitados y reportar el problema a Klei.
+        Este es un fallo del juego, no un problema de {APP_NAME}. Considere verificar los mods habilitados o informar del problema a Klei.
 
 SETTINGS_SCREEN:
     BUTTONS:
