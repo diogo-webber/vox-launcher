@@ -115,27 +115,32 @@ ERROR:
     TOKEN_INVALID: The provided token is invalid or has expired.
     GENERAL: An error has occurred while launching the server, please check the server log.
     PORTS: |-
-        The ports {ports} are already being used by another program.
+        The server has failed to start due to one of the following reasons:
 
-        This usually happens when another server is running on the same ports - even within the game.
+        • The cluster is not in the same directory as the worlds generated in-game.
 
-        If you don't find any irregularities, please report this in the repository, as it may be caused by the app itself.
+        • One or more ports {ports} are already in use by another program, including in-game servers.
+
+        If neither applies, please report the issue.
+        It may be caused by the launcher itself.
     EXCEPTION: |-
-        An error has occurred!
+        An unexpected error has occurred!
 
-        {error}
+        > {error}
 
-        Your server will be saved and shutdown. However, the app's UI may not show it properly.
+        The application will be restarted.
 
-        Please report the error by creating a issue on Github.
+        If a server is currently running, it will be saved and safely shut down.
+
+        Please considerer reporting this error by creating a issue on Github.
     LAUNCH_DATA_INVALID: |-
-        Before using Vox Launcher for the first time, please launch this cluster via the in-game menu and stop it.
-
-        After that, click on the try again button bellow.
+        Before using {APP_NAME} for the first time, please launch any cluster from within the in-game menu and stop it.
+        
+        Once done, click the Try Again button below.
     SERVER_CRASH: |-
         Your server has crashed, please refer to the game's log files for more information.
 
-        This is game crash, not a Vox Launcher issue. Consider checking your enabled mods and reporting the issue to Klei.
+        This is game crash, not a {APP_NAME} issue. Consider checking your enabled mods and reporting the issue to Klei.
 
 SETTINGS_SCREEN:
     BUTTONS:
