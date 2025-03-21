@@ -189,7 +189,7 @@ class SettingsScreen():
         buttons = [
             ("APP_LOG",      "assets/file.png",      lambda: open_folder(resource_path("logs"))    ),
             ("LOCAL_FILES",  "assets/directory.png", lambda: open_folder(resource_path("savedata"))),
-            ("REPORT_ISSUE", "assets/bug.png",       open_github_issue                             ),
+            ("REPORT_ISSUE", "assets/bug.png",       lambda: open_github_issue(include_applog=True)),
         ]
 
         for text, img, cmd in buttons:

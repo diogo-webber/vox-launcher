@@ -6,8 +6,9 @@ import webbrowser
 import re, json, sys
 import logging, locale
 import psutil, os, zipfile
+from urllib.parse import quote as encode_for_url
 
-from constants import LOGGER, APP_VERSION
+from constants import LOGGER
 
 logger = logging.getLogger(LOGGER)
 
@@ -322,16 +323,35 @@ def validate_cluster_directory(directory: str) -> bool:
 
 # ----------------------------------------------------------------------------------------- #
 
+def get_app_logs():
+    file = resource_path("logs/applog.txt")
+
+    if not file.exists():
+        return "No logs available."
+
+    return file.read_text(encoding="utf-8")
+
+# ----------------------------------------------------------------------------------------- #
+
 def open_klei_account_page(*args, **kwargs):
     """ Opens Klei dedicated servers website in the default browser. """
 
     webbrowser.open("https://accounts.klei.com/account/game/servers?game=DontStarveTogether", new=0, autoraise=True)
 
-def open_github_issue(template="bug_report"):
-    """ Opens Vox Launcher repository on Github, in the issues tab, in the default browser. """
+def open_github_issue(template="bug_report", traceback=None, include_applog=False):
+    """
+    Opens the Vox Launcher GitHub issues page with a pre-filled template.
 
-    webbrowser.open(f"https://github.com/diogo-webber/vox-launcher/issues/new?template={template}.yml", new=0, autoraise=True)
+    Args:
+        template (str): Issue template name (without .yml). Default is "bug_report".
+        traceback (str, optional): Traceback to include.
+        include_applog (bool): If True, includes app logs.
+    """
 
+    traceback = traceback and f"&traceback={encode_for_url(traceback)}" or ""
+    applogs = include_applog and f"&applogs={encode_for_url(get_app_logs())}" or ""
+
+    webbrowser.open(f"https://github.com/diogo-webber/vox-launcher/issues/new?template={template}.yml{traceback}{applogs}", new=0, autoraise=True)
 
 def open_folder(path):
     """ Opens a Windows explorer instance on this path  """

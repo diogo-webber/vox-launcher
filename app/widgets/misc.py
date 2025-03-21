@@ -340,7 +340,14 @@ class ServerErrorPopUp(PopUp):
 class AppExceptionPopUp(PopUp):
     def __init__(self, root):
         super().__init__(root)
+
         self.button_2_text = STRINGS.POPUP.REPORT
+        self.traceback = None
+
+    def create(self, text, traceback):
+        self.traceback = traceback
+
+        return super().create(text)
 
     def button_1_callback(self):
         self.confirmed = True
@@ -348,7 +355,7 @@ class AppExceptionPopUp(PopUp):
         self._close()
 
     def button_2_callback(self):
-        open_github_issue(template="app_crash_report")
+        open_github_issue(template="app_crash_report", traceback=self.traceback)
 
 class LaunchDataPopUp(PopUp):
     def __init__(self, root):

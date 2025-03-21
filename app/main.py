@@ -373,14 +373,16 @@ class App(CTk):
 
     def report_callback_exception(self, exctype, excvalue, tb): # Overrides Ctk method.
         err: list = traceback.format_exception(exctype, excvalue, tb)
+        error = " ".join(err)
 
-        logger.error(" ".join(err))
+        logger.error(error)
 
         summary = f'{exctype.__name__}: {excvalue}.'
 
-        self.exception_popup.create(STRINGS.ERROR.EXCEPTION.format(error=summary))
-
         self.stop_shards()
+
+        self.exception_popup.create(STRINGS.ERROR.EXCEPTION.format(error=summary), error)
+
 
 # ------------------------------------------------------------------------------------ #
 
