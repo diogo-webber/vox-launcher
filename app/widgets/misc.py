@@ -352,6 +352,8 @@ class AppExceptionPopUp(PopUp):
     def button_1_callback(self):
         self.confirmed = True
 
+        self.root.restart_application()
+
         self._close()
 
     def button_2_callback(self):
