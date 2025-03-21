@@ -219,7 +219,13 @@ class DedicatedServerShard():
         return True, None
 
     def handle_output_keywords(self, text):
-        if "E_INVALID_TOKEN" in text or "E_EXPIRED_TOKEN" in text:
+        if "[Shard] Stopping" in text:
+            logger.info(f"{self.shard_frame.code} was shut down... Stopping other shards.")
+
+            self.shard_frame.set_stopping()
+            self.app.stop_shards()
+
+        elif "E_INVALID_TOKEN" in text or "E_EXPIRED_TOKEN" in text:
             logger.error("Invalid Token: E_INVALID_TOKEN or E_EXPIRED_TOKEN")
 
             self.app.token_entry.toggle_warning(False)
@@ -272,11 +278,3 @@ class DedicatedServerShard():
             logger.warning(f"{self.shard_frame.code} shard has crashed!")
 
             self.app.error_popup.create(STRINGS.ERROR.SERVER_CRASH)
-
-        # Runs mainly on master, too important to be in the main if block.
-        if "]: Shutting down" in text:
-            logger.info(f"{self.shard_frame.code} was shut down... Stopping other shards.")
-
-            self.shard_frame.set_stopping()
-            self.app.stop_shards()
-
