@@ -11,16 +11,11 @@ body:
 
             Thanks for reporting a bug! Please fill out the details below.
 
-            ---
-            ### 📂 **Log Files Information**
-            - **App Log File:**
-            Located at: `/appdata/logs/applog.txt`
-
             - **Server Log Files:**
             These are located inside each cluster folder, typically under:
             `<Cluster Folder>/Master/server_log.txt` and `<Cluster Folder>/Caves/server_log.txt`
 
-            Please attach or paste relevant logs in the section below.
+            Please attach these logs in the section below.
 
     - type: textarea
       id: description
@@ -45,13 +40,9 @@ body:
           required: true
 
     - type: textarea
-      id: logs
+      id: applogs
       attributes:
-        label: Log Files or Screenshots
+        label: App Logs [auto-filled]
         description: |
-            Please paste relevant parts of:
-            - App Log (`applog.txt`)
-            - Server Log (`server_log.txt`)
-
-            You may also attach screenshots to show UI issues.
+          This field was auto-filled based on available data.
         render: shell
