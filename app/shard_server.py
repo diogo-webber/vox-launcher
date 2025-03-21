@@ -254,7 +254,7 @@ class DedicatedServerShard():
 
                 if config_file.exists():
                     port = get_key_from_ini_file(config_file, "server_port")
-                    ports.append(f"{port} ({shard})")
+                    ports.append(f"{port} ({STRINGS.SHARD_NAME[shard.upper()] or shard})")
 
             self.app.error_popup.create(STRINGS.ERROR.PORTS.format(ports=", ".join(ports)))
 
