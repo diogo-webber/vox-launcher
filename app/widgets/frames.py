@@ -676,7 +676,7 @@ class TextBoxAsLabel(CTkTextbox):
 
         self.tag_config("hightlight", foreground=COLOR.GREEN)
 
-        for pattern in STRINGS.CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+        for pattern in STRINGS.CLUSTER_GROUP_TOOLTIP_HIGHLIGHT_PATTERNS:
             self.add_hightlight(pattern=pattern)
 
         self.highlight_text()

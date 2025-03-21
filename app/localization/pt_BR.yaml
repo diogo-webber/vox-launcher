@@ -21,7 +21,7 @@ CLUSTER_GROUP_TOOLTIP: |-
     ➌    Cole um token de servidor em {TOKEN_TITLE}. Veja o ícone ⓘ para instruções de como obter um.
     ➍    Finalmente, clique no botão {LAUNCH} e divirta-se!
 
-CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+CLUSTER_GROUP_TOOLTIP_HIGHLIGHT_PATTERNS:
     - "{GAME_TITLE}"
     - "{CLUSTER_TITLE}"
     - "{TOKEN_TITLE}"

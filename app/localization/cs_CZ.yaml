@@ -22,7 +22,7 @@ CLUSTER_GROUP_TOOLTIP: |-
     ➌    Vložte serverový token pod {TOKEN_TITLE}. Přejděte kurzorem myši nad ikonu ⓘ pro instrukce, jak získat token.
     ➍    Nakonec klikněte na tlačítko {LAUNCH} a bavte se!
 
-CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+CLUSTER_GROUP_TOOLTIP_HIGHLIGHT_PATTERNS:
     - "{GAME_TITLE}"
     - "{CLUSTER_TITLE}"
     - "{TOKEN_TITLE}"

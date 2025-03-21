@@ -22,7 +22,7 @@ CLUSTER_GROUP_TOOLTIP: |-
     ➌    在{TOKEN_TITLE}中粘贴服务器令牌。将鼠标悬停在ⓘ图标上以了解如何获取令牌。
     ➍    最后，点击{LAUNCH}按钮然后享受游戏的乐趣！
 
-CLUSTER_GROUP_TOOLTIP_HIGHTLIGHT_PATTERNS:
+CLUSTER_GROUP_TOOLTIP_HIGHLIGHT_PATTERNS:
     - "{GAME_TITLE}"
     - "{CLUSTER_TITLE}"
     - "{TOKEN_TITLE}"
