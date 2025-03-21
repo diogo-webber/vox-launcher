@@ -382,39 +382,41 @@ LUA_FOLDER = Path(__file__).absolute().parent / "lua"
 
 lua_file_cache = {}
 
-def load_lua_file(filename):
+def load_lua_file(filename, **kwargs):
     """
     Loads a .lua file and returns its content, joining its lines.
 
     Args:
         filename (str): the filename, without suffix. Must be inside lua/ folder.
+        **kwargs: Optional keyword arguments to replace {{key}} placeholders in the Lua file.
 
     Returns:
-        text (str, None): the text if the file exists, None otherwise.
+        text (str or None): the text if the file exists, None otherwise.
     """
-
-    file = LUA_FOLDER / (filename + ".lua")
-
-    if lua_file_cache.get(filename):
+    if filename in lua_file_cache:
         return lua_file_cache[filename]
+
+    file = LUA_FOLDER / f"{filename}.lua"
 
     if file.exists():
         text = file.read_text(encoding="utf-8")
 
-        # Remove single line comments.
-        text = re.sub(r'--.*?[\r\n]', '', text)
+        # Remove single-line comments (including newline)
+        text = re.sub(r'--.*?(?:\r\n|\r|\n)', '', text)
 
-        # Try to replace formatter by available variables.
-        text = re.sub(r"\{\{(\w+)\}\}", lambda m: str(globals().get(m.group(1), m.group(0))), text)
+        # Replace placeholders {{key}} with values from kwargs
+        text = re.sub(r"\{\{(\w+)\}\}", lambda m: kwargs.get(m.group(1), m.group(0)), text)
 
+        # Join lines, remove excessive whitespace
         text = " ".join(text.split())
 
         lua_file_cache[filename] = text
 
         return text
-
     else:
         logger.error("load_lua_file: File [%s] doesn't exist...", str(file))
+
+        return None
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -455,10 +457,34 @@ def loadfont(fontpath, private = True, enumerable = False):
 # ----------------------------------------------------------------------------------------- #
 
 def get_system_language_code():
-    windll = ctypes.windll.kernel32
-    windll.GetUserDefaultUILanguage()
+    """
+    Retrieves the system UI language code on Windows.
 
-    return locale.windows_locale[ windll.GetUserDefaultUILanguage() ]
+    Returns:
+        str: The language code in the format 'en_US', 'pt_BR', etc.
+    """
+
+    windll = ctypes.windll.kernel32
+    lang_id = windll.GetUserDefaultUILanguage()
+
+    return locale.windows_locale[lang_id]
+
+
+def get_readable_system_language():
+    """
+    Retrieves the system's language in a human-readable format.
+
+    Returns:
+        str: The name of the system language (e.g., 'English', 'Portuguese').
+             Returns 'Unknown' if the language cannot be determined.
+    """
+    language, _ = locale.getlocale()
+
+    if language:
+        return language.split('_')[0]
+    
+    return "Unknown"
+
 
 # ----------------------------------------------------------------------------------------- #
 

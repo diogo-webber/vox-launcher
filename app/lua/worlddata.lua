@@ -34,7 +34,7 @@ local function OnDayChanged(world, cycles)
     SendData({ day = GetCurrentDay() })
 end
 
-local VOX_SERVER_TAG = "vox launcher {{APP_VERSION}}"
+local VOX_SERVER_TAG = "󰀜 vox launcher · {{lang_code}} · {{version}} 󰀜"
 
 local function HookServerTagsBuilder()
     local _BuildTagsStringCommon = BuildTagsStringCommon

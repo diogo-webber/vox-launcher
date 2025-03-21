@@ -1,13 +1,13 @@
 from customtkinter import CTkFrame, CTkLabel, CTkTextbox, CTkEntry, CTkButton, CTkSwitch, CTkScrollableFrame, CTkImage
-from tkinter import Variable, StringVar, END, CENTER, DISABLED, NORMAL, BOTH
+from tkinter import StringVar, END, CENTER, DISABLED, NORMAL, BOTH
 import re, logging
 from pathlib import Path
 from PIL import Image
 
 from strings import STRINGS
-from constants import COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
-from widgets.buttons import ImageButton, RelativeXImageButton, CustomButton
-from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
+from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
+from widgets.buttons import RelativeXImageButton, CustomButton
+from helpers import load_lua_file, get_readable_system_language, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
 from shard_server import DedicatedServerShard
 from fonts import FONT
 
@@ -629,7 +629,7 @@ class ShardFrame(CustomFrame):
             self._master.reset_button.show()
             self._master.rollback_button.show()
 
-            self._master.master_shard.execute_command(load_lua_file("worlddata"), log=False)
+            self._master.master_shard.execute_command(load_lua_file("worlddata", version=APP_VERSION, lang_code=get_readable_system_language()), log=False)
 
     def is_starting(self):
         return self.status.get() == SERVER_STATUS.STARTING
