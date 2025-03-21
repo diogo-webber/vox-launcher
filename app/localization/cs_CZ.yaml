@@ -19,7 +19,7 @@ ASK_DIRECTORY_TITLE: "  Vyberte adresář"
 CLUSTER_GROUP_TOOLTIP: |-
     ➊    Vyberte složku s instalací hry {GAME_TITLE}, pokud nebyla automaticky vyplněna.
     ➋    Vytvořte svět pomocí herního menu a vyberte ho pod {CLUSTER_TITLE}.
-    ➌    Vložte serverový token pod {TOKEN_TITLE}. Přejděte kurzorem myši nad ikonu ⓘ pro instrukce, jak získat token.
+    ➌    Vložte serverový token pod {TOKEN_TITLE}. Přejeďte kurzorem na ⓘ pro instrukce.
     ➍    Nakonec klikněte na tlačítko {LAUNCH} a bavte se!
 
 CLUSTER_GROUP_TOOLTIP_HIGHLIGHT_PATTERNS:
