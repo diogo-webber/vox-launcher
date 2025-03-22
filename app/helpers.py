@@ -323,6 +323,24 @@ def validate_cluster_directory(directory: str) -> bool:
 
 # ----------------------------------------------------------------------------------------- #
 
+TOKEN_PATTERN = r"^pds-g\^KU.+?\^.+?=$"
+
+def is_valid_token(token: str) -> bool:
+    """
+    Validates if the given token string matches the expected format:
+    pds-g^KU_.........^................................=
+
+    Args:
+        token (str): The token string to validate.
+
+    Returns:
+        bool: True if valid, False otherwise.
+    """
+
+    return bool(re.match(TOKEN_PATTERN, token))
+
+# ----------------------------------------------------------------------------------------- #
+
 def get_app_logs():
     file = resource_path("logs/applog.txt")
 

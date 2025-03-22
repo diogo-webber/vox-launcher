@@ -313,6 +313,12 @@ class App(CTk):
         if not hasattr(self, "master_shard"):
             return
 
+        if not is_valid_token(self.token_entry.get()):
+            self.token_entry.toggle_warning(False)
+            self.error_popup.create(STRINGS.ERROR.TOKEN_INVALID)
+
+            return # Invalid token, don't start server.
+
         if self.master_shard.is_running():
             self.master_shard.stop()
         else:
