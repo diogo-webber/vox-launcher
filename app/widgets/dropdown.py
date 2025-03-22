@@ -25,7 +25,8 @@ class CustomDropdown():
         self.selected_code = default
         self.on_selected_option = on_selected_option
 
-        image_size = self.master._apply_widget_scaling(13)
+        image_size = 19.5
+
         image = ctk.CTkImage(Image.open(resource_path("assets/dropdown.png")), size=(image_size, image_size))
 
         # Create toggle button

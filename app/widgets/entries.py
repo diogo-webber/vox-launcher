@@ -51,9 +51,14 @@ class CustomEntry(CTkEntry):
         self._entry.configure(selectbackground=COLOR.DARK_GRAY)
 
         self.place(
-            x=5,
-            y=-1,
+            x=8,
+            y=0,
         )
+
+        self.update()
+
+        # Ajusting fixer frame to be slightly bigger that us.
+        self.fixer_frame.configure(height=self.winfo_reqheight() / self._apply_widget_scaling(1) + 1)
 
         self._tooltip_frame = CustomFrame(
             master=self._master,
@@ -141,7 +146,8 @@ class DirectoryEntry(CustomEntry):
             **kwargs
         )
 
-        button_image_size = self.winfo_reqheight() / self._apply_widget_scaling(2)
+        entry_size = self.winfo_reqheight() / self._apply_widget_scaling(1)
+        button_image_size = entry_size / 2
 
         self.button = ImageButton(
             master=self.fixer_frame,
@@ -151,7 +157,7 @@ class DirectoryEntry(CustomEntry):
             height=0,
             hover=False,
             image_size=(button_image_size, button_image_size),
-            pos=Pos(size.w - button_image_size * 2, button_image_size / 4)
+            pos=Pos(size.w - button_image_size * 2, entry_size / 5)
         )
 
         self.button.show()
@@ -240,7 +246,8 @@ class TokenEntry(CustomEntry):
             **kwargs
         )
 
-        button_image_size = self.winfo_reqheight() / self._apply_widget_scaling(2)
+        entry_size = self.winfo_reqheight() / self._apply_widget_scaling(1)
+        button_image_size = entry_size / 2
 
         self.button = ImageButton(
             master=self.fixer_frame,
@@ -250,7 +257,7 @@ class TokenEntry(CustomEntry):
             height=0,
             hover=False,
             image_size=(button_image_size, button_image_size),
-            pos=Pos(size.w - button_image_size * 2, button_image_size / 4)
+            pos=Pos(size.w - button_image_size * 2, entry_size / 5)
         )
 
         self.button.show()

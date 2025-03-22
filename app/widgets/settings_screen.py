@@ -183,9 +183,6 @@ class SettingsScreen():
             corner_radius=self.corner_radius,
         )
 
-        button_image_size = (SIZE.SMALL_BUTTON_LONG.h - 5) / self.root._apply_widget_scaling(1)
-        button_image_size = (button_image_size, button_image_size)
-
         buttons = [
             ("APP_LOG",      "assets/file.png",      lambda: open_folder(resource_path("logs"))    ),
             ("LOCAL_FILES",  "assets/directory.png", lambda: open_folder(resource_path("savedata"))),
@@ -197,7 +194,7 @@ class SettingsScreen():
                 master=self.button_menu,
                 text=STRINGS.SETTINGS_SCREEN.BUTTONS[text],
                 image=img,
-                image_size=button_image_size,
+                image_size=(SIZE.SMALL_BUTTON_LONG.h - 15, SIZE.SMALL_BUTTON_LONG.h - 15),
                 command=cmd,
                 font=FONT.SETTING_LONG_BUTTON,
                 width=SIZE.SMALL_BUTTON_LONG.w,

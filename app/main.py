@@ -76,11 +76,13 @@ GAME_DIR = get_game_directory()
 GAME_INITIAL_DIR = GAME_DIR and GAME_DIR.parent or Path.home()
 CLUSTER_INITIAL_DIR = get_clusters_directory()
 
+DEBUG_MODE = LOGGER == "development"
+
 # ------------------------------------------------------------------------------------ #
 
 logger.info("Starting %s...", STRINGS.APP_NAME)
 logger.info("App version: %s", APP_VERSION)
-logger.info("Developer mode: %s", LOGGER == "development")
+logger.info("Developer mode: %s", DEBUG_MODE)
 logger.info("Assumed game folder: %s", GAME_DIR or "???")
 logger.info("Assumed clusters folder: %s", CLUSTER_INITIAL_DIR or "???")
 
@@ -147,14 +149,12 @@ class App(CTk):
             pos=POS.TOKEN_ENTRY,
         )
 
-        tooltip_image_offset = self.token_entry._apply_widget_scaling(-3.5)
-
         self.token_tooltip = Tooltip(
             master=self,
             text=STRINGS.TOKEN_TOOLTIP,
             image="assets/info.png",
-            pos=Pos(POS.TOKEN_TOOLTIP.x, POS.TOKEN_TOOLTIP.y - tooltip_image_offset / 2),
-            image_size=(SIZE.TOKEN_TOOLTIP.w + tooltip_image_offset, SIZE.TOKEN_TOOLTIP.h + tooltip_image_offset),
+            pos=POS.TOKEN_TOOLTIP,
+            image_size=(SIZE.TOKEN_TOOLTIP.w, SIZE.TOKEN_TOOLTIP.h),
             onclick=open_klei_account_page,
         )
 
@@ -367,7 +367,7 @@ class App(CTk):
     def stop_shards(self):
         self.shard_group.stop_all_shards()
 
-    def restart_application(self):
+    def restart_application(self, *args, **kwargs):
         """Restart the PyInstaller-exe or Python script safely."""
         logger.info("Restarting the application.")
 
@@ -393,6 +393,8 @@ class App(CTk):
 # ------------------------------------------------------------------------------------ #
 
 if __name__ == "__main__":
+    #set_debug_scale(1)
+
     app = App()
 
     STRINGS.load_strings(app.settings.get_setting(Settings.LANGUAGE))
@@ -401,4 +403,8 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------------------ #
 
     app.create_widgets()
+
+    if DEBUG_MODE:
+        app.bind("<Control-r>", app.restart_application)
+
     app.mainloop()

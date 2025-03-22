@@ -126,15 +126,15 @@ class Tooltip:
             wraplength=330,
         )
 
-        ipad = self.tooltip_label._apply_widget_scaling(12.5)
+        padding = self.tooltip_label._apply_widget_scaling(18)
 
-        self.tooltip_label.pack(ipadx=ipad, ipady=ipad)
-
+        self.tooltip_label.pack(ipadx=padding, ipady=padding)
         self.tooltip_label.update()
 
-        x, y, _, _ = self.widget.bbox()
-        x += self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - (self.image_size[0] * self.tooltip_label._apply_widget_scaling(1.5))
-        y += self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight() * self.tooltip_label._apply_widget_scaling(.25) - ipad * .25
+        # This is the result of a long time of try and error... not sure what's going on, but it "works". 36.67 is just an offset.
+        x = self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - self.tooltip_label._apply_widget_scaling(36.67) - padding
+        y = self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight()/4 - self.tooltip_label._apply_widget_scaling(5) - padding/2
+        #                                                                            ^ related to corner_radius, likely
 
         self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
 

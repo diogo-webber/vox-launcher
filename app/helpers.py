@@ -7,6 +7,7 @@ import re, json, sys
 import logging, locale
 import psutil, os, zipfile
 from urllib.parse import quote as encode_for_url
+from customtkinter import set_window_scaling, set_widget_scaling
 
 from constants import LOGGER
 
@@ -725,3 +726,7 @@ def _add_to_zip(zipf, folder_path, base_path, arc_folder):
 def add_folder_to_zip(zip_filename, folder_path, arc_folder):
     with zipfile.ZipFile(zip_filename, "a", zipfile.ZIP_DEFLATED) as zipf:
         _add_to_zip(zipf, folder_path, folder_path, arc_folder)
+
+def set_debug_scale(scale):
+    set_window_scaling(scale)
+    set_widget_scaling(scale)

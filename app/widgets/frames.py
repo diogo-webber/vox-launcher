@@ -27,7 +27,8 @@ class LogsTopBar:
             pos=OFFSET.LOGS_TOP_BAR,
         )
 
-        image_size = self.root._apply_widget_scaling(12)
+        image_size = 17
+
         image = CTkImage(Image.open(resource_path("assets/directory.png")), size=(image_size, image_size))
 
         self.open_folder_button = CustomButton(
@@ -45,7 +46,6 @@ class LogsTopBar:
             column = 5,
             columnspan=3,
             padx=(65, 0),
-            sticky="nw",
         )
 
         self.status_circle = ColouredCircle(
@@ -58,7 +58,6 @@ class LogsTopBar:
             row = 0,
             column = 0,
             padx=(15, 10),
-            #sticky="n",
         )
 
         self.shard_name   = self.create_label(text=STRINGS.SHARD_NAME[self.shard.upper()] or self.shard, title=STRINGS.LOG_SCREEN.SHARD_NAME_TITLE, column=1)
@@ -88,15 +87,11 @@ class LogsTopBar:
             row = 0,
             column = column,
             padx=(column == 1 and FRAME_GAP * 1.5 or 65, 10),
-            ipady=FONT_SIZE.CLUSTER_STATS / 3,
-            sticky="n",
         )
 
         value_label.grid(
             row = 0,
             column = column + 1,
-            ipady=FONT_SIZE.CLUSTER_STATS / 3,
-            sticky="n",
         )
 
     def update_memory(self):
