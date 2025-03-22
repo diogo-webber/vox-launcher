@@ -153,7 +153,7 @@ class SettingsScreen():
         self.arguments_entry._textbox.configure(selectbackground=COLOR.DARK_GRAY)
         self.arguments_entry.tag_config("goodoption", foreground=COLOR.LIGHT_BLUE)
         self.arguments_entry.tag_config("badoption", foreground=COLOR.LIGHT_RED)
-        self.arguments_entry.highlight_pattern = re.compile(r"(-\w+)")
+        self.arguments_entry.highlight_pattern = re.compile(r"([-+]\w+)")
 
         self.arguments_entry.bind("<KeyRelease>", self.on_arguments_textbox_key)
 
@@ -295,7 +295,7 @@ class SettingsScreen():
 
         for match in matches:
             start, end = match.span()
-            matched_word = match.group(1).replace("-", "")
+            matched_word = match.group(1)[1:] # No prefix symbol.
             tag = matched_word in INVALID_TEXTBOX_ARGS and "badoption" or "goodoption"
 
             self.arguments_entry.tag_add(tag, f"1.0+{start}c", f"1.0+{end}c")
