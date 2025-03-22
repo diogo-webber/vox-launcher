@@ -52,5 +52,5 @@ body:
       description: |
         This field may have been auto-filled based on available data.
       placeholder: |
-          Please copy and paste the log content from `appdata/logs/applog.txt` into this field.
+          Please copy and paste the log content from appdata/logs/applog.txt into this field.
       render: python
