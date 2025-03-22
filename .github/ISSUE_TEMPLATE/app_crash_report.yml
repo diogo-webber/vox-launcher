@@ -1,5 +1,5 @@
 name: Crash Report
-description: Report an application crash
+description: Report an application crash.
 title: "[Crash]: "
 labels: [crash]
 
@@ -48,7 +48,9 @@ body:
   - type: textarea
     id: traceback
     attributes:
-      label: Crash Traceback [auto-filled]
+      label: Crash Traceback
       description: |
-        This field was auto-filled based on available data.
+        This field may have been auto-filled based on available data.
+      placeholder: |
+          Please copy and paste the log content from `appdata/logs/applog.txt` into this field.
       render: python

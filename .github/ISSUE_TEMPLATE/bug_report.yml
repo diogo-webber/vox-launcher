@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug to help us improve
+description: Report unexpected behavior or visual issues in the application.
 title: "[Bug]: "
 labels: [bug]
 
@@ -42,7 +42,9 @@ body:
     - type: textarea
       id: applogs
       attributes:
-        label: App Logs [auto-filled]
+        label: App Logs
         description: |
-          This field was auto-filled based on available data.
+          This field may have been auto-filled based on available data.
+        placeholder: |
+          Please copy and paste the log content from `appdata/logs/applog.txt` into this field.
         render: shell
