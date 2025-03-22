@@ -39,11 +39,24 @@ if exist "%VENV_PYTHON%" (
     )
 )
 
+:: Check localizations
+call :print_header "Checking localizations..."
+cd "%VOX_DIR%"
+%VENV_PYTHON% "%VOX_DIR%\tools\check_localizations.py" --batch
+if errorlevel 1 (
+    echo %RED%[ERROR]%RESET% Localizations are incomplete.
+    pause
+    exit /b %errorlevel%
+)
+
+call :mark_done
+
+
 :: Update pip
 call :print_header "Updating pip..."
 %VENV_PYTHON% -m pip install --upgrade pip %REQUIRE_VENV_FLAG% > NUL
 if errorlevel 1 (
-    echo %RED%[ERROR]%RESET% Pip upgrade failed!
+    echo %RED%[ERROR]%RESET% Pip upgrade failed.
     pause
     exit /b %errorlevel%
 )
@@ -61,7 +74,7 @@ call :print_header "Building PyInstaller Bootloader..."
 cd "%BOOTLOADER_DIR%"
 %VENV_PYTHON% waf all > NUL
 if errorlevel 1 (
-    echo %RED%[ERROR]%RESET% Bootloader build failed!
+    echo %RED%[ERROR]%RESET% Bootloader build failed.
     pause
     exit /b %errorlevel%
 )
@@ -74,7 +87,7 @@ cd "%PYINSTALLER_DIR%"
 call :print_header "Installing Freshly Built PyInstaller..."
 %VENV_PYTHON% -m pip install . %REQUIRE_VENV_FLAG% > NUL
 if errorlevel 1 (
-    echo %RED%[ERROR]%RESET% Installing PyInstaller failed!
+    echo %RED%[ERROR]%RESET% Installing PyInstaller failed.
     pause
     exit /b %errorlevel%
 )
@@ -85,7 +98,7 @@ call :mark_done
 cd "%VOX_DIR%"
 %VENV_PYTHON% "%VOX_DIR%\tools\build.py"
 if errorlevel 1 (
-    echo %RED%[ERROR]%RESET% Project build failed!
+    echo %RED%[ERROR]%RESET% Project build failed.
     pause
     exit /b %errorlevel%
 )
@@ -97,11 +110,13 @@ exit /b 0
     setlocal
     set "MESSAGE=%~1"
 
-    :: Print without newline
+    :: Print header without newline
     <nul set /p="%CYAN%[INFO]%RESET% %MESSAGE%"
     endlocal & set "LAST_MESSAGE=%MESSAGE%"
     goto :eof
 
 :mark_done
-    echo [2K[0G%CYAN%[INFO]%RESET% %GREEN%[DONE] %LAST_MESSAGE%%RESET%
+    :: Move to beginning of line, clear it, and reprint
+    <nul set /p=[2K[0G%CYAN%[INFO]%RESET% %GREEN%[DONE] %LAST_MESSAGE%%RESET%
+    echo.
     goto :eof
