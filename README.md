@@ -184,7 +184,7 @@ Big thanks to everyone who contributed to this project:
 
 <a href="https://github.com/ClifffordW"> <img align="left" src="https://avatars.githubusercontent.com/u/55302963?v=4" width=10%/> </a>
 <a href="https://github.com/Noctice"> <img align="left" src="https://avatars.githubusercontent.com/u/47233045?v=4" width=10%/> </a>
-<a href="https://github.com/VitaBh"> <img align="left" src="https://avatars.githubusercontent.com/u/148809528?v=4" width=10%/> </a>
+<a href="https://github.com/bitasuperactive"> <img align="left" src="https://avatars.githubusercontent.com/u/62368693?v=4" width=10%/> </a>
 
 </div>
 
