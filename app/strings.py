@@ -23,7 +23,7 @@ def get_system_language_code():
 
 def get_default_language_code():
     """
-    Retrieves the system UI language code on Windows and maps it to a supported language.
+    Retrieves the system UI language code on Windows and returns a supported language code.
 
     Returns:
         str: A language code in the format 'en_US', 'pt_BR', etc.
@@ -31,7 +31,7 @@ def get_default_language_code():
 
     code = get_system_language_code()
 
-    return STRINGS.LANGUAGES[code] or "en_US"
+    return STRINGS.LANGUAGES[code] is not None and code or "en_US"
 
 def get_readable_system_language():
     """
