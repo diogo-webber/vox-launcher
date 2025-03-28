@@ -8,7 +8,7 @@ from strings import STRINGS
 from constants import COLOR, OFFSET, SIZE, LOGGER, Pos, Size
 from widgets.buttons import ImageButton
 from widgets.frames import CustomFrame
-from helpers import get_key_from_ini_file, get_shard_names
+from helpers import get_sanitized_cluster_name, get_shard_names
 from fonts import FONT
 
 logger = logging.getLogger(LOGGER)
@@ -205,7 +205,7 @@ class ClusterDirectoryEntry(DirectoryEntry):
             self._master.token_entry.set_text(token)
 
         if config_file.exists():
-            cluster_name = get_key_from_ini_file(config_file, "cluster_name")
+            cluster_name = get_sanitized_cluster_name(config_file)
 
             self._master.cluster_name.text.set(cluster_name or STRINGS.CLUSTER_NAME_DEFAULT)
 

@@ -697,3 +697,28 @@ def add_folder_to_zip(zip_filename, folder_path, arc_folder):
 def set_debug_scale(scale):
     set_window_scaling(scale)
     set_widget_scaling(scale)
+
+# ------------------------------------------------------------------------------------------ #
+
+_INVALID_UNICODE_RANGES = [
+    (983040, 983089),  # Emoji
+    (57600,   57606),  # Mouse
+]
+
+regex_range = ""
+
+for start, end in _INVALID_UNICODE_RANGES:
+    regex_range += f"{chr(start)}-{chr(end)}"
+
+_CUSTOM_UNICODE_PATTERN = re.compile(f"[{regex_range}]")
+
+def get_sanitized_cluster_name(config_file):
+    cluster_name = get_key_from_ini_file(config_file, "cluster_name")
+
+    # Remove custom unicode characters.
+    cleaned = _CUSTOM_UNICODE_PATTERN.sub("", cluster_name)
+
+    # Remove duplicated whitespaces.
+    cleaned = re.sub(r'\s+', " ", cleaned).strip()
+
+    return cleaned
