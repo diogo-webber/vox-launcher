@@ -4,10 +4,10 @@ import re, logging
 from pathlib import Path
 from PIL import Image
 
-from strings import STRINGS
+from strings import STRINGS, get_readable_system_language
 from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
 from widgets.buttons import RelativeXImageButton, CustomButton
-from helpers import load_lua_file, get_readable_system_language, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
+from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
 from shard_server import DedicatedServerShard
 from fonts import FONT
 

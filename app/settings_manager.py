@@ -1,13 +1,14 @@
 from pathlib import Path
 import json, logging
 from enum import Enum
-from helpers import resource_path, get_system_language_code
+from helpers import resource_path
+from strings import get_default_language_code
 from constants import LOGGER
 
 logger = logging.getLogger(LOGGER)
 
 class Settings(Enum):
-    LANGUAGE = get_system_language_code()
+    LANGUAGE = get_default_language_code()
     LAUNCH_OPTIONS = ""
 
 class SettingsManager:

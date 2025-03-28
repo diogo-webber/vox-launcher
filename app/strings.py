@@ -1,8 +1,52 @@
-import yaml
+import yaml, locale
+import ctypes
+import ctypes.wintypes
 from helpers import resource_path, DotDict
 from constants import APP_VERSION
 
 DEBUG_LANG_CODE = None  # "zh_CN"
+
+# ----------------------------------------------------------------------------------------- #
+
+def get_system_language_code():
+    """
+    Retrieves the system UI language code on Windows.
+
+    Returns:
+        str: The language code in the format 'en_US', 'pt_BR', etc.
+    """
+
+    windll = ctypes.windll.kernel32
+    lang_id = windll.GetUserDefaultUILanguage()
+
+    return locale.windows_locale[lang_id]
+
+def get_default_language_code():
+    """
+    Retrieves the system UI language code on Windows and maps it to a supported language.
+
+    Returns:
+        str: A language code in the format 'en_US', 'pt_BR', etc.
+    """
+
+    code = get_system_language_code()
+
+    return STRINGS.LANGUAGES[code] or "en_US"
+
+def get_readable_system_language():
+    """
+    Retrieves the system's language in a human-readable format.
+
+    Returns:
+        str: The name of the system language (e.g., 'English', 'Portuguese').
+             Returns 'Unknown' if the language cannot be determined.
+    """
+    language, _ = locale.getlocale()
+
+    if language:
+        return language.split('_')[0]
+    
+    return "Unknown"
 
 # ----------------------------------------------------------------------------------------- #
 

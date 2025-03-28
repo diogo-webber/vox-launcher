@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import ctypes.wintypes
 import webbrowser
 import re, json, sys
-import logging, locale
+import logging
 import psutil, os, zipfile
 from urllib.parse import quote as encode_for_url
 from customtkinter import set_window_scaling, set_widget_scaling
@@ -474,39 +474,6 @@ def loadfont(fontpath, private = True, enumerable = False):
     return bool(numFontsAdded)
 
 # ----------------------------------------------------------------------------------------- #
-
-def get_system_language_code():
-    """
-    Retrieves the system UI language code on Windows.
-
-    Returns:
-        str: The language code in the format 'en_US', 'pt_BR', etc.
-    """
-
-    windll = ctypes.windll.kernel32
-    lang_id = windll.GetUserDefaultUILanguage()
-
-    return locale.windows_locale[lang_id]
-
-
-def get_readable_system_language():
-    """
-    Retrieves the system's language in a human-readable format.
-
-    Returns:
-        str: The name of the system language (e.g., 'English', 'Portuguese').
-             Returns 'Unknown' if the language cannot be determined.
-    """
-    language, _ = locale.getlocale()
-
-    if language:
-        return language.split('_')[0]
-    
-    return "Unknown"
-
-
-# ----------------------------------------------------------------------------------------- #
-
 
 def sort_key(shardname):
     """Master first, then Caves and then the others"""
