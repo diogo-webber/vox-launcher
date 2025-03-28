@@ -6,7 +6,7 @@ from widgets.frames import CustomFrame
 from widgets.dropdown import CustomDropdown
 from widgets.buttons import CustomButton, ImageButton
 from constants import COLOR, SIZE, POS, OFFSET, FONT_SIZE, WINDOW_MARGIN, SETTINGS_WINDOW_MARGIN, WINDOW_HEIGHT, WINDOW_WIDTH, Pos, Size
-from strings import STRINGS
+from strings import STRINGS, get_default_language_code
 from fonts import FONT
 from helpers import open_github_issue, resource_path, open_folder
 from settings_manager import Settings
@@ -92,10 +92,12 @@ class SettingsScreen():
             corner_radius=self.corner_radius,
         )
 
+        lang_code = self.master.settings.get_setting(Settings.LANGUAGE)
+
         self.language_dropdown = CustomDropdown(
             master=self.root,
             options=[(code, name) for code, name in STRINGS.LANGUAGES.to_dict().items()],
-            default=self.master.settings.get_setting(Settings.LANGUAGE),
+            default=STRINGS.LANGUAGES[lang_code] is not None and lang_code or get_default_language_code(),
             on_selected_option=lambda code, name: self.master.settings.set_setting(Settings.LANGUAGE, code)
         )
 
