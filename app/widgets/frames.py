@@ -292,7 +292,7 @@ class ShardLogPanel():
 
             if log_path.exists():
                 self.reset_text()
-                self.append_text(log_path.read_text(encoding="utf-8"))
+                self.append_text(log_path.read_text(encoding="utf-8", errors="backslashreplace"))
 
                 logger.debug(f"Loading log file for {self.shard}.")
 

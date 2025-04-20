@@ -133,7 +133,8 @@ class SaveLoader:
                 indent = 4,
                 ensure_ascii = False
             ),
-            encoding="utf-8"
+            encoding="utf-8",
+            errors="backslashreplace"
         )
 
     def load(self):
@@ -147,7 +148,7 @@ class SaveLoader:
         if not self.file.exists():
             return
 
-        data = json.loads(self.file.read_text(encoding="utf-8"))
+        data = json.loads(self.file.read_text(encoding="utf-8", errors="backslashreplace"))
 
         return DotDict(data)
 
@@ -236,7 +237,7 @@ def get_key_from_ini_file(file, key):
 
     pattern = re.compile(rf'{key}\s*=\s*(.+)')
 
-    text  = file.read_text(encoding="utf-8")
+    text  = file.read_text(encoding="utf-8", errors="backslashreplace")
     match = pattern.search(text)
 
     if match:
@@ -348,7 +349,7 @@ def get_app_logs():
     if not file.exists():
         return "No logs available."
 
-    return file.read_text(encoding="utf-8")
+    return file.read_text(encoding="utf-8", errors="backslashreplace")
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -418,7 +419,7 @@ def load_lua_file(filename, **kwargs):
     file = LUA_FOLDER / f"{filename}.lua"
 
     if file.exists():
-        text = file.read_text(encoding="utf-8")
+        text = file.read_text(encoding="utf-8", errors="backslashreplace")
 
         # Remove single-line comments (including newline)
         text = re.sub(r'--.*?(?:\r\n|\r|\n)', '', text)
@@ -667,7 +668,7 @@ def _check_log_file(cluster_path, save_loader):
     if not log_path.exists():
         return None
 
-    text = log_path.read_text(encoding="utf-8")
+    text = log_path.read_text(encoding="utf-8", errors="backslashreplace")
 
     if _find_command_line_argument(text, "backup_log_count"):
         # If backup_log_count exists, it's likely that this cluster was launched outside of Vox.

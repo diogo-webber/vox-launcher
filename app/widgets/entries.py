@@ -200,7 +200,7 @@ class ClusterDirectoryEntry(DirectoryEntry):
         config_file =  directory_path / "cluster.ini"
 
         if token_file.exists():
-            token = token_file.read_text(encoding="utf-8")
+            token = token_file.read_text(encoding="utf-8", errors="backslashreplace")
 
             self._master.token_entry.set_text(token)
 

@@ -106,7 +106,8 @@ class SettingsManager:
 
         self.file.write_text(
             json.dumps(settings_to_save, sort_keys=True, indent=4, ensure_ascii=False),
-            encoding="utf-8"
+            encoding="utf-8",
+            errors="backslashreplace"
         )
 
     def load(self):
@@ -116,7 +117,7 @@ class SettingsManager:
             return False
 
         try:
-            data = json.loads(self.file.read_text(encoding="utf-8"))
+            data = json.loads(self.file.read_text(encoding="utf-8", errors="backslashreplace"))
 
         except json.JSONDecodeError:
             logger.warning(f"Corrupted settings file {self.file}. Creating backup.")

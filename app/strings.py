@@ -71,7 +71,7 @@ class Strings(DotDict):
 
     def __init__(self):
         # Load fallback (English) strings initially
-        fallback_strings = yaml.safe_load(FALLBACK_FILE.read_text(encoding="utf-8"))
+        fallback_strings = yaml.safe_load(FALLBACK_FILE.read_text(encoding="utf-8", errors="backslashreplace"))
         super().__init__(fallback_strings)
 
         # Format fallback
@@ -82,7 +82,7 @@ class Strings(DotDict):
         loc_file = LOC_DIR / f"{lang_code}.yaml"
 
         if loc_file.exists():
-            loaded_strings = yaml.safe_load(loc_file.read_text(encoding="utf-8"))
+            loaded_strings = yaml.safe_load(loc_file.read_text(encoding="utf-8", errors="backslashreplace"))
 
             super().__init__(loaded_strings)
 
