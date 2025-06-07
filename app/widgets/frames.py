@@ -3,10 +3,12 @@ from tkinter import StringVar, END, CENTER, DISABLED, NORMAL, BOTH
 import re, logging
 from pathlib import Path
 from PIL import Image
+import threading
+import os
 
 from strings import STRINGS, get_readable_system_language
 from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
-from widgets.buttons import RelativeXImageButton, CustomButton
+from widgets.buttons import RelativeXImageButton, CustomButton, ImageButton
 from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
 from shard_server import DedicatedServerShard
 from fonts import FONT
@@ -173,14 +175,13 @@ class ShardLogPanel():
             state = DISABLED,
         )
 
-        #self.textbox.bind("<MouseWheel>", self._mouse_scroll_event)
-
+        self.textbox.bind("<MouseWheel>", self._mouse_scroll_event)
         self.textbox._textbox.configure(selectbackground=COLOR.GRAY)
 
         self.add_hightlight(pattern=r'\[\d{2}:\d{2}:\d{2}\]:', name="timestamp", color=COLOR.CONSOLE_GRAY)
         self.add_hightlight(pattern=r'World \d* is now connected', name="online", color=COLOR.GREEN)
         self.add_hightlight(pattern=r'RemoteCommandInput:.*?[\n\r]+', name="remotecommand", color=COLOR.LIGHT_BLUE)
-        #self.add_hightlight(pattern=r'\[Warning\].*?[\n\r]+', name="warnings", color=COLOR.YELLOW) # FIXME: bugged
+        self.add_hightlight(pattern=r'^\[Warning\].*$', name="warnings", color=COLOR.YELLOW) # FIXME: bugged - I Fixed it by removing the ^ and $ from the pattern
 
         self.textbox.place(
             x = OFFSET.LOGS_TEXTBOX.x,
@@ -229,16 +230,16 @@ class ShardLogPanel():
             y = OFFSET.LOGS_CLOSE.y,
         )
 
-        # self.show_end_button = ImageButton(
-        #     master=self.root,
-        #     image="assets/arrowdown.png",
-        #     bg_color=COLOR.DARK_GRAY,
-        #     command=self.show_end,
-        #     width=SIZE.LOGS_SHOW_END_BUTTON.w,
-        #     height=SIZE.LOGS_SHOW_END_BUTTON.h,
-        #     image_size=(SIZE.LOGS_SHOW_END_BUTTON.w - 18, SIZE.LOGS_SHOW_END_BUTTON.h - 18),
-        #     pos=Pos(OFFSET.LOGS_SHOW_END_BUTTON.x, OFFSET.LOGS_SHOW_END_BUTTON.y),
-        # )
+        self.show_end_button = ImageButton(
+            master=self.root,
+            image="assets/arrowdown.png",
+            bg_color=COLOR.DARK_GRAY,
+            command=self.show_end,
+            width=SIZE.LOGS_SHOW_END_BUTTON.w,
+            height=SIZE.LOGS_SHOW_END_BUTTON.h,
+            image_size=(SIZE.LOGS_SHOW_END_BUTTON.w - 18, SIZE.LOGS_SHOW_END_BUTTON.h - 18),
+            pos=Pos(OFFSET.LOGS_SHOW_END_BUTTON.x, OFFSET.LOGS_SHOW_END_BUTTON.y + 40), # +40 to place it below the textbox
+        )
 
         self.auto_scroll_switch = CTkSwitch(
             master=self.root,
@@ -284,22 +285,32 @@ class ShardLogPanel():
 
         if self.server.is_running():
             self.show_end()
-
             self.topbar.start_tracking_memory()
-
-        elif not self.textbox.get("1.0", END).strip(): # If empty.
+        elif not self.textbox.get("1.0", END).strip():
             log_path = Path(self.server.app.cluster_entry.get()) / self.shard / "server_log.txt"
-
             if log_path.exists():
+                try:
+                    with open(log_path, 'w', encoding='utf-8'):
+                        pass
+                except Exception as e:
+                    logger.error(f"Failed to clear log file: {e}")
+                    
                 self.reset_text()
-                self.append_text(log_path.read_text(encoding="utf-8", errors="backslashreplace"))
-
-                logger.debug(f"Loading log file for {self.shard}.")
-
+                def load_log():
+                    try:
+                        with open(log_path, 'r', encoding='utf-8', errors='backslashreplace') as f:
+                            log_content = f.read()
+                    except Exception as e:
+                        log_content = f"[Error loading log: {e}]"
+                    def update_textbox():
+                        self.append_text(log_content)
+                        logger.debug(f"Loading log file for {self.shard}.")
+                    self.root.after(0, update_textbox)
+                threading.Thread(target=load_log, daemon=True).start()
 
     def hide(self, *args, **kwargs):
         if self.master.grab_current() is not None:
-            return # Not in focus...
+            return
 
         self._visible = False
         self.root.place_forget()
@@ -314,7 +325,6 @@ class ShardLogPanel():
         if self.server.shard_frame.is_starting():
             self.reset_text()
 
-            # Needs to enable it before setting the string.
             self.entry.configure(state=NORMAL)
             self.entry.configure(placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER.format(shard=STRINGS.SHARD_NAME[self.shard.upper()] or self.shard))
 
@@ -327,7 +337,6 @@ class ShardLogPanel():
             self.topbar.status_circle.set_color(COLOR.GREEN)
 
         elif self.server.shard_frame.is_offline():
-            # Needs to set the string before disabling it.
             self.entry.delete(0, END)
             self.entry.configure(placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER_OFFLINE)
             self.entry.configure(state=DISABLED)
@@ -390,11 +399,10 @@ class ShardLogPanel():
                 self.textbox.tag_add(highlight.name, f"1.0+{start}c", f"1.0+{end}c")
 
     def _mouse_scroll_event(self, *args, **kwargs):
-        pass
-    #     if self.textbox.yview()[1] > 0.995:
-    #         self.show_end_button.hide()
-    #     else:
-    #         self.show_end_button.show()
+        if self.textbox.yview()[1] > 0.995:
+            self.show_end_button.hide()
+        else:
+            self.show_end_button.show()
 
     def _auto_scroll_event(self):
         self._auto_scroll = self.auto_scroll_switch.get()
@@ -403,8 +411,7 @@ class ShardLogPanel():
             self.show_end()
 
         else:
-            pass
-            #self._mouse_scroll_event()
+            self._mouse_scroll_event()
 
 
 class CustomFrame(CTkFrame):
