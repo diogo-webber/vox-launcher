@@ -107,7 +107,7 @@ COMMAND_ANNOUNCEMENT:
 ENTRY:
     GAME_TITLE: โฟลเดอร์เกม
     CLUSTER_TITLE: โฟลเดอร์คลัสเตอร์
-    TOKEN_TITLE: Server Token
+    TOKEN_TITLE: โทเค็น เซิร์ฟเวอร์
     ENTRY_INVALID_INPUT: "✱ ข้อมูลไม่ถูกต้อง"
 
 ERROR:
