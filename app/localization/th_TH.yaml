@@ -1,0 +1,160 @@
+APP_NAME: Vox Launcher
+VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
+WINDOW_TITLE: "  {APP_NAME}"
+
+# แปลไทย
+LANGUAGES:
+    en_US: อังกฤษ (สหรัฐอเมริกา)
+    zh_CN: จีน (ตัวย่อ)
+    es_ES: สเปน (สเปน)
+    pt_BR: โปรตุเกส (บราซิล)
+    ru_RU: รัสเซีย
+    cs_CZ: เช็ก
+    th_TH: ไทย (ไทย)
+
+TOKEN_TOOLTIP: |-
+    คุณต้องใช้ Server Token เพื่อรัน Dedicated Server
+    สร้างได้ที่หน้า Klei Account
+    คลิกที่นี่เพื่อเปิดเว็บไซต์
+
+CLUSTER_NAME_DEFAULT: มันทำงานยังไง?
+ASK_DIRECTORY_TITLE: "  เลือกโฟลเดอร์"
+
+CLUSTER_GROUP_TOOLTIP: |-
+    ➊    เลือกโฟลเดอร์เกม {GAME_TITLE} หากยังไม่ได้เลือกอัตโนมัติ
+    ➋    สร้างโลกในเกมและเลือกที่ {CLUSTER_TITLE}
+    ➌    วาง server token ที่ {TOKEN_TITLE} ดูวิธีได้ที่ไอคอน ⓘ
+    ➍    สุดท้าย กดปุ่ม {LAUNCH} แล้วสนุกได้เลย!
+
+CLUSTER_GROUP_TOOLTIP_HIGHLIGHT_PATTERNS:
+    - "{GAME_TITLE}"
+    - "{CLUSTER_TITLE}"
+    - "{TOKEN_TITLE}"
+    - ⓘ
+    - "{LAUNCH}"
+    - ➊
+    - ➋
+    - ➌
+    - ➍
+
+SHARD_NAME:
+    MASTER: ป่า (Forest)
+    CAVES: ถ้ำ (Caves)
+    EMPTY: ช่องว่าง
+
+LAUNCH_BUTTON:
+    LAUNCH: เริ่มเซิร์ฟเวอร์
+    CANCEL: ยกเลิก
+    SAVE_QUIT: บันทึก/หยุด
+    STOPPING: กำลังหยุด
+
+SHARD_STATUS:
+    OFFLINE:    ออฟไลน์
+    STARTING:   กำลังเริ่ม...
+    ONLINE:     ออนไลน์
+    STOPPING:   กำลังหยุด...
+    RESTARTING: กำลังรีสตาร์ท...
+
+CLUSTER_STATS:
+    DAY: "วัน: "
+    SEASON: "ฤดู: "
+    PLAYERS: "ผู้เล่น: "
+
+POPUP:
+    OK: ตกลง
+    CANCEL: ยกเลิก
+    LOG: Log เซิร์ฟเวอร์
+    REPORT: รายงาน
+    RETRY: ลองใหม่
+    RESTART: รีสตาร์ท
+
+UPDATE_POPUP:
+    DOWNLOAD: ดาวน์โหลด
+    IGNORE: ข้าม
+    DESCRIPTION:
+        DEFAULT: มีเวอร์ชันใหม่ของแอป กรุณาดาวน์โหลด
+        DOWNLOADING: กำลังดาวน์โหลด... รอสักครู่!
+        FAILED: ดาวน์โหลดล้มเหลว อาจเกิดจากปัญหาเครือข่ายหรือ Github กรุณาลองใหม่ภายหลัง
+
+LOG_SCREEN:
+    ENTRY_PLACEHOLDER: รันคำสั่งคอนโซลบน {shard} กด ENTER เพื่อรัน
+    ENTRY_PLACEHOLDER_OFFLINE: Shard นี้ออฟไลน์ กรุณาเริ่มเซิร์ฟเวอร์ก่อน
+    CLOSE: กลับ
+    AUTO_SCROLL: เลื่อนอัตโนมัติ
+    SHARD_FOLDER: ไฟล์ท้องถิ่น
+    SHARD_NAME_TITLE: "Shard:"
+    SHARD_MEMORY_TITLE: "หน่วยความจำ:"
+    SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+
+SMALL_BUTTON:
+    SAVE: บันทึก
+    QUIT: หยุด
+    RESET: รีสตาร์ท
+    ROLLBACK: ย้อนกลับ
+
+COMMAND_CONFIRMATION:
+    QUIT: คุณแน่ใจหรือไม่ที่จะหยุดเซิร์ฟเวอร์โดยไม่บันทึก? ข้อมูลที่ยังไม่บันทึกจะหายไป!
+    RESET: คุณแน่ใจหรือไม่ที่จะรีสตาร์ทเซิร์ฟเวอร์โดยไม่บันทึก? ข้อมูลที่ยังไม่บันทึกจะหายไป!
+    ROLLBACK: ต้องการย้อนกลับกี่เซฟ?
+
+COMMAND_ANNOUNCEMENT:
+    SAVE: กำลังบันทึกโลก...
+    QUIT: กำลังหยุด...
+    RESET: กำลังรีสตาร์ท...
+    ROLLBACK: กำลังย้อนกลับใน 5 วินาที!
+    SAVE_QUIT: กำลังบันทึกและหยุด...
+
+ENTRY:
+    GAME_TITLE: โฟลเดอร์เกม
+    CLUSTER_TITLE: โฟลเดอร์คลัสเตอร์
+    TOKEN_TITLE: Server Token
+    ENTRY_INVALID_INPUT: "✱ ข้อมูลไม่ถูกต้อง"
+
+ERROR:
+    TOKEN_INVALID: Token ที่ให้มาไม่ถูกต้องหรือหมดอายุ
+    GENERAL: เกิดข้อผิดพลาดขณะเปิดเซิร์ฟเวอร์ กรุณาตรวจสอบ log
+    PORTS: |-
+        เซิร์ฟเวอร์ไม่สามารถเริ่มได้เนื่องจาก:
+
+        • คลัสเตอร์ไม่ได้อยู่ในโฟลเดอร์เดียวกับโลกที่สร้างในเกม
+
+        • พอร์ต {ports} ถูกใช้งานโดยโปรแกรมอื่นหรือเซิร์ฟเวอร์อื่น
+
+        หากไม่ใช่ทั้งสองกรณี กรุณารายงานปัญหา อาจเกิดจากตัว launcher
+    EXCEPTION: |-
+        เกิดข้อผิดพลาดที่ไม่คาดคิด!
+
+        > {error}
+
+        แอปจะรีสตาร์ท
+
+        หากเซิร์ฟเวอร์กำลังรันอยู่ จะมีการบันทึกและปิดอย่างปลอดภัย
+
+        กรุณารายงานปัญหานี้บน Github
+    LAUNCH_DATA_INVALID: |-
+        ก่อนใช้ {APP_NAME} ครั้งแรก กรุณาเปิดคลัสเตอร์จากเมนูในเกมแล้วหยุดมัน
+
+        เสร็จแล้วกดปุ่ม ลองใหม่ ด้านล่าง
+    SERVER_CRASH: |-
+        เซิร์ฟเวอร์ของคุณล่ม กรุณาตรวจสอบ log ของเกม
+
+        นี่เป็นปัญหาจากเกม ไม่ใช่ {APP_NAME} อาจเกิดจาก mod หรือแจ้ง Klei
+
+SETTINGS_SCREEN:
+    BUTTONS:
+        APP_LOG: Log แอป
+        LOCAL_FILES: ไฟล์ท้องถิ่น
+        REPORT_ISSUE: รายงานปัญหา
+
+    LANGUAGE:
+        TITLE: ภาษา
+        DESC: เลือกภาษาของแอป
+
+    LAUNCH_OPTIONS:
+        TITLE: ตัวเลือกการเปิดเซิร์ฟเวอร์
+        DESC: สำหรับผู้ใช้ขั้นสูง สามารถใส่ options เพิ่มเติมได้ การใช้ผิดอาจทำให้เกิดปัญหา
+
+    CLOSE: กลับ
+
+    RESTART_REQUIRED: |-
+        การเปลี่ยนแปลงนี้ต้องรีสตาร์ทแอป ต้องการรีสตาร์ทเลยหรือไม่?
