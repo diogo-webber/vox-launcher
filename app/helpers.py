@@ -5,6 +5,7 @@ import ctypes.wintypes
 import webbrowser
 import re, json, sys
 import logging
+import threading
 import psutil, os, zipfile
 from urllib.parse import quote as encode_for_url
 from customtkinter import set_window_scaling, set_widget_scaling
@@ -698,6 +699,22 @@ def add_folder_to_zip(zip_filename, folder_path, arc_folder):
 def set_debug_scale(scale):
     set_window_scaling(scale)
     set_widget_scaling(scale)
+
+def read_file_nonblocking(file: Path, callback):
+    def worker():
+        if file.exists():
+            try:
+                content = file.read_text(encoding="utf-8", errors="backslashreplace")
+
+            except Exception as e:
+                logger.warning(f"Failed to read file {file}: {e}")
+                content = ""
+        else:
+            content = ""
+
+        callback(content)
+
+    threading.Thread(target=worker, daemon=True).start()
 
 # ------------------------------------------------------------------------------------------ #
 

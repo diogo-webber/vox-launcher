@@ -7,7 +7,7 @@ from PIL import Image
 from strings import STRINGS, get_readable_system_language
 from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
 from widgets.buttons import RelativeXImageButton, CustomButton
-from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask
+from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask, read_file_nonblocking
 from shard_server import DedicatedServerShard
 from fonts import FONT
 
@@ -110,7 +110,7 @@ class LogsTopBar:
         self.memory.set(STRINGS.LOG_SCREEN.SHARD_MEMORY_FMT.format(mb=round(memory_mb, 2), percent=round(memory_percent)))
 
         return True, None
-    
+
     def _open_shard_folder(self):
         open_folder(Path(self.server.app.cluster_entry.get()) / self.shard)
 
@@ -288,14 +288,16 @@ class ShardLogPanel():
 
             self.topbar.start_tracking_memory()
 
-        elif not self.textbox.get("1.0", END).strip(): # If empty.
-            log_path = Path(self.server.app.cluster_entry.get()) / self.shard / "server_log.txt"
+        elif not self.textbox.get("1.0", END).strip():
+            # Using after() to safely update UI from main thread.
+            read_file_nonblocking(
+                Path(self.server.app.cluster_entry.get()) / self.shard / "server_log.txt",
+                lambda text: self.root.after(0, self.on_load_log_file, text)
+            )
 
-            if log_path.exists():
-                self.reset_text()
-                self.append_text(log_path.read_text(encoding="utf-8", errors="backslashreplace"))
+            self.reset_text()
 
-                logger.debug(f"Loading log file for {self.shard}.")
+            logger.debug(f"Loading log file for {self.shard}.")
 
 
     def hide(self, *args, **kwargs):
@@ -359,10 +361,70 @@ class ShardLogPanel():
             else:
                 self._mouse_scroll_event()
 
+    def append_text_from_file(self, text):
+        # Cancel any ongoing insert
+        if hasattr(self, "_append_job"):
+            self.root.after_cancel(self._append_job)
+
+        self.textbox.configure(state=NORMAL)
+
+        MAX_LINES = 10000
+
+        self._append_lines = text.splitlines(keepends=True)
+        self._append_index = 0
+
+        if len(self._append_lines) > MAX_LINES:
+            logger.info(f"Truncating log file for shard '{self.shard}' because it exceeds the maximum allowed {MAX_LINES} lines.")
+
+            truncation_message = (
+                f">> This log has been truncated to the last {MAX_LINES} lines. "
+                "Color highlighting has been skipped.\n\n"
+            )
+
+            # Keep only the last MAX_LINES lines and prepend the message
+            self._append_lines = [truncation_message] + self._append_lines[-MAX_LINES:]
+
+        # Reset highlight while we're inserting
+        for h in self.hightlight_data:
+            self.textbox.tag_remove(h.name, "1.0", END)
+
+        self._append_next_chunk()
+
+    def _append_next_chunk(self):
+        if self._append_index >= len(self._append_lines):
+            self._append_lines = []
+            self._append_index = 0
+
+            # Final scroll and highlight
+            if self._visible:
+                self.highlight_text()
+                if self._auto_scroll:
+                    self.show_end()
+                else:
+                    self._mouse_scroll_event()
+
+            self.textbox.configure(state=DISABLED)
+
+            logger.debug(f"Loaded log file for {self.shard}.")
+
+            return
+
+        text = ''.join(self._append_lines[self._append_index : self._append_index + 500])
+
+        self.textbox.insert(END, text)
+
+        self._append_index += 500
+        self._append_job = self.root.after(1, self._append_next_chunk)
+
     def reset_text(self):
         self.textbox.configure(state=NORMAL) # To be able to delete text!
         self.textbox.delete("1.0", END)
         self.textbox.configure(state=DISABLED)
+
+    def on_load_log_file(self, text=None):
+        if text and not self.server.is_running():
+            self.reset_text()
+            self.append_text_from_file(text)
 
     def show_end(self):
         self.textbox.see(END)
@@ -380,6 +442,13 @@ class ShardLogPanel():
 
     def highlight_text(self):
         text = self.textbox.get("1.0", END)
+
+        MAX_LINES = 1000
+
+        if len(text.splitlines(keepends=True)) >= MAX_LINES:
+            logger.debug(f"Skipped log colour highlighting for shard '{self.shard}' because it exceeds the maximum allowed {MAX_LINES} lines.")
+
+            return
 
         for highlight in self.hightlight_data:
             self.textbox.tag_remove(highlight.name, "1.0", END)
@@ -641,7 +710,7 @@ class ShardFrame(CustomFrame):
 
     def is_offline(self):
         return self.status.get() == SERVER_STATUS.OFFLINE
-    
+
     def add_text_to_log_screen(self, text):
         self.shard_log_panel.append_text(text)
 
