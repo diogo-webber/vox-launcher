@@ -11,6 +11,7 @@ LANGUAGES:
     pt_BR: Português (Brasil)
     ru_RU: Русский
     cs_CZ: Čeština
+    th_TH: ไทย (ไทย)
 
 TOKEN_TOOLTIP: |-
     You need a Server Token to run a Dedicated Server.

@@ -1,16 +1,11 @@
+# Translated by:
+#   https://github.com/mihime
+
 APP_NAME: Vox Launcher
 VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
 WINDOW_TITLE: "  {APP_NAME}"
 
-# แปลไทย
-LANGUAGES:
-    en_US: อังกฤษ (สหรัฐอเมริกา)
-    zh_CN: จีน (ตัวย่อ)
-    es_ES: สเปน (สเปน)
-    pt_BR: โปรตุเกส (บราซิล)
-    ru_RU: รัสเซีย
-    cs_CZ: เช็ก
-    th_TH: ไทย (ไทย)
+# LANGUAGES - These are pre-translated and only in the en_US file.
 
 TOKEN_TOOLTIP: |-
     คุณต้องใช้ Server Token เพื่อรัน Dedicated Server
