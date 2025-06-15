@@ -130,10 +130,10 @@ class CustomEntry(CTkEntry):
             self._master.save_entries_data()
 
     def disable(self):
-        self._entry.configure(state=DISABLED)
+        self._entry.configure(state=DISABLED, cursor="no")
 
     def enable(self):
-        self._entry.configure(state=NORMAL)
+        self._entry.configure(state=NORMAL, cursor="xterm")
 
 class DirectoryEntry(CustomEntry):
     def __init__(self, initialdir, validate_fn, pos, size, **kwargs):

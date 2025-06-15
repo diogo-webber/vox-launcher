@@ -30,10 +30,11 @@ class ImageButton(CTkButton):
         self.place_forget()
 
     def enable(self):
+        # Cursor rollback is handled by base class.
         self.configure(state=NORMAL)
 
     def disable(self):
-        self.configure(state=DISABLED)
+        self.configure(state=DISABLED, cursor="no")
 
 class RelativeXImageButton(ImageButton):
     def __init__(self, relx, y, **kwargs):
@@ -67,10 +68,11 @@ class CustomButton(CTkButton):
         self.place_forget()
 
     def enable(self):
+        # Cursor rollback is handled by base class.
         self.configure(state=NORMAL)
 
     def disable(self):
-        self.configure(state=DISABLED)
+        self.configure(state=DISABLED, cursor="no")
 
     def update(self, text=None, fg_color=None, hover_color=None):
         if text:
