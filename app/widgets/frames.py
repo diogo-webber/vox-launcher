@@ -180,7 +180,8 @@ class ShardLogPanel():
         self.add_hightlight(pattern=r'\[\d{2}:\d{2}:\d{2}\]:', name="timestamp", color=COLOR.CONSOLE_GRAY)
         self.add_hightlight(pattern=r'World \d* is now connected', name="online", color=COLOR.GREEN)
         self.add_hightlight(pattern=r'RemoteCommandInput:.*?[\n\r]+', name="remotecommand", color=COLOR.LIGHT_BLUE)
-        #self.add_hightlight(pattern=r'\[Warning\].*?[\n\r]+', name="warnings", color=COLOR.YELLOW) # FIXME: bugged
+        self.add_hightlight(pattern=r'\[Warning\].*?[\n\r]+', name="warnings", color=COLOR.YELLOW)
+        self.add_hightlight(pattern=r'(?<=\[\d{2}:\d{2}:\d{2}\]: )(\[string ".*?)(?=\[\d{2}:\d{2}:\d{2}\]:|\Z)', name="crash", color="#e88a84", flags=re.DOTALL)
 
         self.textbox.place(
             x = OFFSET.LOGS_TEXTBOX.x,
@@ -367,12 +368,12 @@ class ShardLogPanel():
         self.textbox.see(END)
         self._mouse_scroll_event()
 
-    def add_hightlight(self, pattern, name, color):
+    def add_hightlight(self, pattern, name, color, flags=0):
         self.textbox.tag_config(name, foreground=color)
 
         self.hightlight_data.append(
             TextHightlightData(
-                pattern = re.compile(pattern),
+                pattern = re.compile(pattern, flags=flags),
                 name = name,
             )
         )
