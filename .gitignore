@@ -22,6 +22,7 @@ venv.bak/
 # Logs / Savedata
 app/savedata
 app/logs
+.history
 
 # Scripts
 playground/

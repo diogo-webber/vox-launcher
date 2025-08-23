@@ -39,6 +39,7 @@ class DotDict:
     """
 
     def __init__(self, dictionary):
+        self._dict = dictionary
         for key, value in dictionary.items():
             if isinstance(value, dict):
                 setattr(self, key, DotDict(value))
@@ -57,6 +58,15 @@ class DotDict:
 
     def __setitem__(self, key, value):
         return setattr(self, key, value)
+
+    def values(self):
+        return self._dict.values()
+
+    def items(self):
+        return self._dict.items()
+
+    def keys(self):
+        return self._dict.keys()
 
     def format_strings(self, format_lookup):
         """

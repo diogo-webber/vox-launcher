@@ -8,6 +8,9 @@ formatters:
     file:
         format: "[%(asctime)s] [%(levelname)s] - %(message)s"
         datefmt: "%Y-%m-%d %H:%M"
+    discord:
+        format: "[%(asctime)s] %(message)s"
+        datefmt: "%Y-%m-%d %H:%M"
 
 handlers:
     console:
@@ -24,13 +27,19 @@ handlers:
         mode: w
         encoding: utf8
 
+    discord:
+        class: discord_handler.DiscordWebhookHandler
+        level: INFO
+        formatter: discord
+        webhook_url: null  # Will be set programmatically
+
 loggers:
     development:
         level: DEBUG
-        handlers: [console, file] # Keep this order.
+        handlers: [console, file, discord] # Keep this order.
         propagate: no
 
     production:
         level: INFO
-        handlers: [file]
+        handlers: [file, discord]
         propagate: no

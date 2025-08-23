@@ -169,6 +169,111 @@ class SettingsScreen():
             description=STRINGS.SETTINGS_SCREEN.LAUNCH_OPTIONS.DESC,
         )
 
+        self.discord_webhook_entry = CTkTextbox(
+            master = self.root,
+            corner_radius=15,
+            border_color=COLOR.GRAY,
+            text_color=COLOR.WHITE_HOVER,
+            fg_color=COLOR.GRAY,
+            font=FONT.ENTRY_ARIAL,
+            border_width=0,
+            height=35,
+            width=350,
+        )
+
+        self.discord_webhook_entry._textbox.configure(selectbackground=COLOR.DARK_GRAY)
+        self.discord_webhook_entry.bind("<KeyRelease>", self.on_discord_webhook_key)
+
+        webhook_url = self.master.settings.get_setting(Settings.DISCORD_WEBHOOK)
+        if webhook_url:
+            self.discord_webhook_entry.insert(END, webhook_url)
+
+        # Calculate positions with more spacing
+        webhook_section_start = SETTINGS_WINDOW_MARGIN + self.language_dropdown._tooltip.get_height() + 160
+        webhook_y = webhook_section_start + 30  # Added extra space for visual separation
+
+        self.discord_section_label = CTkLabel(
+            master=self.root,
+            height=30,
+            text="Discord Integration",
+            text_color=COLOR.WHITE,
+            font=FONT.SETTING_TITLE,
+        )
+        
+        self.discord_section_label.place(
+            x=SETTINGS_WINDOW_MARGIN,
+            y=webhook_section_start,
+        )
+
+        self.discord_webhook_entry.place(
+            x=SETTINGS_WINDOW_MARGIN,
+            y=webhook_y,
+        )
+
+        self.test_webhook_button = CustomButton(
+            master=self.root,
+            text="Test Webhook",
+            command=self.test_webhook,
+            font=FONT.SMALL_BUTTON,
+            size=Size(100, 35),
+            corner_radius=10,
+            pos=Pos(SETTINGS_WINDOW_MARGIN, webhook_y + 60),
+        )
+        self.test_webhook_button.show()
+
+        self.game_logs_switch = CTkSwitch(
+            master=self.root,
+            text="Show only game logs",
+            command=self.on_game_logs_switch,
+            onvalue=True,
+            offvalue=False,
+            fg_color=COLOR.GRAY_HOVER,
+            progress_color=COLOR.GREEN,
+            button_color=COLOR.WHITE,
+            button_hover_color=COLOR.WHITE,
+            text_color=COLOR.WHITE,
+            font=FONT.SETTING_LONG_BUTTON,
+            width=SIZE.LOGS_AUTO_SCROLL_SWITCH.w + 30,
+            height=SIZE.LOGS_AUTO_SCROLL_SWITCH.h,
+        )
+
+        game_logs_only = self.master.settings.get_setting(Settings.DISCORD_GAME_LOGS_ONLY)
+        self.game_logs_switch.select() if game_logs_only else self.game_logs_switch.deselect()
+
+        self.game_logs_switch.place(
+            x=SETTINGS_WINDOW_MARGIN + 170,
+            y=webhook_y + 60,
+        )
+
+        self.arguments_entry = CTkTextbox(
+            master = self.root,
+            corner_radius=15,
+            border_color=COLOR.GRAY,
+            text_color=COLOR.WHITE_HOVER,
+            fg_color=COLOR.GRAY,
+            font=FONT.ENTRY_ARIAL,
+            border_width=0,
+            height=90,
+            width=350,
+        )
+
+        self.arguments_entry._textbox.configure(selectbackground=COLOR.DARK_GRAY)
+        self.arguments_entry.tag_config("goodoption", foreground=COLOR.LIGHT_BLUE)
+        self.arguments_entry.tag_config("badoption", foreground=COLOR.LIGHT_RED)
+        self.arguments_entry.highlight_pattern = re.compile(r"([-+]\w+)")
+
+        self.arguments_entry.bind("<KeyRelease>", self.on_arguments_textbox_key)
+
+        self.arguments_entry.insert(END, self.master.settings.get_setting(Settings.LAUNCH_OPTIONS))
+        self.on_arguments_textbox_key() # Highlight inserted text.
+
+        self.arguments_entry._tooltip = SettingsTooltip(
+            master=self.root,
+            parent=self.arguments_entry,
+            title=STRINGS.SETTINGS_SCREEN.LAUNCH_OPTIONS.TITLE,
+            description=STRINGS.SETTINGS_SCREEN.LAUNCH_OPTIONS.DESC,
+        )
+
         self.arguments_entry.place(
             x = WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - 350,
             y = SETTINGS_WINDOW_MARGIN + self.arguments_entry._tooltip.get_height(),
@@ -283,7 +388,6 @@ class SettingsScreen():
 
     def on_arguments_textbox_key(self, *args, **kwargs):
         text = self.arguments_entry.get("1.0", END)
-
         self.master.settings.set_setting_delayed(Settings.LAUNCH_OPTIONS, text.strip())
 
         # Remove existing tags
@@ -298,3 +402,39 @@ class SettingsScreen():
             tag = matched_word in INVALID_TEXTBOX_ARGS and "badoption" or "goodoption"
 
             self.arguments_entry.tag_add(tag, f"1.0+{start}c", f"1.0+{end}c")
+
+    def on_discord_webhook_key(self, *args, **kwargs):
+        webhook_url = self.discord_webhook_entry.get("1.0", END).strip()
+        self.master.settings.set_setting_delayed(Settings.DISCORD_WEBHOOK, webhook_url)
+        
+    def on_game_logs_switch(self):
+        game_logs_only = bool(self.game_logs_switch.get())
+        self.master.settings.set_setting(Settings.DISCORD_GAME_LOGS_ONLY, game_logs_only)
+        
+    def test_webhook(self):
+        from discord_handler import DiscordWebhookHandler
+        import logging
+        import requests
+        
+        webhook_url = self.discord_webhook_entry.get("1.0", END).strip()
+        logger = logging.getLogger("development")
+        
+        if not webhook_url:
+            logger.error("Please enter a webhook URL first")
+            return
+
+        try:
+            handler = DiscordWebhookHandler(webhook_url)
+            test_logger = logging.getLogger("webhook_test")
+            test_logger.setLevel(logging.INFO)
+            test_logger.addHandler(handler)
+            
+            # Save the webhook URL first
+            self.master.settings.set_setting(Settings.DISCORD_WEBHOOK, webhook_url)
+            
+            test_logger.info("🎉 Webhook test successful! Your Discord logging is configured correctly.")
+            logger.info("Discord webhook tested successfully and saved")
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to send test message to Discord: {str(e)}")
+            test_logger.removeHandler(handler)  # Clean up the test handler

@@ -10,6 +10,8 @@ logger = logging.getLogger(LOGGER)
 class Settings(Enum):
     LANGUAGE = get_default_language_code()
     LAUNCH_OPTIONS = ""
+    DISCORD_WEBHOOK = ""  # Discord webhook URL for logging
+    DISCORD_GAME_LOGS_ONLY = False  # Only send game-related logs to Discord
 
 class SettingsManager:
     """

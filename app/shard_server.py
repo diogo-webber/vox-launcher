@@ -251,7 +251,7 @@ class DedicatedServerShard():
             self.app.stop_shards()
 
             cluster_directory = Path(self.app.cluster_entry.get())
-            config_file =  cluster_directory 
+            config_file =  cluster_directory
             
             ports = []
 
