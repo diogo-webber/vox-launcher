@@ -316,7 +316,15 @@ class App(CTk):
         if not hasattr(self, "master_shard"):
             return
 
-        if not is_valid_token(self.token_entry.get()):
+        token = self.token_entry.get()
+
+        if not token.strip():
+            self.token_entry.toggle_warning(False)
+            self.error_popup.create(STRINGS.ERROR.TOKEN_EMPTY)
+
+            return # No token provided.
+
+        if not is_valid_token(token):
             self.token_entry.toggle_warning(False)
             self.error_popup.create(STRINGS.ERROR.TOKEN_INVALID)
 

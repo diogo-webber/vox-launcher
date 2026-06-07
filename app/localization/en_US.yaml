@@ -112,17 +112,32 @@ ENTRY:
     ENTRY_INVALID_INPUT: "✱ Invalid Input"
 
 ERROR:
-    TOKEN_INVALID: The provided token is invalid or has expired.
-    GENERAL: An error occurred while launching the server. Please check the server log.
+    TOKEN_INVALID: |-
+        The provided server token is invalid or has expired.
+
+        Please generate a new token on the Klei Account page and paste it into the Server Token field.
+    TOKEN_EMPTY: A server token is required to run a Dedicated Server. Hover over the ⓘ icon for instructions on how to obtain one.
+    GENERAL: |-
+        An error occurred while launching the server.
+
+        This may be caused by missing game files, an incorrect game directory, or a permissions issue. Please check the server log for details.
+    START_FAILED: |-
+        Failed to start the {shard} shard.
+
+        The server executable could not be launched. Please verify that:
+        • The game directory path is correct.
+        • The game files are not corrupted (verify integrity via Steam).
+        • No antivirus software is blocking the executable.
     PORTS: |-
         The server failed to start due to one of the following reasons:
 
         • The cluster is not in the same directory as the worlds generated in-game.
 
-        • One or more of the following ports {ports} are already in use by another program, including in-game servers.
+        • One or more of the following ports ({ports}) are already in use by another program, including in-game servers.
+
+        Close any other running servers or change the ports in each shard's server.ini file.
 
         If neither applies, please report the issue.
-        It may be caused by the launcher itself.
     EXCEPTION: |-
         An unexpected error occurred!
 
@@ -134,13 +149,25 @@ ERROR:
 
         Please consider reporting this error by creating an issue on Github.
     LAUNCH_DATA_INVALID: |-
-        Before using {APP_NAME} for the first time, please launch any cluster from the in-game menu and stop it.
+        {APP_NAME} needs initial server configuration data that is generated when you first run a world from the in-game menu.
+
+        Please launch any cluster from the in-game menu, wait for it to start, then stop it.
 
         Once done, click the Try Again button below.
     SERVER_CRASH: |-
-        Your server has crashed. Please refer to the game's log files for more information.
+        Your server has crashed due to a Lua error. Please refer to the game's log files for more information.
 
-        This is a game crash, not a {APP_NAME} issue. Consider checking your enabled mods or reporting the issue to Klei.
+        Common causes: incompatible or outdated mods, corrupted world save data, or a game bug.
+
+        This is a game crash, not a {APP_NAME} issue. Consider disabling recently added mods or reporting the issue to Klei.
+    DIRECTORY_INVALID: |-
+        The selected {directory_name} path is invalid or does not contain the expected files.
+
+        Please select a valid directory before launching the server.
+    COMMAND_FAILED: |-
+        Failed to send command to the {shard} shard.
+
+        The server process may have become unresponsive. Check the server log for errors.
 
 SETTINGS_SCREEN:
     BUTTONS:

@@ -107,17 +107,32 @@ ENTRY:
     ENTRY_INVALID_INPUT: "✱ Neplatný vstup"
 
 ERROR:
-    TOKEN_INVALID: Poskytnutý token je neplatný nebo jeho platnost vypršela.
-    GENERAL: Při spouštění serveru došlo k chybě, zkontrolujte prosím záznam serveru.
+    TOKEN_INVALID: |-
+        Poskytnutý serverový token je neplatný nebo jeho platnost vypršela.
+
+        Prosím vygenerujte nový token na stránce účtu Klei a vložte jej do pole Serverový token.
+    TOKEN_EMPTY: Pro spuštění dedikovaného serveru je vyžadován serverový token. Najeďte na ikonu ⓘ pro instrukce jak jej získat.
+    GENERAL: |-
+        Při spouštění serveru došlo k chybě.
+
+        Může to být způsobeno chybějícími herními soubory, nesprávným adresářem hry nebo problémem s oprávněními. Zkontrolujte prosím záznam serveru pro podrobnosti.
+    START_FAILED: |-
+        Nepodařilo se spustit shard {shard}.
+
+        Spustitelný soubor serveru nemohl být spuštěn. Prosím ověřte:
+        • Cesta k adresáři hry je správná.
+        • Herní soubory nejsou poškozené (ověřte integritu přes Steam).
+        • Žádný antivirus neblokuje spustitelný soubor.
     PORTS: |-
         Server se nepodařilo spustit z jednoho z následujících důvodů:
 
         • Cluster není ve stejném adresáři jako světy vytvořené ve hře.
 
-        • Jeden nebo více z následujících portů {ports} již používá jiný program, včetně serverů ve hře.
+        • Jeden nebo více z následujících portů ({ports}) již používá jiný program, včetně serverů ve hře.
+
+        Zavřete ostatní běžící servery nebo změňte porty v souboru server.ini každého shardu.
 
         Pokud se žádný z těchto důvodů neaplikuje, nahlaste prosím problém.
-        Může být způsoben samotným launcherem.
     EXCEPTION: |-
         Došlo k neočekávané chybě!
 
@@ -129,13 +144,25 @@ ERROR:
 
         Zvažte prosím nahlášení této chyby vytvořením issue na Githubu.
     LAUNCH_DATA_INVALID: |-
-        Před prvním použitím {APP_NAME} spusťte jakýkoli cluster z herního menu a zastavte jej.
+        {APP_NAME} potřebuje počáteční konfigurační data serveru, která se generují při prvním spuštění světa z herního menu.
+
+        Prosím spusťte jakýkoli cluster z herního menu, počkejte až se spustí a poté jej zastavte.
 
         Poté klikněte na tlačítko Zkusit znovu níže.
     SERVER_CRASH: |-
-        Váš server havaroval. Pro více informací se podívejte do log souborů hry.
+        Váš server havaroval kvůli Lua chybě. Pro více informací se podívejte do log souborů hry.
 
-        Toto je pád hry, nikoli problém {APP_NAME}. Zvažte kontrolu povolených modů nebo nahlášení problému Klei.
+        Časté příčiny: nekompatibilní nebo zastaralé mody, poškozená data uloženého světa nebo chyba hry.
+
+        Toto je pád hry, nikoli problém {APP_NAME}. Zvažte deaktivaci nedávno přidaných modů nebo nahlášení problému Klei.
+    DIRECTORY_INVALID: |-
+        Vybraná cesta {directory_name} je neplatná nebo neobsahuje očekávané soubory.
+
+        Prosím vyberte platný adresář před spuštěním serveru.
+    COMMAND_FAILED: |-
+        Nepodařilo se odeslat příkaz shardu {shard}.
+
+        Proces serveru může být neodpovídající. Zkontrolujte záznam serveru pro chyby.
 
 SETTINGS_SCREEN:
     BUTTONS:

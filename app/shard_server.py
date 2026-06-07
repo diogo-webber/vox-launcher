@@ -104,41 +104,46 @@ class DedicatedServerShard():
         game_directory_valid    = self.app.game_entry.validate_text()
         cluster_directory_valid = self.app.cluster_entry.validate_text()
 
-        if game_directory_valid and cluster_directory_valid:
-            launch_data = self.app.launch_data_save_loader.load()
+        if not game_directory_valid or not cluster_directory_valid:
+            if self.shard_frame.is_master:
+                invalid_name = not game_directory_valid and STRINGS.ENTRY.GAME_TITLE or STRINGS.ENTRY.CLUSTER_TITLE
+                self.app.error_popup.create(STRINGS.ERROR.DIRECTORY_INVALID.format(directory_name=invalid_name))
+            return
 
-            if launch_data is None:
-                if self.shard_frame.is_master:
-                    launch_data = retrieve_launch_data(self.app.cluster_entry.get(), self.app.launch_data_save_loader)
+        launch_data = self.app.launch_data_save_loader.load()
 
-                    if launch_data is None:
-                        self.app.launch_data_popup.create(STRINGS.ERROR.LAUNCH_DATA_INVALID)
+        if launch_data is None:
+            if self.shard_frame.is_master:
+                launch_data = retrieve_launch_data(self.app.cluster_entry.get(), self.app.launch_data_save_loader)
 
-                        return
-                else:
+                if launch_data is None:
+                    self.app.launch_data_popup.create(STRINGS.ERROR.LAUNCH_DATA_INVALID)
+
                     return
-
-            logger.info(f"Starting {self.shard} shard...")
-
-            self.shard_frame.set_starting()
-
-            args, cwd = self.get_arguments(launch_data)
-
-            #logger.debug("Starting server with these arguments: %s", " ".join(args))
-
-            # This is HORRIBLE, but it works (Pyinstaller --noconcole + subprocess issue)
-            try:
-                with StdoutMock() as sys.stdout:
-                    self.process = popen_spawn.PopenSpawn(args, cwd=cwd, encoding="utf-8", codec_errors="ignore")
-            except OSError as e:
-                logger.error(f"Failed to start {self.shard} shard: {e}")
-
-                self.shard_frame.set_offline()
-                self.app.error_popup.create(STRINGS.ERROR.GENERAL)
-
+            else:
                 return
 
-            self.task = PeriodicTask(self.app, random.randrange(50, 70), self.handle_output, initial_time=0)
+        logger.info(f"Starting {self.shard} shard...")
+
+        self.shard_frame.set_starting()
+
+        args, cwd = self.get_arguments(launch_data)
+
+        #logger.debug("Starting server with these arguments: %s", " ".join(args))
+
+        # This is HORRIBLE, but it works (Pyinstaller --noconcole + subprocess issue)
+        try:
+            with StdoutMock() as sys.stdout:
+                self.process = popen_spawn.PopenSpawn(args, cwd=cwd, encoding="utf-8", codec_errors="ignore")
+        except OSError as e:
+            logger.error(f"Failed to start {self.shard} shard: {e}")
+
+            self.shard_frame.set_offline()
+            self.app.error_popup.create(STRINGS.ERROR.START_FAILED.format(shard=self.shard))
+
+            return
+
+        self.task = PeriodicTask(self.app, random.randrange(50, 70), self.handle_output, initial_time=0)
 
     def execute_command(self, command, log=True):
         if not self.is_running():
@@ -152,6 +157,8 @@ class DedicatedServerShard():
 
         except OSError as e:
             logger.error(f"OSError during DedicatedServerShard [{self.shard}] execute_command function! Command: '{command}'. Actual error: '{e}'")
+
+            self.app.error_popup.create(STRINGS.ERROR.COMMAND_FAILED.format(shard=self.shard))
 
     def on_stopped(self):
         logger.info(f"{self.shard} shard is down...")

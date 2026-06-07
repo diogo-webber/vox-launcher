@@ -108,17 +108,32 @@ ENTRY:
     ENTRY_INVALID_INPUT: "✱ Entrada Inválida"
 
 ERROR:
-    TOKEN_INVALID: El token proporcionado no es válido o ha expirado.
-    GENERAL: Ha ocurrido un error durante el lanzamiento del servidor, por favor, comprueba los registros.
+    TOKEN_INVALID: |-
+        El token de servidor proporcionado no es válido o ha expirado.
+
+        Por favor, genere un nuevo token en la página de Cuenta Klei y péguelo en el campo Token del Servidor.
+    TOKEN_EMPTY: Se requiere un token de servidor para ejecutar un Servidor Dedicado. Pase el ratón sobre el ícono ⓘ para obtener instrucciones sobre cómo obtener uno.
+    GENERAL: |-
+        Ha ocurrido un error durante el lanzamiento del servidor.
+
+        Esto puede deberse a archivos del juego faltantes, un directorio de juego incorrecto o un problema de permisos. Por favor, comprueba el registro del servidor para más detalles.
+    START_FAILED: |-
+        Error al iniciar el shard {shard}.
+
+        No se pudo ejecutar el servidor. Por favor, verifique que:
+        • La ruta del directorio del juego es correcta.
+        • Los archivos del juego no están corruptos (verifique la integridad a través de Steam).
+        • Ningún antivirus está bloqueando el ejecutable.
     PORTS: |-
         El servidor no pudo iniciarse debido a una de las siguientes razones:
 
         • El clúster no está en el mismo directorio que los mundos generados en el juego.
 
-        • Uno o más de los siguientes puertos {ports} ya están siendo utilizados por otro programa, incluidos los servidores del juego.
+        • Uno o más de los siguientes puertos ({ports}) ya están siendo utilizados por otro programa, incluidos los servidores del juego.
+
+        Cierre otros servidores en ejecución o cambie los puertos en el archivo server.ini de cada shard.
 
         Si ninguna de las anteriores aplica, por favor, informe del problema.
-        Podría ser causado por el propio lanzador.
     EXCEPTION: |-
         ¡Ocurrió un error inesperado!
 
@@ -130,13 +145,25 @@ ERROR:
 
         Por favor, considere informar de este error creando un issue en GitHub.
     LAUNCH_DATA_INVALID: |-
-        Antes de usar {APP_NAME} por primera vez, por favor, inicie cualquier clúster desde el menú del juego y deténgalo.
+        {APP_NAME} necesita datos de configuración inicial del servidor que se generan cuando ejecutas un mundo por primera vez desde el menú del juego.
+
+        Por favor, inicie cualquier clúster desde el menú del juego, espere a que arranque y luego deténgalo.
 
         Una vez hecho esto, haga clic en el botón Reintentar a continuación.
     SERVER_CRASH: |-
-        Su servidor ha fallado. Por favor, consulte los archivos de registro del juego para obtener más información.
+        Su servidor ha fallado debido a un error Lua. Por favor, consulte los archivos de registro del juego para obtener más información.
 
-        Este es un fallo del juego, no un problema de {APP_NAME}. Considere verificar los mods habilitados o informar del problema a Klei.
+        Causas comunes: mods incompatibles o desactualizados, datos de guardado corruptos o un error del juego.
+
+        Este es un fallo del juego, no un problema de {APP_NAME}. Considere desactivar mods añadidos recientemente o informar del problema a Klei.
+    DIRECTORY_INVALID: |-
+        La ruta de {directory_name} seleccionada no es válida o no contiene los archivos esperados.
+
+        Por favor, seleccione un directorio válido antes de iniciar el servidor.
+    COMMAND_FAILED: |-
+        Error al enviar comando al shard {shard}.
+
+        El proceso del servidor puede haberse bloqueado. Compruebe el registro del servidor para ver errores.
 
 SETTINGS_SCREEN:
     BUTTONS:

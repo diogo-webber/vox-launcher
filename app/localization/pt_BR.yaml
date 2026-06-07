@@ -106,17 +106,32 @@ ENTRY:
     ENTRY_INVALID_INPUT: "✱ Campo Inválido"
 
 ERROR:
-    TOKEN_INVALID: O token fornecido é inválido ou expirou.
-    GENERAL: Um erro ocorreu ao iniciar o servidor, por favor verifique os registros do servidor.
+    TOKEN_INVALID: |-
+        O token de servidor fornecido é inválido ou expirou.
+
+        Por favor, gere um novo token na página de Conta Klei e cole-o no campo Token do Servidor.
+    TOKEN_EMPTY: Um token de servidor é necessário para executar um Servidor Dedicado. Passe o mouse sobre o ícone ⓘ para instruções sobre como obter um.
+    GENERAL: |-
+        Um erro ocorreu ao iniciar o servidor.
+
+        Isso pode ser causado por arquivos do jogo ausentes, um diretório de jogo incorreto ou um problema de permissões. Por favor, verifique o log do servidor para mais detalhes.
+    START_FAILED: |-
+        Falha ao iniciar o shard {shard}.
+
+        O executável do servidor não pôde ser iniciado. Por favor, verifique se:
+        • O caminho do diretório do jogo está correto.
+        • Os arquivos do jogo não estão corrompidos (verifique a integridade via Steam).
+        • Nenhum antivírus está bloqueando o executável.
     PORTS: |-
         O servidor não pôde ser iniciado devido a uma das seguintes razões:
 
         • O cluster não está no mesmo diretório que os mundos gerados pelo menu do jogo.
 
-        • Uma ou mais das seguintes portas {ports} já estão sendo usadas por outro programa, incluindo servidores iniciados pelo jogo.
+        • Uma ou mais das seguintes portas ({ports}) já estão sendo usadas por outro programa, incluindo servidores iniciados pelo jogo.
+
+        Feche outros servidores em execução ou altere as portas no arquivo server.ini de cada shard.
 
         Se nenhuma das opções se aplica, por favor, reporte o problema.
-        Esse problema pode ter sido causado pelo próprio launcher.
     EXCEPTION: |-
         Um erro inesperado ocorreu!
 
@@ -128,13 +143,25 @@ ERROR:
 
         Por favor, considere reportar este erro criando um issue no GitHub.
     LAUNCH_DATA_INVALID: |-
-        Antes de usar o {APP_NAME} pela primeira vez, por favor, inicie qualquer cluster pelo menu do jogo e pare-o.
+        O {APP_NAME} precisa de dados de configuração inicial do servidor que são gerados quando você executa um mundo pela primeira vez pelo menu do jogo.
+
+        Por favor, inicie qualquer cluster pelo menu do jogo, aguarde ele iniciar e então pare-o.
 
         Depois disso, clique no botão Atualizar abaixo.
     SERVER_CRASH: |-
-        Seu servidor crashou. Por favor, consulte os arquivos de log do jogo para mais informações.
+        Seu servidor crashou devido a um erro Lua. Por favor, consulte os arquivos de log do jogo para mais informações.
 
-        Este é um crash do jogo, não um problema do {APP_NAME}. Considere verificar os mods habilitados ou relatar o problema à Klei.
+        Causas comuns: mods incompatíveis ou desatualizados, dados de save corrompidos ou um bug do jogo.
+
+        Este é um crash do jogo, não um problema do {APP_NAME}. Considere desativar mods adicionados recentemente ou relatar o problema à Klei.
+    DIRECTORY_INVALID: |-
+        O caminho de {directory_name} selecionado é inválido ou não contém os arquivos esperados.
+
+        Por favor, selecione um diretório válido antes de iniciar o servidor.
+    COMMAND_FAILED: |-
+        Falha ao enviar comando para o shard {shard}.
+
+        O processo do servidor pode ter ficado sem resposta. Verifique o log do servidor para erros.
 
 SETTINGS_SCREEN:
     BUTTONS:
