@@ -261,7 +261,7 @@ class App(CTk):
         self.launch_data_popup = LaunchDataPopUp(root=self)
         self.restart_popup = RestartRequiredPopUp(root=self)
 
-        self.settings_screen = SettingsScreen(master=app)
+        self.settings_screen = SettingsScreen(master=self)
 
         self.settings_button = ImageButton(
             master=self,

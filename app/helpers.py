@@ -260,7 +260,7 @@ def _get_max_rollbacks(cluster_settings):
     if cluster_settings.exists():
         max_snapshots = get_key_from_ini_file(cluster_settings, "max_snapshots")
 
-        return max_snapshots or DEFAULT_MAX_SNAPSHOTS
+        return int(max_snapshots or DEFAULT_MAX_SNAPSHOTS)
 
     return DEFAULT_MAX_SNAPSHOTS
 
@@ -529,12 +529,11 @@ def get_cluster_name(path):
 # ----------------------------------------------------------------------------------------- #
 
 def get_memory_usage(pid):
-    process = psutil.Process(pid)
-
-    if not process:
+    try:
+        process = psutil.Process(pid)
+        return process.memory_info().rss, process.memory_percent()
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
         return None, None
-
-    return process.memory_info().rss, process.memory_percent()
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -612,7 +611,7 @@ def get_clusters_directory():
     return None
 
 def _find_command_line_argument(text, arg):
-    pattern = re.compile(rf'-{arg}\s*(.+?)\s-') # -arg value -
+    pattern = re.compile(rf'-{arg}\s+(.+?)(?=\s-|\s*$)') # -arg value (-next | end)
 
     match = pattern.search(text)
 
@@ -686,7 +685,7 @@ def _check_log_file(cluster_path, save_loader):
 def _add_to_zip(zipf, folder_path, base_path, arc_folder):
     for item in folder_path.iterdir():
         if item.is_dir():
-            _add_to_zip(zipf, item, base_path)
+            _add_to_zip(zipf, item, base_path, arc_folder)
 
         else:
             arcname = arc_folder / item.relative_to(base_path.parent)
