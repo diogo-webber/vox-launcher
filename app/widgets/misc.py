@@ -129,14 +129,19 @@ class Tooltip:
         padding = self.tooltip_label._apply_widget_scaling(18)
 
         self.tooltip_label.pack(ipadx=padding, ipady=padding)
-        self.tooltip_label.update()
 
-        # This is the result of a long time of try and error... not sure what's going on, but it "works". 36.67 is just an offset.
-        x = self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - self.tooltip_label._apply_widget_scaling(36.67) - padding
-        y = self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight()/4 - self.tooltip_label._apply_widget_scaling(5) - padding/2
-        #                                                                            ^ related to corner_radius, likely
+        try:
+            self.tooltip_label.update()
 
-        self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
+            # This is the result of a long time of try and error... not sure what's going on, but it "works". 36.67 is just an offset.
+            x = self.widget.winfo_rootx() - self.tooltip_label.winfo_reqwidth() - self.tooltip_label._apply_widget_scaling(36.67) - padding
+            y = self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight()/4 - self.tooltip_label._apply_widget_scaling(5) - padding/2
+            #                                                                            ^ related to corner_radius, likely
+
+            self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
+        except Exception:
+            # Tooltip was destroyed during update() by a pending <Leave> event.
+            self.tooltip = None
 
     def hide_tooltip(self, event=None):
         self.widget.configure(cursor="arrow")

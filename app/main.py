@@ -374,8 +374,17 @@ class App(CTk):
         """Restart the PyInstaller-exe or Python script safely."""
         logger.info("Restarting the application.")
 
-        # Restart the process and exit the current instance.
-        subprocess.Popen([sys.executable] + sys.argv, close_fds=True)
+        try:
+            # Restart the process and exit the current instance.
+            subprocess.Popen([sys.executable] + sys.argv, close_fds=True)
+        except OSError:
+            logger.error("Failed to restart via sys.executable, trying sys.argv[0].")
+
+            try:
+                subprocess.Popen(sys.argv, close_fds=True)
+            except OSError:
+                logger.error("Failed to restart the application.")
+                return
 
         self.destroy() # Close the windows before exiting program.
         sys.exit(0)
