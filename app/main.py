@@ -3,7 +3,7 @@ import yaml
 from functools import partial
 from pathlib import Path
 import traceback, requests
-import subprocess
+import subprocess, threading
 
 from customtkinter import CTk, CTkLabel
 from tkinter import StringVar
@@ -292,21 +292,24 @@ class App(CTk):
         self.check_for_updates()
 
     def check_for_updates(self):
-        try:
-            response = requests.get(
-                url="https://github.com/diogo-webber/vox-launcher/releases/latest/",
-                timeout=5,
-            )
+        def _check():
+            try:
+                response = requests.get(
+                    url="https://github.com/diogo-webber/vox-launcher/releases/latest/",
+                    timeout=5,
+                )
 
-            response.raise_for_status()  # Raise an exception for HTTP errors.
+                response.raise_for_status()  # Raise an exception for HTTP errors.
 
-            remote_version = Path(response.url).name
+                remote_version = Path(response.url).name
 
-            if response.status_code == 200 and remote_version != APP_VERSION[1:]:
-                self.after(300, self.update_popup.create, STRINGS.UPDATE_POPUP.DESCRIPTION.DEFAULT)
+                if response.status_code == 200 and remote_version != APP_VERSION[1:]:
+                    self.after(300, self.update_popup.create, STRINGS.UPDATE_POPUP.DESCRIPTION.DEFAULT)
 
-        except:
-            pass
+            except Exception:
+                pass
+
+        threading.Thread(target=_check, daemon=True).start()
 
 
     def callback_launch(self):

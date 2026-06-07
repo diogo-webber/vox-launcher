@@ -603,7 +603,7 @@ class ShardFrame(CustomFrame):
         self.status_circle.set_color(COLOR.WHITE)
 
         if self.is_master:
-            self._master.launch_button.update(
+            self._master.launch_button.set_style(
                 text=STRINGS.LAUNCH_BUTTON.LAUNCH,
                 fg_color=COLOR.GRAY,
                 hover_color=COLOR.GRAY_HOVER,
@@ -629,7 +629,7 @@ class ShardFrame(CustomFrame):
         self.status_circle.set_color(COLOR.YELLOW)
 
         if self.is_master:
-            self._master.launch_button.update(
+            self._master.launch_button.set_style(
                 text=STRINGS.LAUNCH_BUTTON.CANCEL,
                 fg_color=COLOR.RED,
                 hover_color=COLOR.RED_HOVER,
@@ -648,7 +648,7 @@ class ShardFrame(CustomFrame):
         self.status_circle.set_color(COLOR.YELLOW)
 
         if self.is_master:
-            self._master.launch_button.update(
+            self._master.launch_button.set_style(
                 text=STRINGS.LAUNCH_BUTTON.CANCEL,
                 fg_color=COLOR.RED,
                 hover_color=COLOR.RED_HOVER,
@@ -665,7 +665,7 @@ class ShardFrame(CustomFrame):
         self.status_circle.set_color(COLOR.YELLOW)
 
         if self.is_master:
-            self._master.launch_button.update(
+            self._master.launch_button.set_style(
                 text=STRINGS.LAUNCH_BUTTON.STOPPING,
                 fg_color=COLOR.GRAY,
                 hover_color=COLOR.GRAY_HOVER,
@@ -687,7 +687,7 @@ class ShardFrame(CustomFrame):
         self.status_circle.set_color(COLOR.GREEN)
 
         if self.is_master:
-            self._master.launch_button.update(text=STRINGS.LAUNCH_BUTTON.SAVE_QUIT)
+            self._master.launch_button.set_style(text=STRINGS.LAUNCH_BUTTON.SAVE_QUIT)
 
             self._master.save_button.show()
             self._master.quit_button.show()

@@ -369,10 +369,17 @@ def open_github_issue(template="bug_report", traceback=None, include_applog=Fals
         include_applog (bool): If True, includes app logs.
     """
 
+    MAX_URL_LENGTH = 8000
+
     traceback = traceback and f"&traceback={encode_for_url(traceback)}" or ""
     applogs = include_applog and f"&applogs={encode_for_url(get_app_logs())}" or ""
 
-    webbrowser.open(f"https://github.com/diogo-webber/vox-launcher/issues/new?template={template}.yml{traceback}{applogs}", new=0, autoraise=True)
+    url = f"https://github.com/diogo-webber/vox-launcher/issues/new?template={template}.yml{traceback}{applogs}"
+
+    if len(url) > MAX_URL_LENGTH:
+        url = url[:MAX_URL_LENGTH]
+
+    webbrowser.open(url, new=0, autoraise=True)
 
 def open_folder(path):
     """ Opens a Windows explorer instance on this path  """
@@ -414,8 +421,10 @@ def load_lua_file(filename, **kwargs):
     Returns:
         text (str or None): the text if the file exists, None otherwise.
     """
-    if filename in lua_file_cache:
-        return lua_file_cache[filename]
+    cache_key = (filename, tuple(sorted(kwargs.items())))
+
+    if cache_key in lua_file_cache:
+        return lua_file_cache[cache_key]
 
     file = LUA_FOLDER / f"{filename}.lua"
 
@@ -431,7 +440,7 @@ def load_lua_file(filename, **kwargs):
         # Join lines, remove excessive whitespace
         text = " ".join(text.split())
 
-        lua_file_cache[filename] = text
+        lua_file_cache[cache_key] = text
 
         return text
     else:
@@ -611,7 +620,7 @@ def get_clusters_directory():
     return None
 
 def _find_command_line_argument(text, arg):
-    pattern = re.compile(rf'-{arg}\s+(.+?)(?=\s-|\s*$)') # -arg value (-next | end)
+    pattern = re.compile(rf'-{arg}\s+(.+?)(?=\s-|\s*$)', re.MULTILINE) # -arg value (-next | end)
 
     match = pattern.search(text)
 

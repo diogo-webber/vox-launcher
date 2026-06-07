@@ -164,6 +164,9 @@ class PopUp:
             # Only one popup.
             return self.confirmed, self.slider_value
 
+        self.confirmed = None
+        self.slider_value = None
+
         self.popup = CTkToplevel(self.root, fg_color=COLOR.GRAY)
         self.popup.wm_overrideredirect(True)
         self.popup.grab_set()  # Make other windows not clickable.
