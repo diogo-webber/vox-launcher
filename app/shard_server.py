@@ -127,8 +127,16 @@ class DedicatedServerShard():
             #logger.debug("Starting server with these arguments: %s", " ".join(args))
 
             # This is HORRIBLE, but it works (Pyinstaller --noconcole + subprocess issue)
-            with StdoutMock() as sys.stdout:
-                self.process = popen_spawn.PopenSpawn(args, cwd=cwd, encoding="utf-8", codec_errors="ignore")
+            try:
+                with StdoutMock() as sys.stdout:
+                    self.process = popen_spawn.PopenSpawn(args, cwd=cwd, encoding="utf-8", codec_errors="ignore")
+            except OSError as e:
+                logger.error(f"Failed to start {self.shard} shard: {e}")
+
+                self.shard_frame.set_offline()
+                self.app.error_popup.create(STRINGS.ERROR.GENERAL)
+
+                return
 
             self.task = PeriodicTask(self.app, random.randrange(50, 70), self.handle_output, initial_time=0)
 
