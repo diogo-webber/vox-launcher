@@ -90,7 +90,7 @@ SMALL_BUTTON:
 COMMAND_CONFIRMATION:
     QUIT: Você realmente gostaria de parar o servidor sem salvar? Dados não salvos serão perdidos!
     RESET: Você realmente gostaria de reiniciar o servidor sem salvar? Dados não salvos serão perdidos!
-    ROLLBACK: Quantos dias você gostaria de reverter?
+    ROLLBACK: Quantos saves você gostaria de reverter?
 
 COMMAND_ANNOUNCEMENT:
     SAVE: Salvando mundo...

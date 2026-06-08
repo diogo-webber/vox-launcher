@@ -39,8 +39,8 @@ SHARD_NAME:
     EMPTY: Prázdný slot
 
 LAUNCH_BUTTON:
-    LAUNCH: Spustit
-    CANCEL: Zrušit
+    LAUNCH: SPUSTIT
+    CANCEL: ZRUŠIT
     SAVE_QUIT: ULOŽIT / ZASTAVIT
     STOPPING: ZASTAVUJE SE
 
@@ -97,7 +97,7 @@ COMMAND_ANNOUNCEMENT:
     SAVE: Ukládání světa...
     QUIT: Zastavuje se...
     RESET: Restartuje se...
-    ROLLBACK: Vrací se zpět o 5 sekund!
+    ROLLBACK: Vrácení zpět za 5 sekund!
     SAVE_QUIT: Ukládání světa a zastavování...
 
 ENTRY:

@@ -46,7 +46,7 @@ LAUNCH_BUTTON:
     STOPPING: CERRANDO
 
 SHARD_STATUS:
-    OFFLINE:    Offline
+    OFFLINE:    Desconectado
     STARTING:   Iniciando...
     ONLINE:     Conectado
     STOPPING:   Cerrando...
@@ -77,7 +77,7 @@ LOG_SCREEN:
     ENTRY_PLACEHOLDER: Ejecuta comandos de consola en {shard}. Pulsa ENTER para ejecutarlos.
     ENTRY_PLACEHOLDER_OFFLINE: Este fragmento está desconectado. Inicia el servidor para ejecutar comandos.
     CLOSE: Volver
-    AUTO_SCROLL: Desplazar Auto
+    AUTO_SCROLL: Auto-desplazar
     SHARD_FOLDER: Archivos locales
     SHARD_NAME_TITLE: "Fragmento:"
     SHARD_MEMORY_TITLE: "Memoria:"
@@ -116,7 +116,7 @@ ERROR:
     GENERAL: |-
         Ha ocurrido un error durante el lanzamiento del servidor.
 
-        Esto puede deberse a archivos del juego faltantes, un directorio de juego incorrecto o un problema de permisos. Por favor, comprueba el registro del servidor para más detalles.
+        Esto puede deberse a archivos del juego faltantes, un directorio de juego incorrecto o un problema de permisos. Por favor, compruebe el registro del servidor para más detalles.
     START_FAILED: |-
         Error al iniciar el shard {shard}.
 
@@ -145,7 +145,7 @@ ERROR:
 
         Por favor, considere informar de este error creando un issue en GitHub.
     LAUNCH_DATA_INVALID: |-
-        {APP_NAME} necesita datos de configuración inicial del servidor que se generan cuando ejecutas un mundo por primera vez desde el menú del juego.
+        {APP_NAME} necesita datos de configuración inicial del servidor que se generan cuando ejecuta un mundo por primera vez desde el menú del juego.
 
         Por favor, inicie cualquier clúster desde el menú del juego, espere a que arranque y luego deténgalo.
 

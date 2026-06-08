@@ -42,12 +42,12 @@ LAUNCH_BUTTON:
     LAUNCH: 启动
     CANCEL: 取消
     SAVE_QUIT: 保存并退出
-    STOPPING: 关闭
+    STOPPING: 正在关闭
 
 SHARD_STATUS:
-    OFFLINE:    离线模式
+    OFFLINE:    离线
     STARTING:   启动中...
-    ONLINE:     在线模式
+    ONLINE:     在线
     STOPPING:   关闭中...
     RESTARTING: 重启中...
 
@@ -104,7 +104,7 @@ ENTRY:
     GAME_TITLE: 游戏文件目录
     CLUSTER_TITLE: 存档文件目录
     TOKEN_TITLE: 服务器令牌
-    ENTRY_INVALID_INPUT: "✱ 输入了无效的文件目录"
+    ENTRY_INVALID_INPUT: "✱ 输入无效"
 
 ERROR:
     TOKEN_INVALID: |-
