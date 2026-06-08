@@ -52,6 +52,7 @@ class CustomDropdown():
         self.menu_container.pack_propagate(False)  # Prevent auto resize
         # Initially hidden
         self.menu_container.place_forget()
+        self._menu_open = False
 
         # ===== Scrollable Frame inside container =====
         self.menu_frame = ctk.CTkScrollableFrame(
@@ -78,14 +79,35 @@ class CustomDropdown():
             )
             button.pack(fill="x")
 
+        # Dismiss dropdown when clicking outside
+        self.master.winfo_toplevel().bind("<Button-1>", self._on_root_click, add="+")
+
+    def _on_root_click(self, event):
+        if not self._menu_open:
+            return
+
+        try:
+            widget = self.master.winfo_toplevel().winfo_containing(event.x_root, event.y_root)
+            widget_path = str(widget)
+            if widget_path.startswith(str(self.menu_container)) or widget_path.startswith(str(self.button)):
+                return
+        except (AttributeError, TypeError):
+            pass
+
+        self.menu_container.place_forget()
+        self._menu_open = False
+
     def toggle_menu(self):
         """Toggle visibility of the menu"""
-        if self.menu_container.winfo_viewable():
+        if self._menu_open:
             self.menu_container.place_forget()
+            self._menu_open = False
         else:
             x = self.button.winfo_x() / self.button._apply_widget_scaling(1) + 20
             y = (self.button.winfo_y() + self.button.winfo_height()) / self.button._apply_widget_scaling(1) + 6
             self.menu_container.place(x=x, y=y)
+            self.menu_container.lift()
+            self._menu_open = True
 
     def select_option(self, code, name):
         """Select an option and close the menu"""
@@ -93,6 +115,7 @@ class CustomDropdown():
         self.selected_value.set(name)
         self.selected_code = code
         self.menu_container.place_forget()
+        self._menu_open = False
 
         if self.on_selected_option:
             self.on_selected_option(code, name)
