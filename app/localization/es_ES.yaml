@@ -75,11 +75,11 @@ UPDATE_POPUP:
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Ejecuta comandos de consola en {shard}. Pulsa ENTER para ejecutarlos.
-    ENTRY_PLACEHOLDER_OFFLINE: Este fragmento está desconectado. Inicia el servidor para ejecutar comandos.
+    ENTRY_PLACEHOLDER_OFFLINE: Este shard está desconectado. Inicia el servidor para ejecutar comandos.
     CLOSE: Volver
     AUTO_SCROLL: Auto-desplazar
     SHARD_FOLDER: Archivos locales
-    SHARD_NAME_TITLE: "Fragmento:"
+    SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "Memoria:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
 
