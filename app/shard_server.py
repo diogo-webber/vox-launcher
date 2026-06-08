@@ -90,7 +90,7 @@ class DedicatedServerShard():
         else:
             logger.warning("Starting shard: missing mods directory.")
 
-        extra_args = self.app.settings.get_setting(Settings.LAUNCH_OPTIONS).split()
+        extra_args = self.app.settings.get(Settings.LAUNCH_OPTIONS).split()
 
         args = args + extra_args
 

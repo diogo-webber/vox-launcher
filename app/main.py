@@ -102,7 +102,7 @@ class App(CTk):
 
         self.geometry(f"+{x}+{y}")
 
-        self.settings = SettingsManager(app=self, enum_cls=Settings)
+        self.settings = SettingsManager(app=self)
         self.settings.load()
 
         self.title(STRINGS.WINDOW_TITLE)
@@ -417,7 +417,7 @@ if __name__ == "__main__":
 
     app = App()
 
-    STRINGS.load_strings(app.settings.get_setting(Settings.LANGUAGE))
+    STRINGS.load_strings(app.settings.get(Settings.LANGUAGE))
     FONT.create_fonts() # Needs to run after string loading.
 
     # ------------------------------------------------------------------------------------ #

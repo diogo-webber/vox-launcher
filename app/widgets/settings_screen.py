@@ -92,13 +92,13 @@ class SettingsScreen():
             corner_radius=self.corner_radius,
         )
 
-        lang_code = self.master.settings.get_setting(Settings.LANGUAGE)
+        lang_code = self.master.settings.get(Settings.LANGUAGE)
 
         self.language_dropdown = CustomDropdown(
             master=self.root,
             options=[(code, name) for code, name in STRINGS.LANGUAGES.to_dict().items()],
             default=STRINGS.LANGUAGES[lang_code] is not None and lang_code or get_default_language_code(),
-            on_selected_option=lambda code, name: self.master.settings.set_setting(Settings.LANGUAGE, code)
+            on_selected_option=lambda code, name: self.master.settings.set(Settings.LANGUAGE, code)
         )
 
         self.language_dropdown._tooltip = SettingsTooltip(
@@ -159,7 +159,7 @@ class SettingsScreen():
 
         self.arguments_entry.bind("<KeyRelease>", self.on_arguments_textbox_key)
 
-        self.arguments_entry.insert(END, self.master.settings.get_setting(Settings.LAUNCH_OPTIONS))
+        self.arguments_entry.insert(END, self.master.settings.get(Settings.LAUNCH_OPTIONS))
         self.on_arguments_textbox_key() # Highlight inserted text.
 
         self.arguments_entry._tooltip = SettingsTooltip(
@@ -284,7 +284,7 @@ class SettingsScreen():
     def on_arguments_textbox_key(self, *args, **kwargs):
         text = self.arguments_entry.get("1.0", END)
 
-        self.master.settings.set_setting_delayed(Settings.LAUNCH_OPTIONS, text.strip())
+        self.master.settings.set_delayed(Settings.LAUNCH_OPTIONS, text.strip())
 
         # Remove existing tags
         self.arguments_entry.tag_remove("goodoption", "1.0", END)
