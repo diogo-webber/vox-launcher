@@ -7,7 +7,7 @@ from PIL import Image
 from strings import STRINGS, get_readable_system_language
 from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
 from widgets.buttons import RelativeXImageButton, CustomButton
-from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHightlightData, PeriodicTask, read_file_nonblocking
+from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHighlightData, PeriodicTask, read_file_nonblocking
 from shard_server import DedicatedServerShard
 from fonts import FONT
 
@@ -148,7 +148,8 @@ class ShardLogPanel():
         self._visible = False
         self.shard = shard
         self.corner_radius = 10
-        self.hightlight_data = []
+        self.highlight_data = []
+        self._highlight_end = "1.0"
 
         self.root = CustomFrame(
             master=master,
@@ -177,11 +178,11 @@ class ShardLogPanel():
 
         self.textbox._textbox.configure(selectbackground=COLOR.GRAY)
 
-        self.add_hightlight(pattern=r'\[\d{2}:\d{2}:\d{2}\]:', name="timestamp", color=COLOR.CONSOLE_GRAY)
-        self.add_hightlight(pattern=r'World \d* is now connected', name="online", color=COLOR.GREEN)
-        self.add_hightlight(pattern=r'RemoteCommandInput:.*?[\n\r]+', name="remotecommand", color=COLOR.LIGHT_BLUE)
-        self.add_hightlight(pattern=r'\[Warning\].*?[\n\r]+', name="warnings", color=COLOR.YELLOW)
-        self.add_hightlight(pattern=r'(?<=\[\d{2}:\d{2}:\d{2}\]: )(\[string ".*?)(?=\[\d{2}:\d{2}:\d{2}\]:|\Z)', name="crash", color="#e88a84", flags=re.DOTALL)
+        self.add_highlight(pattern=r'\[\d{2}:\d{2}:\d{2}\]:', name="timestamp", color=COLOR.CONSOLE_GRAY)
+        self.add_highlight(pattern=r'World \d* is now connected', name="online", color=COLOR.GREEN)
+        self.add_highlight(pattern=r'RemoteCommandInput:.*?[\n\r]+', name="remotecommand", color=COLOR.LIGHT_BLUE)
+        self.add_highlight(pattern=r'\[Warning\].*?[\n\r]+', name="warnings", color=COLOR.YELLOW)
+        self.add_highlight(pattern=r'(?<=\[\d{2}:\d{2}:\d{2}\]: )(\[string ".*?)(?=\[\d{2}:\d{2}:\d{2}\]:|\Z)', name="crash", color="#e88a84", flags=re.DOTALL)
 
         self.textbox.place(
             x = OFFSET.LOGS_TEXTBOX.x,
@@ -353,7 +354,7 @@ class ShardLogPanel():
         self.textbox.configure(state=DISABLED)
 
         if self._visible:
-            self.highlight_text()
+            self.highlight_text(incremental=True)
 
             if self._auto_scroll:
                 self.show_end()
@@ -377,15 +378,14 @@ class ShardLogPanel():
             logger.info(f"Truncating log file for shard '{self.shard}' because it exceeds the maximum allowed {MAX_LINES} lines.")
 
             truncation_message = (
-                f">> This log has been truncated to the last {MAX_LINES} lines. "
-                "Color highlighting has been skipped.\n\n"
+                f">> This log has been truncated to the last {MAX_LINES} lines.\n\n"
             )
 
             # Keep only the last MAX_LINES lines and prepend the message
             self._append_lines = [truncation_message] + self._append_lines[-MAX_LINES:]
 
         # Reset highlight while we're inserting
-        for h in self.hightlight_data:
+        for h in self.highlight_data:
             self.textbox.tag_remove(h.name, "1.0", END)
 
         self._append_next_chunk()
@@ -411,7 +411,9 @@ class ShardLogPanel():
 
         text = ''.join(self._append_lines[self._append_index : self._append_index + 500])
 
+        start_idx = self.textbox.index(END)
         self.textbox.insert(END, text)
+        self._highlight_range(start_idx, text)
 
         self._append_index += 500
         self._append_job = self.root.after(1, self._append_next_chunk)
@@ -420,6 +422,7 @@ class ShardLogPanel():
         self.textbox.configure(state=NORMAL) # To be able to delete text!
         self.textbox.delete("1.0", END)
         self.textbox.configure(state=DISABLED)
+        self._highlight_end = "1.0"
 
     def on_load_log_file(self, text=None):
         if text and not self.server.is_running():
@@ -430,34 +433,70 @@ class ShardLogPanel():
         self.textbox.see(END)
         self._mouse_scroll_event()
 
-    def add_hightlight(self, pattern, name, color, flags=0):
+    def add_highlight(self, pattern, name, color, flags=0):
         self.textbox.tag_config(name, foreground=color)
 
-        self.hightlight_data.append(
-            TextHightlightData(
+        self.highlight_data.append(
+            TextHighlightData(
                 pattern = re.compile(pattern, flags=flags),
                 name = name,
             )
         )
 
-    def highlight_text(self):
-        text = self.textbox.get("1.0", END)
+    def _char_to_index(self, text, char_pos, base_line=1, base_col=0):
+        prefix = text[:char_pos]
+        newlines = prefix.count('\n')
 
-        MAX_LINES = 1000
+        if newlines == 0:
+            return f"{base_line}.{base_col + char_pos}"
 
-        if len(text.splitlines(keepends=True)) >= MAX_LINES:
-            logger.debug(f"Skipped log colour highlighting for shard '{self.shard}' because it exceeds the maximum allowed {MAX_LINES} lines.")
+        last_newline = prefix.rfind('\n')
+        col = char_pos - last_newline - 1
+        return f"{base_line + newlines}.{col}"
 
+    def _highlight_range(self, start_idx, text):
+        parts = str(start_idx).split('.')
+        base_line = int(parts[0])
+        base_col = int(parts[1])
+
+        for highlight in self.highlight_data:
+            if highlight.pattern.flags & re.DOTALL:
+                continue
+
+            for match in highlight.pattern.finditer(text):
+                s, e = match.span()
+                self.textbox.tag_add(
+                    highlight.name,
+                    self._char_to_index(text, s, base_line, base_col),
+                    self._char_to_index(text, e, base_line, base_col),
+                )
+
+    def highlight_text(self, incremental=False):
+        if incremental:
+            start = self._highlight_end
+            text = self.textbox.get(start, END)
+
+            if not text.strip():
+                return
+
+            self._highlight_range(self.textbox.index(start), text)
+            self._highlight_end = self.textbox.index(END)
             return
 
-        for highlight in self.hightlight_data:
+        text = self.textbox.get("1.0", END)
+
+        for highlight in self.highlight_data:
             self.textbox.tag_remove(highlight.name, "1.0", END)
 
-            matches = highlight.pattern.finditer(text)
+            for match in highlight.pattern.finditer(text):
+                s, e = match.span()
+                self.textbox.tag_add(
+                    highlight.name,
+                    self._char_to_index(text, s),
+                    self._char_to_index(text, e),
+                )
 
-            for match in matches:
-                start, end = match.span()
-                self.textbox.tag_add(highlight.name, f"1.0+{start}c", f"1.0+{end}c")
+        self._highlight_end = self.textbox.index(END)
 
     def _mouse_scroll_event(self, *args, **kwargs):
         pass
@@ -737,12 +776,12 @@ class TextBoxAsLabel(CTkTextbox):
 
         self.insert("1.0", STRINGS.CLUSTER_GROUP_TOOLTIP)
 
-        self.hightlight_data = []
+        self.highlight_data = []
 
-        self.tag_config("hightlight", foreground=COLOR.GREEN)
+        self.tag_config("highlight", foreground=COLOR.GREEN)
 
         for pattern in STRINGS.CLUSTER_GROUP_TOOLTIP_HIGHLIGHT_PATTERNS:
-            self.add_hightlight(pattern=pattern)
+            self.add_highlight(pattern=pattern)
 
         self.highlight_text()
 
@@ -753,18 +792,18 @@ class TextBoxAsLabel(CTkTextbox):
         self.bind("<MouseWheel>", disable_bind)
 
 
-    def add_hightlight(self, pattern):
-        self.hightlight_data.append(
-            TextHightlightData(
+    def add_highlight(self, pattern):
+        self.highlight_data.append(
+            TextHighlightData(
                 pattern = re.compile(pattern),
-                name = "hightlight",
+                name = "highlight",
             )
         )
 
     def highlight_text(self):
         text = self.get("1.0", END)
 
-        for highlight in self.hightlight_data:
+        for highlight in self.highlight_data:
             matches = highlight.pattern.finditer(text)
 
             for match in matches:

@@ -17,7 +17,7 @@ logger = logging.getLogger(LOGGER)
 # ----------------------------------------------------------------------------------------- #
 
 @dataclass
-class TextHightlightData():
+class TextHighlightData():
     """
     Simple dataclass used to highlight text in text box widgets.
 
