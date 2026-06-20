@@ -1,5 +1,3 @@
-import logging
-
 import sys, os, psutil
 import random
 import logging, logging.config

@@ -306,8 +306,9 @@ class App(CTk):
                 if response.status_code == 200 and remote_version != APP_VERSION[1:]:
                     self.after(300, self.update_popup.create, STRINGS.UPDATE_POPUP.DESCRIPTION.DEFAULT)
 
-            except Exception:
-                pass
+            except requests.exceptions.RequestException as e:
+                # No internet connection, timeout or HTTP error: skip the update check silently.
+                logger.debug(f"Update check skipped (network error): {e}")
 
         threading.Thread(target=_check, daemon=True).start()
 
