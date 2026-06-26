@@ -158,6 +158,13 @@ ERROR:
 
         Tiến trình máy chủ có thể đã rơi vào trạng thái không phản hồi. Kiểm tra lỗi trong nhật ký máy chủ.
 
+SAVE_TOKEN:
+    TOOLTIP: "Tạo tệp cluser token để khởi chạy dễ dàng hơn ở lần kế tiếp."
+    CREATE_CONFIRMATION: "Tạo cluster_token.txt với Server Token hiện tại?"
+    OVERWRITE_CONFIRMATION: "cluster_token.txt đã tồn tại. Bạn có muốn ghi đè không?"
+    SUCCESS: "Thành công!"
+    SAVE_FAILED: "Không thể lưu cluster_token.txt."
+
 SETTINGS_SCREEN:
     BUTTONS:
         APP_LOG: Nhật Ký Ứng Dụng

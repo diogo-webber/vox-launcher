@@ -12,6 +12,7 @@ LANGUAGES:
     ru_RU: Русский
     cs_CZ: Čeština
     th_TH: ไทย (ไทย)
+    vi_VN: Tiếng Việt
 
 TOKEN_TOOLTIP: |-
     You need a Server Token to run a Dedicated Server.
@@ -168,6 +169,13 @@ ERROR:
         Failed to send command to the {shard} shard.
 
         The server process may have become unresponsive. Check the server log for errors.
+
+SAVE_TOKEN:
+    TOOLTIP: "Create cluster token file for simpler launch next time."
+    CREATE_CONFIRMATION: "Create cluster_token.txt with the current server token?"
+    OVERWRITE_CONFIRMATION: "cluster_token.txt already exists. Overwrite it?"
+    SUCCESS: "Success!"
+    SAVE_FAILED: "Failed to create cluster_token.txt."
 
 SETTINGS_SCREEN:
     BUTTONS:

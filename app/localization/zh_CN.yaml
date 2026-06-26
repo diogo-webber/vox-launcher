@@ -164,6 +164,12 @@ ERROR:
 
         服务器进程可能已无响应。请检查服务器日志以查看错误。
 
+SAVE_TOKEN:
+    TOOLTIP: "创建群集令牌文件，以便下次启动更简单。"
+    CREATE_CONFIRMATION: "使用当前的服务器令牌创建 cluster_token.txt 文件？"
+    OVERWRITE_CONFIRMATION: "cluster_token.txt 已存在。要覆盖它吗？"
+    SUCCESS: "成功！"
+    SAVE_FAILED: "创建 cluster_token.txt 失败。"
 
 SETTINGS_SCREEN:
     BUTTONS:

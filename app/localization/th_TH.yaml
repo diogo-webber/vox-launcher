@@ -163,6 +163,13 @@ ERROR:
 
         กระบวนการเซิร์ฟเวอร์อาจไม่ตอบสนอง ตรวจสอบ log เซิร์ฟเวอร์เพื่อดูข้อผิดพลาด
 
+SAVE_TOKEN:
+    TOOLTIP: "สร้างไฟล์ cluster_token.txt เพื่อให้เปิดเซิร์ฟเวอร์ง่ายขึ้นในครั้งต่อไป"
+    CREATE_CONFIRMATION: "สร้าง cluster_token.txt ด้วยโทเค็นเซิร์ฟเวอร์ปัจจุบัน?"
+    OVERWRITE_CONFIRMATION: "cluster_token.txt มีอยู่แล้ว ต้องการเขียนทับ?"
+    SUCCESS: "สำเร็จ!"
+    SAVE_FAILED: "สร้าง cluster_token.txt ล้มเหลว"
+
 SETTINGS_SCREEN:
     BUTTONS:
         APP_LOG: Log แอป

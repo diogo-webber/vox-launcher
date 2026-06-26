@@ -163,6 +163,13 @@ ERROR:
 
         O processo do servidor pode ter ficado sem resposta. Verifique o log do servidor para erros.
 
+SAVE_TOKEN:
+    TOOLTIP: "Criar arquivo de token do cluster para iniciar mais facilmente na próxima vez."
+    CREATE_CONFIRMATION: "Criar cluster_token.txt com o token de servidor atual?"
+    OVERWRITE_CONFIRMATION: "cluster_token.txt já existe. Sobrescrever?"
+    SUCCESS: "Sucesso!"
+    SAVE_FAILED: "Falha ao criar cluster_token.txt."
+
 SETTINGS_SCREEN:
     BUTTONS:
         APP_LOG: Logs do Aplicativo

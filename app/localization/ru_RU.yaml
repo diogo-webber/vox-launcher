@@ -164,6 +164,13 @@ ERROR:
 
         Процесс сервера может не отвечать. Проверьте лог сервера для выявления ошибок.
 
+SAVE_TOKEN:
+    TOOLTIP: "Создать файл cluster_token.txt для упрощения запуска в следующий раз."
+    CREATE_CONFIRMATION: "Создать cluster_token.txt с текущим токеном сервера?"
+    OVERWRITE_CONFIRMATION: "cluster_token.txt уже существует. Перезаписать?"
+    SUCCESS: "Успешно!"
+    SAVE_FAILED: "Не удалось создать cluster_token.txt."
+
 SETTINGS_SCREEN:
     BUTTONS:
         APP_LOG: Логи приложения

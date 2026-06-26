@@ -164,6 +164,13 @@ ERROR:
 
         Proces serveru může být neodpovídající. Zkontrolujte záznam serveru pro chyby.
 
+SAVE_TOKEN:
+    TOOLTIP: "Vytvořit soubor cluster_token.txt pro jednodušší spuštění příště."
+    CREATE_CONFIRMATION: "Vytvořit cluster_token.txt s aktuálním serverovým tokenem?"
+    OVERWRITE_CONFIRMATION: "cluster_token.txt již existuje. Přepsat?"
+    SUCCESS: "Úspěch!"
+    SAVE_FAILED: "Nepodařilo se vytvořit cluster_token.txt."
+
 SETTINGS_SCREEN:
     BUTTONS:
         APP_LOG: Logy aplikace

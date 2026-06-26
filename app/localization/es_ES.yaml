@@ -165,6 +165,13 @@ ERROR:
 
         El proceso del servidor puede haberse bloqueado. Compruebe el registro del servidor para ver errores.
 
+SAVE_TOKEN:
+    TOOLTIP: "Crear archivo de token del clúster para un inicio más simple la próxima vez."
+    CREATE_CONFIRMATION: "¿Crear cluster_token.txt con el token del servidor actual?"
+    OVERWRITE_CONFIRMATION: "cluster_token.txt ya existe. ¿Sobrescribirlo?"
+    SUCCESS: "¡Éxito!"
+    SAVE_FAILED: "Error al crear cluster_token.txt."
+
 SETTINGS_SCREEN:
     BUTTONS:
         APP_LOG: Registros app

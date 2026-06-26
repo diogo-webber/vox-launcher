@@ -6,7 +6,7 @@ import traceback, requests
 import subprocess, threading
 
 from customtkinter import CTk, CTkLabel
-from tkinter import StringVar
+from tkinter import StringVar, Toplevel
 
 from constants import *
 from helpers import *
@@ -148,6 +148,24 @@ class App(CTk):
             size=SIZE.TOKEN_ENTRY,
             pos=POS.TOKEN_ENTRY,
         )
+
+        self.token_save_button = CustomButton(
+            master=self,
+            text="+",
+            command=self.on_create_token_click,
+            font=FONT.SMALL_BUTTON,
+            size=SIZE.TOKEN_SAVE_BUTTON,
+            pos=POS.TOKEN_SAVE_BUTTON,
+            corner_radius=7,
+        )
+
+        self.token_save_button.show()
+
+        self._save_token_tooltip = None
+        self._save_token_tooltip_task = None
+
+        self.token_save_button.bind("<Enter>", self._show_save_token_tooltip)
+        self.token_save_button.bind("<Leave>", self._hide_save_token_tooltip)
 
         self.token_tooltip = Tooltip(
             master=self,
@@ -334,6 +352,88 @@ class App(CTk):
             self.master_shard.stop()
         else:
             self.shard_group.start_all_shards()
+
+    def on_create_token_click(self):
+        cluster_dir = self.cluster_entry.get()
+
+        if not cluster_dir:
+            self.error_popup.create(STRINGS.ERROR.DIRECTORY_INVALID.format(directory_name=STRINGS.ENTRY.CLUSTER_TITLE))
+            return
+
+        directory_path = Path(cluster_dir)
+        if not directory_path.exists():
+            self.error_popup.create(STRINGS.ERROR.DIRECTORY_INVALID.format(directory_name=STRINGS.ENTRY.CLUSTER_TITLE))
+            return
+
+        token = self.token_entry.get()
+
+        if not token.strip():
+            self.token_entry.toggle_warning(False)
+            self.error_popup.create(STRINGS.ERROR.TOKEN_EMPTY)
+            return
+
+        if not is_valid_token(token):
+            self.token_entry.toggle_warning(False)
+            self.error_popup.create(STRINGS.ERROR.TOKEN_INVALID)
+            return
+
+        token_file = directory_path / "cluster_token.txt"
+
+        if token_file.exists():
+            confirmed, _ = self.confirmation_popup.create(STRINGS.SAVE_TOKEN.OVERWRITE_CONFIRMATION)
+        else:
+            confirmed, _ = self.confirmation_popup.create(STRINGS.SAVE_TOKEN.CREATE_CONFIRMATION)
+
+        if not confirmed:
+            return
+
+        try:
+            token_file.write_text(token.strip(), encoding="utf-8")
+            self.error_popup.create(STRINGS.SAVE_TOKEN.SUCCESS)
+        except Exception as e:
+            logging.getLogger(LOGGER).error("Failed to write cluster_token.txt: %s", e)
+            self.error_popup.create(STRINGS.SAVE_TOKEN.SAVE_FAILED)
+
+    def _show_save_token_tooltip(self, event=None):
+        if self._save_token_tooltip_task:
+            self.token_save_button.after_cancel(self._save_token_tooltip_task)
+        self._save_token_tooltip_task = self.token_save_button.after(250, self._do_show_save_token_tooltip)
+
+    def _do_show_save_token_tooltip(self):
+        self.token_save_button.configure(cursor="hand2")
+        self._save_token_tooltip = Toplevel(self.token_save_button)
+        self._save_token_tooltip.wm_overrideredirect(True)
+
+        label = CTkLabel(
+            self._save_token_tooltip,
+            text=STRINGS.SAVE_TOKEN.TOOLTIP,
+            fg_color=COLOR.GRAY,
+            bg_color=COLOR.DARK_GRAY,
+            text_color=COLOR.WHITE,
+            corner_radius=10,
+            font=FONT.ENTRY,
+            wraplength=350,
+        )
+
+        padding = label._apply_widget_scaling(18)
+        label.pack(ipadx=padding, ipady=padding)
+
+        try:
+            label.update()
+            x = self.token_save_button.winfo_rootx() - label.winfo_reqwidth() - label._apply_widget_scaling(36.67) - padding
+            y = self.token_save_button.winfo_rooty() - label.winfo_reqheight() / 4 - label._apply_widget_scaling(5) - padding / 2
+            self._save_token_tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
+        except Exception:
+            self._save_token_tooltip = None
+
+    def _hide_save_token_tooltip(self, event=None):
+        self.token_save_button.configure(cursor="arrow")
+        if self._save_token_tooltip_task:
+            self.token_save_button.after_cancel(self._save_token_tooltip_task)
+            self._save_token_tooltip_task = None
+        if self._save_token_tooltip:
+            self._save_token_tooltip.destroy()
+            self._save_token_tooltip = None
 
     def execute_special_command(self, command, announcement=None, slider_fn=None, confirmation_text=None):
         if confirmation_text:
