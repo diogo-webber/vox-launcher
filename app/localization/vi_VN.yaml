@@ -1,0 +1,178 @@
+APP_NAME: Vox Launcher
+VERSION_LABEL: "{APP_NAME} {APP_VERSION}"
+WINDOW_TITLE: "  {APP_NAME}"
+
+TOKEN_TOOLTIP: |-
+    Bạn cần Server Token để chạy Dedicated Server.
+    Hãy tạo một cái trên trang Klei Account.
+    Bấm vô đây để mở trang web.
+
+CLUSTER_NAME_DEFAULT: Cách thức hoạt động ra sao?
+ASK_DIRECTORY_TITLE: "  Chọn thư mục"
+
+CLUSTER_GROUP_TOOLTIP: |-
+    ➊    Chọn thư mục nơi bạn cài đặt game chỗ {GAME_TITLE}, nếu nó chưa được tự động phát hiện. 
+    ➋    Tạo một thế giới bằng menu trong game và chọn thư mục của thế giới đó chỗ {CLUSTER_TITLE}.
+    ➌    Dán Server Token chỗ {TOKEN_TITLE}. Di chuột qua biểu tượng ⓘ để coi hướng dẫn cách lấy.
+    ➍    Cuối cùng, bấm nút {LAUNCH} và tận hưởng!
+
+CLUSTER_GROUP_TOOLTIP_HIGHLIGHT_PATTERNS:
+    - "{GAME_TITLE}"
+    - "{CLUSTER_TITLE}"
+    - "{TOKEN_TITLE}"
+    - ⓘ
+    - "{LAUNCH}"
+    - ➊
+    - ➋
+    - ➌
+    - ➍
+
+SHARD_NAME:
+    MASTER: Rừng (Forest)
+    CAVES: Hang Động (Caves)
+    EMPTY: Vị Trí Trống
+
+LAUNCH_BUTTON:
+    LAUNCH: KHỞI CHẠY
+    CANCEL: HUỶ
+    SAVE_QUIT: LƯU / DỪNG
+    STOPPING: ĐANG DỪNG
+
+SHARD_STATUS:
+    OFFLINE:    Ngoại tuyến
+    STARTING:   Đang khởi động...
+    ONLINE:     Trực tuyến
+    STOPPING:   Đang dừng...
+    RESTARTING: Đang khởi động lại...
+
+CLUSTER_STATS:
+    DAY: "Ngày: "
+    SEASON: "Mùa: "
+    PLAYERS: "Người chơi: "
+
+POPUP:
+    OK: Đồng Ý
+    CANCEL: Huỷ
+    LOG: Nhật Ký Máy Chủ
+    REPORT: Báo Cáo
+    RETRY: Thử Lại
+    RESTART: Khởi Động Lại
+
+UPDATE_POPUP:
+    DOWNLOAD: Tải về
+    IGNORE: Bỏ qua
+    DESCRIPTION:
+        DEFAULT: Đã có phiên bản mới của ứng dụng. Bạn nên cân nhắc cập nhật nha.
+        DOWNLOADING: Đang tải về... Sẽ không tốn nhiều thời gian đâu!
+        FAILED: Tải về thất bại. Đây có thể do sự cố mạng bên phía bạn hoặc do máy chủ Github. Vui lòng thử lại sau.
+
+LOG_SCREEN:
+    ENTRY_PLACEHOLDER: Chạy các lệnh console trên {shard}. Bấm ENTER để thực thi.
+    ENTRY_PLACEHOLDER_OFFLINE: Shard này đang ngoại tuyến. Khởi động máy chủ để chạy các lệnh.
+    CLOSE: Quay lại
+    AUTO_SCROLL: Tự động cuộn
+    SHARD_FOLDER: Tệp cục bộ
+    SHARD_NAME_TITLE: "Shard:"
+    SHARD_MEMORY_TITLE: "Bộ nhớ:"
+    SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+
+SMALL_BUTTON:
+    SAVE: Lưu
+    QUIT: Dừng
+    RESET: Khởi động lại
+    ROLLBACK: Rollback
+
+COMMAND_CONFIRMATION:
+    QUIT: Bạn có chắc chắn muốn dừng máy chủ mà không lưu lại không? Dữ liệu chưa lưu sẽ bị mất!
+    RESET: Bạn có chắc chắn muốn khởi động lại máy chủ mà không lưu lại không? Dữ liệu chưa lưu sẽ bị mất!
+    ROLLBACK: Bạn muốn rollback bao nhiêu bản lưu (save)?
+
+COMMAND_ANNOUNCEMENT:
+    SAVE: Đang lưu thế giới...
+    QUIT: Đang dừng...
+    RESET: Đang khởi động lại...
+    ROLLBACK: Sẽ rollback sau 5 giây nữa!
+    SAVE_QUIT: Đang lưu thế giới và dừng...
+
+ENTRY:
+    GAME_TITLE: Thư Mục Game
+    CLUSTER_TITLE: Thư Mục Cluster
+    TOKEN_TITLE: Server Token
+    ENTRY_INVALID_INPUT: "✱ Dữ liệu đầu vô không hợp lệ"
+
+ERROR:
+    TOKEN_INVALID: |-
+        Server Token đã nhập không hợp lệ hoặc đã hết hạn.
+
+        Vui lòng tạo một token mới trên trang Klei Account và dán nó chỗ Server Token.
+    TOKEN_EMPTY: Cần có Server Token để chạy Dedicated Server. Di chuột qua biểu tượng ⓘ để coi hướng dẫn cách lấy.
+    GENERAL: |-
+        Đã xảy ra lỗi trong quá trình khởi chạy máy chủ.
+
+        Nguyên nhân có thể do thiếu tệp tin game, sai thư mục game hoặc do vấn đề về quyền truy cập. Vui lòng kiểm tra nhật ký máy chủ để biết thêm chi tiết.
+    START_FAILED: |-
+        Không thể khởi động shard {shard}.
+
+        Không thể kích hoạt tệp thực thi của máy chủ. Vui lòng kiểm tra thử:
+        • Đường dẫn thư mục game đã chính xác chưa.
+        • Các tệp tin game có bị lỗi không (xác thực tính toàn vẹn qua Steam).
+        • Không có phần mềm diệt virus nào chặn tệp thực thi.
+    PORTS: |-
+        Máy chủ không thể khởi động do một trong các lý do sau:
+
+        • Cluster không nằm cùng thư mục với các thế giới được tạo trong game.
+
+        • Một hoặc nhiều cổng (port) ({ports}) hiện đang bị một chương trình khác sử dụng, bao gồm cả các máy chủ trong game.
+
+        Đóng các máy chủ khác đang chạy hoặc thay đổi các cổng (port) trong tệp server.ini của từng shard.
+
+        Nếu không phải các lý do trên, vui lòng báo cáo sự cố này.
+    EXCEPTION: |-
+        Đã xảy ra lỗi ngoài dự kiến!
+
+        > {error}
+
+        Ứng dụng sẽ được khởi động lại.
+
+        Nếu có máy chủ nào đang chạy, nó sẽ được lưu lại và tắt một cách an toàn.
+
+        Vui lòng cân nhắc báo cáo lỗi này bằng cách tạo một issue trên Github.
+    LAUNCH_DATA_INVALID: |-
+        {APP_NAME} cần dữ liệu cấu hình máy chủ ban đầu – dữ liệu này được tạo ra khi bạn chạy một thế giới lần đầu tiên từ menu trong game.
+
+        Vui lòng khởi chạy bất kỳ cluster nào từ menu trong game, đợi nó khởi động xong rồi tắt đi.
+
+        Sau khi hoàn tất, hãy nhấp vào nút Thử Lại bên dưới.
+    SERVER_CRASH: |-
+        Máy chủ của bạn đã bị crash do lỗi Lua. Vui lòng tham khảo các tệp nhật ký (log) của game để biết thêm thông tin.
+
+        Các nguyên nhân phổ biến: mod không tương thích hoặc đã lỗi thời (outdated), dữ liệu lưu thế giới (world save) bị lỗi, hoặc do lỗi của game.
+        
+        Đây là do game crash, không phải lỗi của {APP_NAME}. Cân nhắc tắt các mod vừa thêm gần đây hoặc báo cáo sự cố cho Klei.
+    DIRECTORY_INVALID: |-
+        Đường dẫn {directory_name} đã chọn không hợp lệ hoặc không chứa các tệp tin cần thiết.
+
+        Vui lòng chọn một thư mục hợp lệ trước khi khởi chạy máy chủ.
+    COMMAND_FAILED: |-
+        Không thể gởi lệnh đến shard {shard}.
+
+        Tiến trình máy chủ có thể đã rơi vào trạng thái không phản hồi. Kiểm tra lỗi trong nhật ký máy chủ.
+
+SETTINGS_SCREEN:
+    BUTTONS:
+        APP_LOG: Nhật Ký Ứng Dụng
+        LOCAL_FILES: Tệp Cục Bộ
+        REPORT_ISSUE: Báo Cáo Sự Cố
+
+    LANGUAGE:
+        TITLE: Ngôn ngữ
+        DESC: Chọn ngôn ngữ cho ứng dụng.
+
+    LAUNCH_OPTIONS:
+        TITLE: Tùy Chọn Khởi Chạy
+        DESC: Người sử dụng nâng cao có thể nhập các tùy chọn khởi chạy máy chủ. Sử dụng không đúng cách có thể dẫn tới lỗi ngoài dự kiến.
+
+    CLOSE: Quay lại
+
+    RESTART_REQUIRED: |-
+        Áp dụng các cài đặt này yêu cầu phải khởi động lại ứng dụng. Bạn có muốn khởi động lại ngay bây giờ không?
