@@ -112,6 +112,13 @@ command_args = [
     "--noconfirm",
     "--clean",
 
+    # Exclude problematic imports
+    "--exclude-module=AppKit",
+    "--exclude-module=_mac_detect",
+
+    # Handle DLL warnings
+    f"--runtime-hook={Path(__file__).parent / 'fix_dll_imports.py'}",
+
     f"--name={EXE_NAME}",
     f"--icon={ICON}",
     f"--distpath={BUILD_DIRECTORY}",
@@ -125,6 +132,17 @@ command_args = [
 
 # ------------------------------------------------------------------------------ #
 
+def wait_for_file_access(path, timeout=5):
+    """Wait for file to be accessible"""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            with open(path, 'a'):
+                return True
+        except PermissionError:
+            time.sleep(0.1)
+    return False
+
 def rename_build_folder(old, new):
     for attempt in range(RENAME_ATTEMPTS):
         try:
@@ -133,18 +151,21 @@ def rename_build_folder(old, new):
             else:
                 print(f"{YELLOW}[INFO]{RESET} Renaming build folder to: {YELLOW}{new.as_posix()}{RESET}")
 
+            # Wait for files to be released
+            for file in old.rglob('*'):
+                if file.is_file():
+                    wait_for_file_access(file)
+            
+            # Try to rename
             old.rename(versioned_build_path)
-
             break
 
         except Exception as e:
-            if attempt+1 <= RENAME_ATTEMPTS:
-                print(f"{RED}[ERROR]{RESET} Failed to rename build folder, files might be in use. Retrying in {YELLOW}100{RESET} miliseconds...")
-
-                time.sleep(1/10)
+            if attempt + 1 < RENAME_ATTEMPTS:
+                print(f"{RED}[ERROR]{RESET} Failed to rename build folder, files might be in use. Retrying in {YELLOW}100{RESET} milliseconds...")
+                time.sleep(0.1)
             else:
                 print(f"{RED}[ERROR]{RESET} Failed to rename build folder, files might be in use.")
-
                 raise e  # Give up after last attempt.
 
 if __name__ == "__main__":
