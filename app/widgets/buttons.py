@@ -74,7 +74,7 @@ class CustomButton(CTkButton):
     def disable(self):
         self.configure(state=DISABLED, cursor="no")
 
-    def update(self, text=None, fg_color=None, hover_color=None):
+    def set_style(self, text=None, fg_color=None, hover_color=None):
         if text:
             self.text.set(text)
 

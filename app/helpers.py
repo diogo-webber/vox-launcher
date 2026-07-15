@@ -17,7 +17,7 @@ logger = logging.getLogger(LOGGER)
 # ----------------------------------------------------------------------------------------- #
 
 @dataclass
-class TextHightlightData():
+class TextHighlightData():
     """
     Simple dataclass used to highlight text in text box widgets.
 
@@ -159,7 +159,11 @@ class SaveLoader:
         if not self.file.exists():
             return
 
-        data = json.loads(self.file.read_text(encoding="utf-8", errors="backslashreplace"))
+        try:
+            data = json.loads(self.file.read_text(encoding="utf-8", errors="backslashreplace"))
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse save file '{self.file.name}': {e}")
+            return
 
         return DotDict(data)
 
@@ -217,7 +221,7 @@ def read_vox_data(server, text):
         Dict containing the data read or None.
     """
 
-    pattern = re.compile(r'VoxLauncherData=({.+})')
+    pattern = re.compile(r'VoxLauncherData=(\{.+?\})')
     matches = pattern.findall(text)
 
     if not matches:
@@ -226,11 +230,15 @@ def read_vox_data(server, text):
     if len(matches) > 1:
         # Data overload! Grab new data.
         server.execute_command("VoxLauncher_GetServerStats()")
+        return
 
-    else:
-        string = matches[0].strip()
+    string = matches[0].strip()
 
+    try:
         return json.loads(string)
+    except json.JSONDecodeError as e:
+        logger.warning(f"Failed to parse Vox Launcher data: {e}")
+        return None
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -270,7 +278,7 @@ def _get_max_rollbacks(cluster_settings):
     if cluster_settings.exists():
         max_snapshots = get_key_from_ini_file(cluster_settings, "max_snapshots")
 
-        return max_snapshots or DEFAULT_MAX_SNAPSHOTS
+        return int(max_snapshots or DEFAULT_MAX_SNAPSHOTS)
 
     return DEFAULT_MAX_SNAPSHOTS
 
@@ -379,10 +387,17 @@ def open_github_issue(template="bug_report", traceback=None, include_applog=Fals
         include_applog (bool): If True, includes app logs.
     """
 
+    MAX_URL_LENGTH = 8000
+
     traceback = traceback and f"&traceback={encode_for_url(traceback)}" or ""
     applogs = include_applog and f"&applogs={encode_for_url(get_app_logs())}" or ""
 
-    webbrowser.open(f"https://github.com/diogo-webber/vox-launcher/issues/new?template={template}.yml{traceback}{applogs}", new=0, autoraise=True)
+    url = f"https://github.com/diogo-webber/vox-launcher/issues/new?template={template}.yml{traceback}{applogs}"
+
+    if len(url) > MAX_URL_LENGTH:
+        url = url[:MAX_URL_LENGTH]
+
+    webbrowser.open(url, new=0, autoraise=True)
 
 def open_folder(path):
     """ Opens a Windows explorer instance on this path  """
@@ -412,6 +427,7 @@ def disable_bind(event):
 LUA_FOLDER = Path(__file__).absolute().parent / "lua"
 
 lua_file_cache = {}
+_lua_cache_lock = threading.Lock()
 
 def load_lua_file(filename, **kwargs):
     """
@@ -424,8 +440,11 @@ def load_lua_file(filename, **kwargs):
     Returns:
         text (str or None): the text if the file exists, None otherwise.
     """
-    if filename in lua_file_cache:
-        return lua_file_cache[filename]
+    cache_key = (filename, tuple(sorted(kwargs.items())))
+
+    with _lua_cache_lock:
+        if cache_key in lua_file_cache:
+            return lua_file_cache[cache_key]
 
     file = LUA_FOLDER / f"{filename}.lua"
 
@@ -441,7 +460,8 @@ def load_lua_file(filename, **kwargs):
         # Join lines, remove excessive whitespace
         text = " ".join(text.split())
 
-        lua_file_cache[filename] = text
+        with _lua_cache_lock:
+            lua_file_cache[cache_key] = text
 
         return text
     else:
@@ -539,12 +559,11 @@ def get_cluster_name(path):
 # ----------------------------------------------------------------------------------------- #
 
 def get_memory_usage(pid):
-    process = psutil.Process(pid)
-
-    if not process:
+    try:
+        process = psutil.Process(pid)
+        return process.memory_info().rss, process.memory_percent()
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
         return None, None
-
-    return process.memory_info().rss, process.memory_percent()
 
 # ----------------------------------------------------------------------------------------- #
 
@@ -622,7 +641,7 @@ def get_clusters_directory():
     return None
 
 def _find_command_line_argument(text, arg):
-    pattern = re.compile(rf'-{arg}\s*(.+?)\s-') # -arg value -
+    pattern = re.compile(rf'-{arg}\s+(.+?)(?=\s-|\s*$)', re.MULTILINE) # -arg value (-next | end)
 
     match = pattern.search(text)
 
@@ -696,7 +715,7 @@ def _check_log_file(cluster_path, save_loader):
 def _add_to_zip(zipf, folder_path, base_path, arc_folder):
     for item in folder_path.iterdir():
         if item.is_dir():
-            _add_to_zip(zipf, item, base_path)
+            _add_to_zip(zipf, item, base_path, arc_folder)
 
         else:
             arcname = arc_folder / item.relative_to(base_path.parent)
@@ -750,3 +769,310 @@ def get_sanitized_cluster_name(config_file):
     cleaned = re.sub(r'\s+', " ", cleaned).strip()
 
     return cleaned
+
+# ------------------------------------------------------------------------------------------ #
+# Workshop mods discovery and modoverrides.lua editing.
+# ------------------------------------------------------------------------------------------ #
+
+_MODINFO_NAME_PATTERN = re.compile(r'^\s*name\s*=\s*(["\'])(.*?)\1', re.MULTILINE)
+_MODOVERRIDES_ENTRY_PATTERN = re.compile(r'\[\s*"([^"]+)"\s*\]\s*=\s*\{')
+
+def _parse_modinfo_name(modinfo_file):
+    """Reads a mod's modinfo.lua and returns its 'name' field, or None."""
+
+    try:
+        text = modinfo_file.read_text(encoding="utf-8", errors="backslashreplace")
+    except OSError as e:
+        logger.warning(f"Failed to read modinfo '{modinfo_file}': {e}")
+        return None
+
+    match = _MODINFO_NAME_PATTERN.search(text)
+
+    return match and match.group(2).strip() or None
+
+def get_workshop_mods(ugc_directory):
+    """
+    Discovers Steam Workshop mods downloaded under the ugc_directory.
+
+    Each mod lives in a numeric folder (its Workshop id) containing a modinfo.lua.
+
+    Args:
+        ugc_directory (str, Path, None): the -ugc_directory path used by the server.
+
+    Returns:
+        dict: { "workshop-<id>": <mod name> } sorted by mod name.
+    """
+
+    mods = {}
+
+    if not ugc_directory:
+        return mods
+
+    ugc = Path(ugc_directory)
+
+    if not ugc.exists():
+        logger.debug(f"get_workshop_mods: ugc_directory '{ugc}' doesn't exist...")
+        return mods
+
+    for modinfo_file in ugc.rglob("modinfo.lua"):
+        mod_id = modinfo_file.parent.name
+
+        if not mod_id.isdigit():
+            continue
+
+        name = _parse_modinfo_name(modinfo_file) or mod_id
+
+        mods[f"workshop-{mod_id}"] = name
+
+    return dict(sorted(mods.items(), key=lambda item: item[1].lower()))
+
+def _find_matching_brace(text, open_index):
+    """Returns the index of the '}' matching the '{' at open_index, ignoring braces inside strings."""
+
+    depth = 0
+    in_string = None
+    i = open_index
+
+    while i < len(text):
+        char = text[i]
+
+        if in_string:
+            if char == in_string and text[i - 1] != "\\":
+                in_string = None
+
+        elif char in ("\"", "'"):
+            in_string = char
+
+        elif char == "{":
+            depth += 1
+
+        elif char == "}":
+            depth -= 1
+
+            if depth == 0:
+                return i
+
+        i += 1
+
+    return -1
+
+def _compute_depths(text):
+    """Returns a list where depths[i] is the brace nesting depth just before text[i]."""
+
+    depths = [0] * (len(text) + 1)
+    depth = 0
+    in_string = None
+
+    for i, char in enumerate(text):
+        depths[i] = depth
+
+        if in_string:
+            if char == in_string and text[i - 1] != "\\":
+                in_string = None
+
+        elif char in ("\"", "'"):
+            in_string = char
+
+        elif char == "{":
+            depth += 1
+
+        elif char == "}":
+            depth -= 1
+
+    depths[len(text)] = depth
+
+    return depths
+
+def _is_block_enabled(block):
+    """Returns True if a mod entry block contains 'enabled=true'."""
+
+    match = re.search(r'enabled\s*=\s*(true|false)', block)
+
+    return bool(match) and match.group(1) == "true"
+
+def _set_block_enabled(block, enabled):
+    """Returns the entry block with its 'enabled' flag set, preserving everything else (e.g. configuration_options)."""
+
+    value = enabled and "true" or "false"
+
+    new_block, count = re.subn(r'enabled\s*=\s*(?:true|false)', f"enabled={value}", block, count=1)
+
+    if count == 0:
+        # No 'enabled' key present: inject one right after the opening brace.
+        new_block = re.sub(r'\{', f"{{ enabled={value},", block, count=1)
+
+    return new_block
+
+def parse_modoverrides(text):
+    """
+    Parses a modoverrides.lua content into its top-level mod entries.
+
+    Args:
+        text (str): the modoverrides.lua file content.
+
+    Returns:
+        dict: { key: { "enabled": bool, "block": str } } preserving original order.
+              "block" is the raw '{...}' Lua text of the entry.
+    """
+
+    entries = {}
+
+    outer_open = text.find("{")
+
+    if outer_open == -1:
+        return entries
+
+    outer_close = _find_matching_brace(text, outer_open)
+
+    if outer_close == -1:
+        return entries
+
+    inner = text[outer_open + 1:outer_close]
+    depths = _compute_depths(inner)
+
+    for match in _MODOVERRIDES_ENTRY_PATTERN.finditer(inner):
+        if depths[match.start()] != 0:
+            continue  # Nested key (e.g. inside configuration_options), skip.
+
+        key = match.group(1)
+        brace_open = match.end() - 1
+        brace_close = _find_matching_brace(inner, brace_open)
+
+        if brace_close == -1:
+            continue
+
+        block = inner[brace_open:brace_close + 1]
+
+        entries[key] = { "enabled": _is_block_enabled(block), "block": block }
+
+    return entries
+
+def _serialize_modoverrides(order, entries):
+    """Rebuilds a modoverrides.lua content from parsed entries."""
+
+    lines = ["return {"]
+
+    for key in order:
+        block = entries[key]["block"].strip()
+        lines.append(f'  ["{key}"]={block},')
+
+    lines.append("}")
+    lines.append("")
+
+    return "\n".join(lines)
+
+def read_cluster_mod_states(cluster_dir):
+    """
+    Reads the enabled state of mods from the cluster, using the first shard that has a modoverrides.lua.
+
+    Args:
+        cluster_dir (str, Path): the cluster path.
+
+    Returns:
+        dict: { key: bool } mapping each mod key to its enabled state.
+    """
+
+    cluster = Path(cluster_dir)
+    states = {}
+
+    if not cluster.exists():
+        return states
+
+    for shard in get_shard_names(cluster):
+        modoverrides = cluster / shard / "modoverrides.lua"
+
+        if not modoverrides.exists():
+            continue
+
+        try:
+            text = modoverrides.read_text(encoding="utf-8", errors="backslashreplace")
+        except OSError as e:
+            logger.warning(f"Failed to read '{modoverrides}': {e}")
+            continue
+
+        for key, data in parse_modoverrides(text).items():
+            states[key] = data["enabled"]
+
+        break  # Master/first shard is enough; all shards are kept in sync.
+
+    return states
+
+def write_cluster_mod_states(cluster_dir, enabled_map):
+    """
+    Applies the given mod enabled states to every shard's modoverrides.lua in the cluster.
+
+    Existing entries (including their configuration_options) are preserved; only the
+    'enabled' flag is updated. Mods not yet present are added when enabled.
+
+    Args:
+        cluster_dir (str, Path): the cluster path.
+        enabled_map (dict): { key: bool } mapping each mod key to its desired enabled state.
+
+    Returns:
+        bool: True if at least one shard file was written.
+    """
+
+    cluster = Path(cluster_dir)
+    wrote_any = False
+
+    for shard in get_shard_names(cluster):
+        shard_dir = cluster / shard
+
+        if not shard_dir.is_dir():
+            continue
+
+        modoverrides = shard_dir / "modoverrides.lua"
+
+        if modoverrides.exists():
+            try:
+                text = modoverrides.read_text(encoding="utf-8", errors="backslashreplace")
+            except OSError as e:
+                logger.warning(f"Failed to read '{modoverrides}': {e}")
+                continue
+        else:
+            text = "return {\n}"
+
+        entries = parse_modoverrides(text)
+        order = list(entries.keys())
+
+        for key, enabled in enabled_map.items():
+            if key in entries:
+                entries[key]["block"] = _set_block_enabled(entries[key]["block"], enabled)
+
+            elif enabled:
+                entries[key] = { "enabled": True, "block": "{ enabled=true }" }
+                order.append(key)
+
+        try:
+            modoverrides.write_text(_serialize_modoverrides(order, entries), encoding="utf-8", errors="backslashreplace")
+            wrote_any = True
+        except OSError as e:
+            logger.error(f"Failed to write '{modoverrides}': {e}")
+
+    return wrote_any
+
+def get_ugc_directory(app):
+    """
+    Determines the server's ugc (Workshop) directory from saved launch data.
+
+    Args:
+        app (CTk): the app instance.
+
+    Returns:
+        str | None: the ugc_directory path or None.
+    """
+
+    data = app.launch_data_save_loader.load()
+
+    if data and data["ugc_directory"]:
+        return data["ugc_directory"]
+
+    cluster_dir = app.cluster_entry.get()
+
+    if cluster_dir:
+        data = retrieve_launch_data(cluster_dir, app.launch_data_save_loader)
+
+        if data and data["ugc_directory"]:
+            return data["ugc_directory"]
+
+    return None

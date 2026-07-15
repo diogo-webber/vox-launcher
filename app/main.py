@@ -5,7 +5,7 @@ import yaml
 from functools import partial
 from pathlib import Path
 import traceback, requests
-import subprocess
+import subprocess, threading
 
 # Define CustomFormatter before any logging configuration
 COLOR_FMT = "\u001b[1m\u001b[38;5;%dm"
@@ -130,7 +130,7 @@ class App(CTk):
 
         self.geometry(f"+{x}+{y}")
 
-        self.settings = SettingsManager(app=self, enum_cls=Settings)
+        self.settings = SettingsManager(app=self)
         self.settings.load()
 
         self.title(STRINGS.WINDOW_TITLE)
@@ -289,7 +289,7 @@ class App(CTk):
         self.launch_data_popup = LaunchDataPopUp(root=self)
         self.restart_popup = RestartRequiredPopUp(root=self)
 
-        self.settings_screen = SettingsScreen(master=app)
+        self.settings_screen = SettingsScreen(master=self)
 
         self.settings_button = ImageButton(
             master=self,
@@ -320,28 +320,40 @@ class App(CTk):
         self.check_for_updates()
 
     def check_for_updates(self):
-        try:
-            response = requests.get(
-                url="https://github.com/diogo-webber/vox-launcher/releases/latest/",
-                timeout=5,
-            )
+        def _check():
+            try:
+                response = requests.get(
+                    url="https://github.com/diogo-webber/vox-launcher/releases/latest/",
+                    timeout=5,
+                )
 
-            response.raise_for_status()  # Raise an exception for HTTP errors.
+                response.raise_for_status()  # Raise an exception for HTTP errors.
 
-            remote_version = Path(response.url).name
+                remote_version = Path(response.url).name
 
-            if response.status_code == 200 and remote_version != APP_VERSION[1:]:
-                self.after(300, self.update_popup.create, STRINGS.UPDATE_POPUP.DESCRIPTION.DEFAULT)
+                if response.status_code == 200 and remote_version != APP_VERSION[1:]:
+                    self.after(300, self.update_popup.create, STRINGS.UPDATE_POPUP.DESCRIPTION.DEFAULT)
 
-        except:
-            pass
+            except requests.exceptions.RequestException as e:
+                # No internet connection, timeout or HTTP error: skip the update check silently.
+                logger.debug(f"Update check skipped (network error): {e}")
+
+        threading.Thread(target=_check, daemon=True).start()
 
 
     def callback_launch(self):
         if not hasattr(self, "master_shard"):
             return
 
-        if not is_valid_token(self.token_entry.get()):
+        token = self.token_entry.get()
+
+        if not token.strip():
+            self.token_entry.toggle_warning(False)
+            self.error_popup.create(STRINGS.ERROR.TOKEN_EMPTY)
+
+            return # No token provided.
+
+        if not is_valid_token(token):
             self.token_entry.toggle_warning(False)
             self.error_popup.create(STRINGS.ERROR.TOKEN_INVALID)
 
@@ -399,8 +411,17 @@ class App(CTk):
         """Restart the PyInstaller-exe or Python script safely."""
         logger.info("Restarting the application.")
 
-        # Restart the process and exit the current instance.
-        subprocess.Popen([sys.executable] + sys.argv, close_fds=True)
+        try:
+            # Restart the process and exit the current instance.
+            subprocess.Popen([sys.executable] + sys.argv, close_fds=True)
+        except OSError:
+            logger.error("Failed to restart via sys.executable, trying sys.argv[0].")
+
+            try:
+                subprocess.Popen(sys.argv, close_fds=True)
+            except OSError:
+                logger.error("Failed to restart the application.")
+                return
 
         self.destroy() # Close the windows before exiting program.
         sys.exit(0)
@@ -425,7 +446,7 @@ if __name__ == "__main__":
 
     app = App()
 
-    STRINGS.load_strings(app.settings.get_setting(Settings.LANGUAGE))
+    STRINGS.load_strings(app.settings.get(Settings.LANGUAGE))
     FONT.create_fonts() # Needs to run after string loading.
 
     # ------------------------------------------------------------------------------------ #
