@@ -38,6 +38,7 @@ class StdoutMock(TextIOWrapper):
 class DedicatedServerShard():
     def __init__(self, app, shard_frame) -> None:
         self.process = None
+        self.task = None
         self.app = app
 
         self.shard_frame = shard_frame
@@ -60,15 +61,13 @@ class DedicatedServerShard():
             # Dev build executable.
             exe = (cwd / "dontstarve_dedicated_server_r_x64").resolve()
 
-        args = f"""
-            {exe}
-            -cluster {cluster}
-            -shard {self.shard}
-            -monitor_parent_process {PROCESS_ID}
-            -token {token}
-        """
-
-        args = args.split()
+        args = [
+            str(exe),
+            "-cluster", str(cluster),
+            "-shard", str(self.shard),
+            "-monitor_parent_process", str(PROCESS_ID),
+            "-token", token,
+        ]
 
         if launch_data.ownerdir:
             args.append("-ownerdir")
