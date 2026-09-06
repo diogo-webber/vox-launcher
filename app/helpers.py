@@ -517,7 +517,7 @@ def get_shard_names(cluster):
 
     for directory in cluster.iterdir():
         if directory.is_dir() and (directory / "server.ini").exists():
-            shards.append(directory.stem)
+            shards.append(directory.name)
 
     return sorted(shards, key=sort_key)
 
@@ -750,7 +750,7 @@ for start, end in _INVALID_UNICODE_RANGES:
 _CUSTOM_UNICODE_PATTERN = re.compile(f"[{regex_range}]")
 
 def get_sanitized_cluster_name(config_file):
-    cluster_name = get_key_from_ini_file(config_file, "cluster_name")
+    cluster_name = get_key_from_ini_file(config_file, "cluster_name") or ""
 
     # Remove custom unicode characters.
     cleaned = _CUSTOM_UNICODE_PATTERN.sub("", cluster_name)
