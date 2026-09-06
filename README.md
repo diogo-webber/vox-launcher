@@ -1,7 +1,7 @@
 [download]: https://github.com/diogo-webber/vox-launcher/releases/latest/download/VoxLauncher.zip
 [download_count]: https://img.shields.io/github/downloads/diogo-webber/vox-launcher/total?style=for-the-badge&labelColor=%232d333b&color=%23066094
 [version]: https://img.shields.io/github/v/release/diogo-webber/vox-launcher?style=for-the-badge&labelColor=%232d333b&color=%23066094
-[python_version]: https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&labelColor=%232d333b&color=%23066094
+[python_version]: https://img.shields.io/badge/Python-3.14-blue?style=for-the-badge&labelColor=%232d333b&color=%23066094
 [video_tutorial]: https://youtu.be/dxl-RV0LtEA
 [locales]: https://ss64.com/locale.html
 [pull_request]: https://github.com/diogo-webber/vox-launcher/compare/
@@ -186,6 +186,8 @@ Big thanks to everyone who contributed to this project:
 <a href="https://github.com/Noctice"> <img align="left" src="https://avatars.githubusercontent.com/u/47233045?v=4" width=10%/> </a>
 <a href="https://github.com/bitasuperactive"> <img align="left" src="https://avatars.githubusercontent.com/u/62368693?v=4" width=10%/> </a>
 <a href="https://github.com/mihime"> <img align="left" src="https://avatars.githubusercontent.com/u/47947224?v=4" width=10%/> </a>
+<a href="https://github.com/hlquang"> <img align="left" src="https://avatars.githubusercontent.com/u/113676018?v=4" width=10%/> </a>
+
 
 </div>
 
