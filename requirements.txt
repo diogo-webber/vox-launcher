@@ -1,4 +1,4 @@
-customtkinter>=5.2.2
+customtkinter>=6.0.0,<7
 pexpect>=4.9.0
 pillow>=11.1.0
 psutil>=7.0.0

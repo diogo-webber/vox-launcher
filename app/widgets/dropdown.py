@@ -103,8 +103,8 @@ class CustomDropdown():
             self.menu_container.place_forget()
             self._menu_open = False
         else:
-            x = self.button.winfo_x() / self.button._apply_widget_scaling(1) + 20
-            y = (self.button.winfo_y() + self.button.winfo_height()) / self.button._apply_widget_scaling(1) + 6
+            x = self.button.winfo_x() / self.button._apply_widget_scaling(1.0) + 20
+            y = (self.button.winfo_y() + self.button.winfo_height()) / self.button._apply_widget_scaling(1.0) + 6
             self.menu_container.place(x=x, y=y)
             self.menu_container.lift()
             self._menu_open = True

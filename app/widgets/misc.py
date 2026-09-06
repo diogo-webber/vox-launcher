@@ -141,6 +141,17 @@ class Tooltip:
             y = self.widget.winfo_rooty() - self.tooltip_label.winfo_reqheight()/4 - self.tooltip_label._apply_widget_scaling(5) - padding/2
             #                                                                            ^ related to corner_radius, likely
 
+            if x < 0:
+                # No room on the left, flip to the other side of the widget.
+                x = self.widget.winfo_rootx() + self.widget.winfo_width() + padding
+
+            # pack() adds the padding on both sides.
+            tooltip_width  = self.tooltip_label.winfo_reqwidth()  + padding * 2
+            tooltip_height = self.tooltip_label.winfo_reqheight() + padding * 2
+
+            x = max(0, min(x, self.widget.winfo_screenwidth()  - tooltip_width))
+            y = max(0, min(y, self.widget.winfo_screenheight() - tooltip_height))
+
             self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
         except Exception:
             # Tooltip was destroyed during update() by a pending <Leave> event.
@@ -277,8 +288,8 @@ class PopUp:
 
         self.popup._frame.configure(
             bg_color = COLOR.DARK_GRAY,
-            width = popup_width / self.popup._frame._apply_widget_scaling(1),
-            height = popup_height / self.popup._frame._apply_widget_scaling(1),
+            width = popup_width / self.popup._frame._apply_widget_scaling(1.0),
+            height = popup_height / self.popup._frame._apply_widget_scaling(1.0),
         )
 
         master_x = self.root.winfo_rootx()
@@ -289,6 +300,10 @@ class PopUp:
         # Calculate the center position
         x = master_x + (master_width - popup_width) // 2
         y = master_y + (master_height - popup_height) // 2
+
+        # The popup is modal and has no title bar, so an off-screen one would be unrecoverable.
+        x = max(0, min(x, self.popup.winfo_screenwidth()  - popup_width))
+        y = max(0, min(y, self.popup.winfo_screenheight() - popup_height))
 
         # Set the window's position.
         self.popup.wm_geometry('+{}+{}'.format(x, y))
@@ -428,8 +443,8 @@ class AppOutdatedPopUp(PopUp):
         popup_height = self.popup.winfo_reqheight()
 
         self.popup._frame.configure(
-            width = popup_width / self.popup._frame._apply_widget_scaling(1),
-            height = popup_height / self.popup._frame._apply_widget_scaling(1),
+            width = popup_width / self.popup._frame._apply_widget_scaling(1.0),
+            height = popup_height / self.popup._frame._apply_widget_scaling(1.0),
         )
 
         self.popup._frame.update()

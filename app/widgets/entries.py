@@ -58,7 +58,7 @@ class CustomEntry(CTkEntry):
         self.update()
 
         # Ajusting fixer frame to be slightly bigger that us.
-        self.fixer_frame.configure(height=self.winfo_reqheight() / self._apply_widget_scaling(1) + 1)
+        self.fixer_frame.configure(height=self.winfo_reqheight() / self._apply_widget_scaling(1.0) + 1)
 
         self._tooltip_frame = CustomFrame(
             master=self._master,
@@ -146,7 +146,7 @@ class DirectoryEntry(CustomEntry):
             **kwargs
         )
 
-        entry_size = self.winfo_reqheight() / self._apply_widget_scaling(1)
+        entry_size = self.winfo_reqheight() / self._apply_widget_scaling(1.0)
         button_image_size = entry_size / 2
 
         self.button = ImageButton(
@@ -246,7 +246,7 @@ class TokenEntry(CustomEntry):
             **kwargs
         )
 
-        entry_size = self.winfo_reqheight() / self._apply_widget_scaling(1)
+        entry_size = self.winfo_reqheight() / self._apply_widget_scaling(1.0)
         button_image_size = entry_size / 2
 
         self.button = ImageButton(

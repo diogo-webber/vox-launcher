@@ -5,7 +5,7 @@ from pathlib import Path
 import traceback, requests
 import subprocess, threading
 
-from customtkinter import CTk, CTkLabel
+from customtkinter import CTk, CTkLabel, set_widget_scaling, set_window_scaling
 from tkinter import StringVar
 
 from constants import *
@@ -92,15 +92,11 @@ class App(CTk):
     def __init__(self, **kwargs):
         super().__init__( **kwargs)
 
+        # Must come before the scaling/centering calls, which read back the window size.
         self.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
 
-        screen_width  = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-
-        x = (screen_width - WINDOW_WIDTH) // 2
-        y = (screen_height - WINDOW_HEIGHT) // 2
-
-        self.geometry(f"+{x}+{y}")
+        self.fit_scaling_to_screen()
+        self.center_on_screen()
 
         self.settings = SettingsManager(app=self)
         self.settings.load()
@@ -114,6 +110,34 @@ class App(CTk):
 
         self.entries_save_loader = SaveLoader(filename="entries.json")
         self.launch_data_save_loader = SaveLoader(filename="launchdata.json")
+
+    def fit_scaling_to_screen(self):
+        """ Shrinks the UI scale when the window would be larger than the display. """
+
+        usable_width  = self.winfo_screenwidth()
+        usable_height = self.winfo_screenheight() * 0.92 # Leaves room for the taskbar.
+
+        factor = min(
+            usable_width  / self._apply_window_scaling(WINDOW_WIDTH),
+            usable_height / self._apply_window_scaling(WINDOW_HEIGHT),
+            1.0,
+        )
+
+        if factor < 1.0:
+            logger.info("Window is larger than the screen, scaling the UI down to %d%%.", round(factor * 100))
+
+            # These multiply the auto-detected DPI scaling and re-apply the window geometry.
+            set_widget_scaling(factor)
+            set_window_scaling(factor)
+
+    def center_on_screen(self):
+        """ Centers the window, accounting for DPI scaling. """
+
+        # CTk.geometry() scales width/height but passes x/y through untouched.
+        x = (self.winfo_screenwidth()  - self._apply_window_scaling(WINDOW_WIDTH))  // 2
+        y = (self.winfo_screenheight() - self._apply_window_scaling(WINDOW_HEIGHT)) // 2
+
+        self.geometry(f"+{max(0, x)}+{max(0, y)}")
 
     def create_widgets(self):
         """

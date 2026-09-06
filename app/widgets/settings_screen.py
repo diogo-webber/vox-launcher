@@ -13,12 +13,15 @@ from settings_manager import Settings
 
 INVALID_TEXTBOX_ARGS = [ "cluster", "shard", "monitor_parent_process", "token", "ownerdir", "persistent_storage_root", "ugc_directory" ]
 
+ARGUMENTS_ENTRY = Size(350, 90)
+BUTTON_MENU_GAP = 80
+
 class SettingsTooltip(CTkFrame):
     def __init__(self, master, parent, title, description):
         self._master = master
         self.parent = parent
 
-        max_width = self.parent.winfo_reqwidth() / self.parent._apply_widget_scaling(1) - 30
+        max_width = self.parent.winfo_reqwidth() / self.parent._apply_widget_scaling(1.0) - 30
 
         super().__init__(
             master=master,
@@ -69,14 +72,14 @@ class SettingsTooltip(CTkFrame):
     def get_height(self):
         self.update_idletasks()
 
-        return self.winfo_reqheight() / self.parent._apply_widget_scaling(1) + 12
+        return self.winfo_reqheight() / self.parent._apply_widget_scaling(1.0) + 12
 
     def set_position(self):
         self.parent.update_idletasks()
 
         self.place(
-            x=self.parent.winfo_x() / self.parent._apply_widget_scaling(1),
-            y=(self.parent.winfo_y() - self.winfo_reqheight()) / self.parent._apply_widget_scaling(1) - 12,
+            x=self.parent.winfo_x() / self.parent._apply_widget_scaling(1.0),
+            y=(self.parent.winfo_y() - self.winfo_reqheight()) / self.parent._apply_widget_scaling(1.0) - 12,
         )
 
 class SettingsScreen():
@@ -148,8 +151,8 @@ class SettingsScreen():
             fg_color=COLOR.GRAY,
             font=FONT.ENTRY_ARIAL,
             border_width=0,
-            height=90,
-            width=350,
+            height=ARGUMENTS_ENTRY.h,
+            width=ARGUMENTS_ENTRY.w,
         )
 
         self.arguments_entry._textbox.configure(selectbackground=COLOR.DARK_GRAY)
@@ -170,7 +173,7 @@ class SettingsScreen():
         )
 
         self.arguments_entry.place(
-            x = WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - 350,
+            x = WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - ARGUMENTS_ENTRY.w,
             y = SETTINGS_WINDOW_MARGIN + self.arguments_entry._tooltip.get_height(),
         )
 
@@ -209,11 +212,11 @@ class SettingsScreen():
 
         self.button_menu.update()
 
-        menu_width = self.button_menu.winfo_reqwidth() / self.root._apply_widget_scaling(1)
+        menu_width = self.button_menu.winfo_reqwidth() / self.root._apply_widget_scaling(1.0)
 
         self.button_menu.place(
             x = WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - menu_width * 1.25,
-            y = SETTINGS_WINDOW_MARGIN + 250,
+            y = SETTINGS_WINDOW_MARGIN + self.arguments_entry._tooltip.get_height() + ARGUMENTS_ENTRY.h + BUTTON_MENU_GAP,
         )
 
         # -------------------------- #
@@ -244,8 +247,8 @@ class SettingsScreen():
         self.version_label.update()
 
         self.version_label.place(
-            x = WINDOW_WIDTH  - WINDOW_MARGIN - self.version_label.winfo_reqwidth() / self.version_label._apply_widget_scaling(1),
-            y = WINDOW_HEIGHT - WINDOW_MARGIN - self.version_label.winfo_reqheight() / self.version_label._apply_widget_scaling(1),
+            x = WINDOW_WIDTH  - WINDOW_MARGIN - self.version_label.winfo_reqwidth() / self.version_label._apply_widget_scaling(1.0),
+            y = WINDOW_HEIGHT - WINDOW_MARGIN - self.version_label.winfo_reqheight() / self.version_label._apply_widget_scaling(1.0),
         )
 
         # -------------------------- #
