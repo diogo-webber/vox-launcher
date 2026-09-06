@@ -8,19 +8,21 @@ from strings import STRINGS
 from constants import COLOR, OFFSET, SIZE, LOGGER, Pos, Size
 from widgets.buttons import ImageButton
 from widgets.frames import CustomFrame
-from helpers import get_sanitized_cluster_name, get_shard_names
+from helpers import get_sanitized_cluster_name, get_shard_names, redraw_safe_size
 from fonts import FONT
 
 logger = logging.getLogger(LOGGER)
 
-class CustomEntry(CTkEntry):
+class CustomEntry(CTkFrame):
+    """ Rounded container holding an entry, leaving room on the right for a subclass' icon button. """
+
     def __init__(self, master, tooltip, pos, size, **kwargs):
         self.entrytext = StringVar()
         self._master = master
         self.valid = None
 
-        self.fixer_frame = CTkFrame(
-            master=self._master,
+        super().__init__(
+            master=master,
             border_color=COLOR.GRAY,
             fg_color=COLOR.GRAY,
             border_width=0,
@@ -29,36 +31,37 @@ class CustomEntry(CTkEntry):
             height=size.h,
         )
 
-        self.fixer_frame.place(
+        self.box = Size(redraw_safe_size(self, size.w), redraw_safe_size(self, size.h))
+
+        self.configure(width=self.box.w, height=self.box.h)
+
+        self.place(
             x=pos.x,
             y=pos.y,
         )
 
-        super().__init__(
-            master = self.fixer_frame,
+        self.entry = CTkEntry(
+            master=self,
             corner_radius=10,
             border_color=COLOR.GRAY,
             text_color=COLOR.WHITE_HOVER,
             fg_color=COLOR.GRAY,
             font=FONT.ENTRY_ARIAL,
             border_width=0,
-            height=size.h,
-            width=size.w - size.h - 8,
+            # 1px shorter: CTk draws a frame's rounded shape 2px short of its box, and the
+            # entry's leftover canvas is flat-filled, which would jut out below the curve.
+            height=self.box.h - 1,
+            width=self.box.w - self.box.h - 8,
             textvariable=self.entrytext,
             **kwargs
         )
 
-        self._entry.configure(selectbackground=COLOR.DARK_GRAY)
+        self.entry._entry.configure(selectbackground=COLOR.DARK_GRAY)
 
-        self.place(
+        self.entry.place(
             x=8,
             y=0,
         )
-
-        self.update()
-
-        # Ajusting fixer frame to be slightly bigger that us.
-        self.fixer_frame.configure(height=self.winfo_reqheight() / self._apply_widget_scaling(1.0) + 1)
 
         self._tooltip_frame = CustomFrame(
             master=self._master,
@@ -103,6 +106,27 @@ class CustomEntry(CTkEntry):
 
         self.toggle_warning(True)
 
+    def _add_icon_button(self, image, command):
+        image_size = self.box.h / 2
+
+        button = ImageButton(
+            master=self,
+            image=image,
+            command=command,
+            width=0,
+            height=0,
+            hover=False,
+            image_size=(image_size, image_size),
+            pos=Pos(self.box.w - image_size * 2, self.box.h / 5)
+        )
+
+        button.show()
+
+        return button
+
+    def get(self):
+        return self.entry.get()
+
     def set_text(self, text, load=False):
         if text != "":
             self.entrytext.set(text)
@@ -124,16 +148,16 @@ class CustomEntry(CTkEntry):
         self.validate_text()
 
         # "Scroll" to the X end.
-        self.xview_moveto(1.0)
+        self.entry.xview_moveto(1.0)
 
         if not load:
             self._master.save_entries_data()
 
     def disable(self):
-        self._entry.configure(state=DISABLED, cursor="no")
+        self.entry._entry.configure(state=DISABLED, cursor="no")
 
     def enable(self):
-        self._entry.configure(state=NORMAL, cursor="xterm")
+        self.entry._entry.configure(state=NORMAL, cursor="xterm")
 
 class DirectoryEntry(CustomEntry):
     def __init__(self, initialdir, validate_fn, pos, size, **kwargs):
@@ -146,23 +170,9 @@ class DirectoryEntry(CustomEntry):
             **kwargs
         )
 
-        entry_size = self.winfo_reqheight() / self._apply_widget_scaling(1.0)
-        button_image_size = entry_size / 2
+        self.button = self._add_icon_button("assets/directory.png", self.open_directory_dialog)
 
-        self.button = ImageButton(
-            master=self.fixer_frame,
-            image="assets/directory.png",
-            command=self.open_directory_dialog,
-            width=0,
-            height=0,
-            hover=False,
-            image_size=(button_image_size, button_image_size),
-            pos=Pos(size.w - button_image_size * 2, entry_size / 5)
-        )
-
-        self.button.show()
-
-        self.bind("<FocusOut>", self.on_text_changed)
+        self.entry.bind("<FocusOut>", self.on_text_changed)
 
     def validate_text(self):
         valid = self.validate_fn(self.get())
@@ -246,23 +256,9 @@ class TokenEntry(CustomEntry):
             **kwargs
         )
 
-        entry_size = self.winfo_reqheight() / self._apply_widget_scaling(1.0)
-        button_image_size = entry_size / 2
-
-        self.button = ImageButton(
-            master=self.fixer_frame,
-            image="assets/eye.png",
-            command=self.toggle_text_visibility,
-            width=0,
-            height=0,
-            hover=False,
-            image_size=(button_image_size, button_image_size),
-            pos=Pos(size.w - button_image_size * 2, entry_size / 5)
-        )
-
-        self.button.show()
+        self.button = self._add_icon_button("assets/eye.png", self.toggle_text_visibility)
 
     def toggle_text_visibility(self):
-        self.configure(show=self.showing and "●" or "")
+        self.entry.configure(show=self.showing and "●" or "")
 
         self.showing = not self.showing

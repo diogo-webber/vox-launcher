@@ -3,7 +3,7 @@ import winreg, ctypes
 from dataclasses import dataclass
 import ctypes.wintypes
 import webbrowser
-import re, json, sys
+import re, json, sys, math
 import logging
 import threading
 import psutil, os, zipfile
@@ -718,6 +718,41 @@ def add_folder_to_zip(zip_filename, folder_path, arc_folder):
 def set_debug_scale(scale):
     set_window_scaling(scale)
     set_widget_scaling(scale)
+
+def redraw_safe_size(widget, value, grow_only=False):
+    """
+    Nearest whole size to value that CTk can draw rounded corners on cleanly.
+
+    CTk rescales a widget's pixel size back to logical units on every <Configure> and redraws
+    from that, truncating in both directions. Sizes that lose a pixel there, or that land on an
+    odd pixel count, get their corner arcs drawn half a pixel off from the straight edges, which
+    reads as a dent.
+
+    Args:
+        widget (CTkBaseClass): the widget the size will be applied to.
+        value (int, float): the wanted size, in logical pixels.
+        grow_only (bool): never return less than value, for sizes that would clip their content.
+
+    Returns:
+        size (int): the closest usable size, preferring the smaller one on a tie.
+    """
+
+    value = math.ceil(value) if grow_only else int(value)
+
+    if value <= 0:
+        return value
+
+    def usable(candidate):
+        scaled = widget._apply_widget_scaling(candidate)
+
+        return scaled % 2 == 0 and widget._reverse_widget_scaling(scaled) == candidate
+
+    for offset in range(64):
+        for candidate in (value + offset,) if grow_only else (value - offset, value + offset):
+            if candidate > 0 and usable(candidate):
+                return candidate
+
+    return value
 
 def read_file_nonblocking(file: Path, callback):
     def worker():

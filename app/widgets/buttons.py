@@ -4,7 +4,7 @@ from constants import COLOR, Pos
 from tkinter.font import NORMAL
 from tkinter import DISABLED
 
-from helpers import resource_path
+from helpers import resource_path, redraw_safe_size
 
 class ImageButton(CTkButton):
     def __init__(self, image, image_size, pos, text=None, corner_radius=10, **kwargs):
@@ -22,6 +22,16 @@ class ImageButton(CTkButton):
             hover_color=COLOR.GRAY_HOVER,
             **kwargs
         )
+
+        # Auto-sized buttons draw their corners against an identical background, so only pin
+        # the size when one was asked for: content can otherwise force an odd, dented pixel size.
+        if self.cget("width") and self.cget("height"):
+            self.grid_propagate(False)
+
+            self.configure(
+                width=redraw_safe_size(self, self.cget("width")),
+                height=redraw_safe_size(self, self.cget("height")),
+            )
 
     def show(self):
         self.place( x=self.x, y=self.y )
@@ -59,6 +69,11 @@ class CustomButton(CTkButton):
             width=size.w,
             height=size.h,
             **kwargs
+        )
+
+        self.configure(
+            width=redraw_safe_size(self, size.w),
+            height=redraw_safe_size(self, size.h),
         )
 
     def show(self):
