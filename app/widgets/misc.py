@@ -12,6 +12,9 @@ from helpers import resource_path, open_file, open_github_issue, add_folder_to_z
 from fonts import FONT
 
 class ClusterStats:
+    # Only these keys are accepted from the server output.
+    STAT_KEYS = ("day", "season", "players")
+
     def __init__(self, master) -> None:
         self.day     = StringVar()
         self.season  = StringVar()
@@ -64,7 +67,7 @@ class ClusterStats:
         self.show()
 
         for k, v in data.items():
-            if hasattr(self, k):
+            if k in self.STAT_KEYS:
                 getattr(self, k).set(str(v))
 
     def show(self):
@@ -467,6 +470,8 @@ class AppOutdatedPopUp(PopUp):
 
                     self.confirmed = True
                     self._close()
+
+                    return
 
                 else:
                     self.set_text(text=STRINGS.UPDATE_POPUP.DESCRIPTION.DEFAULT)
