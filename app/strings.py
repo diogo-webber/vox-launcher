@@ -59,6 +59,21 @@ class DefaultDict(dict):
 LOC_DIR = resource_path("localization")
 FALLBACK_FILE = LOC_DIR / "en_US.yaml"
 
+_FALLBACK_STRINGS = yaml.safe_load(FALLBACK_FILE.read_text(encoding="utf-8", errors="backslashreplace"))
+
+def _deep_merge(base: dict, override: dict) -> dict:
+    """ Returns a copy of base with override applied recursively. """
+
+    merged = dict(base)
+
+    for key, value in override.items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = _deep_merge(merged[key], value)
+        else:
+            merged[key] = value
+
+    return merged
+
 class Strings(DotDict):
     _instance = None  # Singleton instance.
     _lang_code = "en_US"
@@ -71,8 +86,7 @@ class Strings(DotDict):
 
     def __init__(self):
         # Load fallback (English) strings initially
-        fallback_strings = yaml.safe_load(FALLBACK_FILE.read_text(encoding="utf-8", errors="backslashreplace"))
-        super().__init__(fallback_strings)
+        super().__init__(_FALLBACK_STRINGS)
 
         # Format fallback
         self._format_strings()
@@ -84,7 +98,8 @@ class Strings(DotDict):
         if loc_file.exists():
             loaded_strings = yaml.safe_load(loc_file.read_text(encoding="utf-8", errors="backslashreplace"))
 
-            super().__init__(loaded_strings)
+            # Merged over English so partially translated files keep their fallbacks.
+            super().__init__(_deep_merge(_FALLBACK_STRINGS, loaded_strings))
 
             self._lang_code = lang_code
 
