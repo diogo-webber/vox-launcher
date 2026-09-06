@@ -334,7 +334,7 @@ def validate_cluster_directory(directory: str) -> bool:
 
 # ----------------------------------------------------------------------------------------- #
 
-TOKEN_PATTERN = r"^pds-g\^KU.+?\^.+?=$"
+TOKEN_PATTERN = r"^pds-g\^KU.+?\^.+?"
 
 def is_valid_token(token: str) -> bool:
     """
