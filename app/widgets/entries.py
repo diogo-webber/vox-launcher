@@ -8,7 +8,8 @@ from strings import STRINGS
 from constants import COLOR, OFFSET, SIZE, LOGGER, Pos, Size
 from widgets.buttons import ImageButton
 from widgets.frames import CustomFrame
-from helpers import get_sanitized_cluster_name, get_shard_names, redraw_safe_size
+from widgets.misc import Tooltip
+from helpers import get_sanitized_cluster_name, get_shard_names, get_token_error, redraw_safe_size
 from fonts import FONT
 
 logger = logging.getLogger(LOGGER)
@@ -25,7 +26,7 @@ class CustomEntry(CTkFrame):
             master=master,
             border_color=COLOR.GRAY,
             fg_color=COLOR.GRAY,
-            border_width=0,
+            border_width=2,
             corner_radius=10,
             width=size.w,
             height=size.h,
@@ -48,9 +49,10 @@ class CustomEntry(CTkFrame):
             fg_color=COLOR.GRAY,
             font=FONT.ENTRY_ARIAL,
             border_width=0,
-            # 1px shorter: CTk draws a frame's rounded shape 2px short of its box, and the
+            # 4px shorter: CTk draws a frame's rounded shape 2px short of its box, and the
             # entry's leftover canvas is flat-filled, which would jut out below the curve.
-            height=self.box.h - 1,
+            # Inset by the border width on each side so the frame's border stays visible behind it.
+            height=self.box.h - 4,
             width=self.box.w - self.box.h - 8,
             textvariable=self.entrytext,
             **kwargs
@@ -60,7 +62,7 @@ class CustomEntry(CTkFrame):
 
         self.entry.place(
             x=8,
-            y=0,
+            y=2,
         )
 
         self._tooltip_frame = CustomFrame(
@@ -104,6 +106,8 @@ class CustomEntry(CTkFrame):
             sticky="s",
         )
 
+        self.invalid_tooltip = Tooltip(widget=self.invalid_text)
+
         self.toggle_warning(True)
 
     def _add_icon_button(self, image, command):
@@ -133,13 +137,22 @@ class CustomEntry(CTkFrame):
 
             self.on_text_changed(load=load)
 
-    def toggle_warning(self, valid):
+    def toggle_warning(self, valid, reason=None):
+        """ Flags the entry, where reason is an INVALID key explaining what is wrong. """
+
         self.valid = valid
 
         if not self.valid:
-            logger.info(f"Invalid input at entry {self.tooltip.cget('text')}.")
+            logger.info(f"Invalid input at entry {self.tooltip.cget('text')}: {reason or 'unspecified'}.")
 
-        self.invalid_text.configure(state=self.valid and DISABLED or NORMAL)
+        self.configure(border_color=self.valid and COLOR.GRAY or COLOR.RED)
+
+        self.invalid_text.configure(
+            state=self.valid and DISABLED or NORMAL,
+            text=(reason and STRINGS.ENTRY.INVALID[reason]) or STRINGS.ENTRY.ENTRY_INVALID_INPUT,
+        )
+
+        self.invalid_tooltip.set_text(not self.valid and reason and STRINGS.ENTRY.INVALID_HELP[reason] or "")
 
     def validate_text(self):
         pass
@@ -175,11 +188,11 @@ class DirectoryEntry(CustomEntry):
         self.entry.bind("<FocusOut>", self.on_text_changed)
 
     def validate_text(self):
-        valid = self.validate_fn(self.get())
+        reason = self.validate_fn(self.get())
 
-        self.toggle_warning(valid)
+        self.toggle_warning(reason is None, reason)
 
-        return valid
+        return reason is None
 
     def open_directory_dialog(self):
         directory = filedialog.askdirectory(
@@ -257,6 +270,13 @@ class TokenEntry(CustomEntry):
         )
 
         self.button = self._add_icon_button("assets/eye.png", self.toggle_text_visibility)
+
+    def validate_text(self):
+        reason = get_token_error(self.get())
+
+        self.toggle_warning(reason is None, reason)
+
+        return reason is None
 
     def toggle_text_visibility(self):
         self.entry.configure(show=self.showing and "●" or "")

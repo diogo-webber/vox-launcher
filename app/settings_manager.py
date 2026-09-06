@@ -12,9 +12,13 @@ class Settings:
     LANGUAGE = "LANGUAGE"
     LAUNCH_OPTIONS = "LAUNCH_OPTIONS"
 
+    # Set when an update is downloaded in-app, so the next launch shows the patch notes.
+    SHOW_PATCH_NOTES = "SHOW_PATCH_NOTES"
+
     DEFAULTS = {
         LANGUAGE: get_default_language_code(),
         LAUNCH_OPTIONS: "",
+        SHOW_PATCH_NOTES: False,
     }
 
 class SettingsManager:

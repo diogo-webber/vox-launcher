@@ -41,6 +41,7 @@ class Fonts:
         self.SETTING_TITLE = CustomFont(FONT_SIZE.SETTING_TITLE            )
         self.SETTING_DESC  = CustomFont(FONT_SIZE.SETTING_DESC,  bold=False)
         self.SETTING_LONG_BUTTON = CustomFont(FONT_SIZE.SETTING_LONG_BUTTON)
+        self.SEARCH_RESULTS      = CustomFont(FONT_SIZE.SEARCH_RESULTS     )
 
 
 FONT = Fonts()

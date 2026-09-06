@@ -6,7 +6,7 @@ from PIL import Image
 
 from strings import STRINGS, get_readable_system_language
 from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
-from widgets.buttons import RelativeXImageButton, CustomButton
+from widgets.buttons import RelativeXImageButton, ImageButton, CustomButton
 from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHighlightData, PeriodicTask, read_file_nonblocking
 from shard_server import DedicatedServerShard
 from fonts import FONT
@@ -26,6 +26,10 @@ class LogsTopBar:
             size=SIZE.LOGS_TOP_BAR,
             pos=OFFSET.LOGS_TOP_BAR,
         )
+
+        # CTkFrame shrinks to its children, which would pull the row above the bar's centre.
+        self._frame.grid_propagate(False)
+        self._frame.grid_rowconfigure(0, weight=1)
 
         image_size = 17
 
@@ -136,19 +140,217 @@ class LogsTopBar:
         self._frame.place_forget()
 
 
+class LogSearchBar:
+    """ Find bar floating over the log textbox, toggled with Ctrl+F. """
+
+    MATCH_TAG = "search_match"
+    CURRENT_TAG = "search_current"
+
+    MIN_TERM_LENGTH = 2
+    MAX_MATCHES = 2000
+
+    def __init__(self, panel) -> None:
+        self.panel = panel
+        self.textbox = panel.textbox
+        self.matches = []
+        self.index = -1
+        self.visible = False
+
+        self.term = StringVar()
+        self.counter = StringVar(value=STRINGS.LOG_SCREEN.SEARCH_NO_RESULTS)
+
+        # Configured after the syntax highlights so they win on the lines they share.
+        self.textbox.tag_config(self.MATCH_TAG, background=COLOR.GRAY_HOVER, foreground=COLOR.BLUE)
+        self.textbox.tag_config(self.CURRENT_TAG, background=COLOR.BLUE, foreground=COLOR.DARK_GRAY)
+
+        self._frame = CustomFrame(
+            master=panel.root,
+            color=COLOR.GRAY,
+            bg_color=COLOR.DARK_GRAY,
+            border_color=COLOR.GRAY_HOVER,
+            border_width=1,
+            size=SIZE.LOGS_SEARCH_BAR,
+            corner_radius=10,
+        )
+
+        self._frame.grid_propagate(False)
+        self._frame.grid_rowconfigure(0, weight=1)
+
+        # Absorbs the slack so the buttons stay pinned to the right edge.
+        self._frame.grid_columnconfigure(1, weight=1)
+
+        self.entry = CTkEntry(
+            master=self._frame,
+            corner_radius=8,
+            border_width=0,
+            fg_color=COLOR.DARK_GRAY,
+            text_color=COLOR.WHITE,
+            font=FONT.ENTRY_ARIAL,
+            width=SIZE.LOGS_SEARCH_ENTRY.w,
+            height=SIZE.LOGS_SEARCH_ENTRY.h,
+            textvariable=self.term,
+        )
+
+        self.entry._entry.configure(selectbackground=COLOR.GRAY_HOVER)
+
+        self.entry.grid(row=0, column=0, padx=(FRAME_GAP, 8))
+
+        self.entry.bind("<Return>", lambda event: self.go_to_match(1))
+        self.entry.bind("<Shift-Return>", lambda event: self.go_to_match(-1))
+        self.entry.bind("<Escape>", self.hide)
+
+        self.term.trace_add("write", self.run_search)
+
+        self.count_label = CTkLabel(
+            master=self._frame,
+            height=0,
+            width=0,
+            anchor="e",
+            textvariable=self.counter,
+            text_color=COLOR.WHITE_HOVER,
+            font=FONT.SEARCH_RESULTS,
+        )
+
+        self.count_label.grid(row=0, column=1, padx=(0, 8), sticky="ew")
+
+        self.divider = CustomFrame(
+            master=self._frame,
+            color=COLOR.GRAY_HOVER,
+            size=SIZE.LOGS_SEARCH_DIVIDER,
+            corner_radius=0,
+        )
+
+        self.divider.grid(row=0, column=2, padx=(0, 6))
+
+        arrow = Image.open(resource_path("assets/arrowdown.png"))
+        close = Image.open(resource_path("assets/close.png"))
+
+        icon_size = SIZE.LOGS_SEARCH_BUTTON.h - 10
+        icon = (icon_size, icon_size)
+
+        self.previous_button = self._create_button(CTkImage(arrow.rotate(180), size=icon), 3, lambda: self.go_to_match(-1))
+        self.next_button     = self._create_button(CTkImage(arrow,             size=icon), 4, lambda: self.go_to_match(1) )
+        self.close_button    = self._create_button(CTkImage(close,             size=icon), 5, self.hide                    )
+
+    def _create_button(self, image, column, command):
+        button = CustomButton(
+            master=self._frame,
+            text="",
+            image=image,
+            command=command,
+            corner_radius=6,
+            size=SIZE.LOGS_SEARCH_BUTTON,
+            pos=Pos(0, 0),
+        )
+
+        # CustomButton hardcodes its colors, so they can only be overridden afterwards.
+        button.configure(fg_color="transparent", hover_color=COLOR.GRAY_HOVER)
+
+        button.grid(row=0, column=column, padx=(0, column == 5 and FRAME_GAP or 4))
+
+        return button
+
+    def show(self, *args, **kwargs):
+        if not self.visible:
+            self.visible = True
+
+            self._frame.place(x=OFFSET.LOGS_SEARCH_BAR.x, y=OFFSET.LOGS_SEARCH_BAR.y)
+            self._frame.lift()
+
+            self.run_search()
+
+        self.entry.focus_set()
+
+        return "break"
+
+    def hide(self, *args, **kwargs):
+        if not self.visible:
+            return "break"
+
+        self.visible = False
+
+        self._frame.place_forget()
+
+        self.textbox.tag_remove(self.MATCH_TAG, "1.0", END)
+        self.textbox.tag_remove(self.CURRENT_TAG, "1.0", END)
+
+        self.matches = []
+        self.index = -1
+
+        return "break"
+
+    def run_search(self, *args):
+        term = self.term.get()
+
+        self.textbox.tag_remove(self.MATCH_TAG, "1.0", END)
+        self.textbox.tag_remove(self.CURRENT_TAG, "1.0", END)
+
+        self.matches = []
+        self.index = -1
+
+        if len(term) >= self.MIN_TERM_LENGTH:
+            start = "1.0"
+
+            while len(self.matches) < self.MAX_MATCHES:
+                position = self.textbox._textbox.search(term, start, stopindex=END, nocase=True)
+
+                if not position:
+                    break
+
+                end = f"{position}+{len(term)}c"
+
+                self.textbox.tag_add(self.MATCH_TAG, position, end)
+                self.matches.append((position, end))
+
+                start = end
+
+        if self.matches:
+            self.go_to_match(1)
+        else:
+            self.update_counter()
+
+    def go_to_match(self, step):
+        if not self.matches:
+            return "break"
+
+        self.index = (self.index + step) % len(self.matches)
+
+        start, end = self.matches[self.index]
+
+        self.textbox.tag_remove(self.CURRENT_TAG, "1.0", END)
+        self.textbox.tag_add(self.CURRENT_TAG, start, end)
+        self.textbox.see(start)
+
+        self.update_counter()
+
+        return "break"
+
+    def update_counter(self):
+        if not self.matches:
+            self.counter.set(STRINGS.LOG_SCREEN.SEARCH_NO_RESULTS)
+
+            return
+
+        self.counter.set(STRINGS.LOG_SCREEN.SEARCH_RESULTS.format(index=self.index + 1, total=len(self.matches)))
+
+
 class ShardLogPanel():
     switch_xpad = 20
+    max_history = 50
 
     def __init__(self, master, shard, server) -> None:
         self.server = server
         self.master = master
         self.bind = None
+        self.search_bind = None
         self._auto_scroll = False
         self._visible = False
         self.shard = shard
         self.corner_radius = 10
         self.highlight_data = []
         self._highlight_end = "1.0"
+        self._history = []
+        self._history_index = 0
 
         self.root = CustomFrame(
             master=master,
@@ -173,7 +375,13 @@ class ShardLogPanel():
             state = DISABLED,
         )
 
-        #self.textbox.bind("<MouseWheel>", self._mouse_scroll_event)
+        for sequence in ("<MouseWheel>", "<Button-4>", "<Button-5>", "<ButtonRelease-1>", "<Prior>", "<Next>"):
+            self.textbox.bind(sequence, self._mouse_scroll_event)
+
+        scrollbar = getattr(self.textbox, "_y_scrollbar", None)
+
+        if scrollbar is not None:
+            scrollbar.bind("<B1-Motion>", self._mouse_scroll_event)
 
         self.textbox._textbox.configure(selectbackground=COLOR.GRAY)
 
@@ -187,6 +395,8 @@ class ShardLogPanel():
             x = OFFSET.LOGS_TEXTBOX.x,
             y = OFFSET.LOGS_TEXTBOX.y,
         )
+
+        self.search_bar = LogSearchBar(self)
 
         self.entry = CTkEntry(
             master = self.root,
@@ -209,6 +419,8 @@ class ShardLogPanel():
         )
 
         self.entry.bind("<Return>", self.execute_command)
+        self.entry.bind("<Up>", lambda event: self.browse_history(-1))
+        self.entry.bind("<Down>", lambda event: self.browse_history(1))
 
         self.button = CTkButton(
             master=self.root,
@@ -230,16 +442,18 @@ class ShardLogPanel():
             y = OFFSET.LOGS_CLOSE.y,
         )
 
-        # self.show_end_button = ImageButton(
-        #     master=self.root,
-        #     image="assets/arrowdown.png",
-        #     bg_color=COLOR.DARK_GRAY,
-        #     command=self.show_end,
-        #     width=SIZE.LOGS_SHOW_END_BUTTON.w,
-        #     height=SIZE.LOGS_SHOW_END_BUTTON.h,
-        #     image_size=(SIZE.LOGS_SHOW_END_BUTTON.w - 18, SIZE.LOGS_SHOW_END_BUTTON.h - 18),
-        #     pos=Pos(OFFSET.LOGS_SHOW_END_BUTTON.x, OFFSET.LOGS_SHOW_END_BUTTON.y),
-        # )
+        self.show_end_button = ImageButton(
+            master=self.root,
+            image="assets/arrowdown.png",
+            bg_color=COLOR.DARK_GRAY,
+            command=self.show_end,
+            corner_radius=8,
+            width=SIZE.LOGS_SHOW_END_BUTTON.w,
+            height=SIZE.LOGS_SHOW_END_BUTTON.h,
+            # CTkButton reserves corner_radius on both sides, so the icon has to fit in what is left.
+            image_size=(SIZE.LOGS_SHOW_END_BUTTON.w - 17, SIZE.LOGS_SHOW_END_BUTTON.h - 17),
+            pos=Pos(OFFSET.LOGS_SHOW_END_BUTTON.x, OFFSET.LOGS_SHOW_END_BUTTON.y),
+        )
 
         self.auto_scroll_switch = CTkSwitch(
             master=self.root,
@@ -278,10 +492,12 @@ class ShardLogPanel():
             y=OFFSET.LOGS_PANEL.y,
         )
 
-        self.bind = self.master.bind("<Escape>", self.hide)
+        self.bind = self.master.bind("<Escape>", self.on_escape)
+        self.search_bind = self.master.bind("<Control-f>", self.search_bar.show)
 
         self.root.lift()
         self.highlight_text()
+        self._mouse_scroll_event()
 
         if self.server.is_running():
             self.show_end()
@@ -300,11 +516,21 @@ class ShardLogPanel():
             logger.debug(f"Loading log file for {self.shard}.")
 
 
+    def on_escape(self, *args, **kwargs):
+        """ Escape backs out of the search bar first, then out of the panel. """
+
+        if self.search_bar.visible:
+            return self.search_bar.hide()
+
+        self.hide()
+
     def hide(self, *args, **kwargs):
         if self.master.grab_current() is not None:
             return # Not in focus...
 
         self._visible = False
+
+        self.search_bar.hide()
         self.root.place_forget()
 
         self.topbar.stop_tracking_memory()
@@ -312,6 +538,10 @@ class ShardLogPanel():
         if self.bind:
             self.master.unbind("<Escape>", self.bind)
             self.bind = None
+
+        if self.search_bind:
+            self.master.unbind("<Control-f>", self.search_bind)
+            self.search_bind = None
 
     def on_server_status_changed(self, *args):
         if self.server.shard_frame.is_starting():
@@ -344,8 +574,32 @@ class ShardLogPanel():
 
         if command and self.server:
             self.server.execute_command(command)
+            self.push_history(command)
             self.entry.delete(0, END)
             self.show_end()
+
+    def push_history(self, command):
+        if not self._history or self._history[-1] != command:
+            self._history.append(command)
+
+            del self._history[:-self.max_history]
+
+        self._history_index = len(self._history)
+
+    def browse_history(self, step):
+        """ Walks the sent commands, where the slot past the end is the empty line. """
+
+        if not self._history:
+            return "break"
+
+        self._history_index = max(0, min(len(self._history), self._history_index + step))
+
+        self.entry.delete(0, END)
+
+        if self._history_index < len(self._history):
+            self.entry.insert(0, self._history[self._history_index])
+
+        return "break"
 
     def append_text(self, text):
         self.textbox.configure(state=NORMAL) # To be able to insert text!
@@ -423,6 +677,8 @@ class ShardLogPanel():
         self.textbox.configure(state=DISABLED)
         self._highlight_end = "1.0"
 
+        self.search_bar.run_search() # The matches point into text that is gone now.
+
     def on_load_log_file(self, text=None):
         if text and not self.server.is_running():
             self.reset_text()
@@ -498,11 +754,17 @@ class ShardLogPanel():
         self._highlight_end = self.textbox.index(END)
 
     def _mouse_scroll_event(self, *args, **kwargs):
-        pass
-    #     if self.textbox.yview()[1] > 0.995:
-    #         self.show_end_button.hide()
-    #     else:
-    #         self.show_end_button.show()
+        # yview() still reports the old position while the scroll event is being handled.
+        self.root.after_idle(self._update_show_end_button)
+
+    def _update_show_end_button(self):
+        if not self._visible:
+            return
+
+        if self.textbox._textbox.yview()[1] > 0.999:
+            self.show_end_button.hide()
+        else:
+            self.show_end_button.show()
 
     def _auto_scroll_event(self):
         self._auto_scroll = self.auto_scroll_switch.get()
@@ -511,8 +773,7 @@ class ShardLogPanel():
             self.show_end()
 
         else:
-            pass
-            #self._mouse_scroll_event()
+            self._mouse_scroll_event()
 
 
 class CustomFrame(CTkFrame):
@@ -620,16 +881,18 @@ class ShardFrame(CustomFrame):
         self.status_msg_label = CTkLabel(
             master=self,
             height=0,
-            anchor="nw",
+            anchor="w",
             textvariable=self.status_msg,
             text_color=COLOR.WHITE,
             fg_color="transparent",
             font=FONT.SHARD_STATUS,
         )
 
+        # The label box keeps the font's descender empty below the text, so centring it alone reads high.
         self.status_msg_label.place(
             relx = 0.84,
-            y = OFFSET.SHARD_STATUS_MSG.y,
+            y = OFFSET.SHARD_STATUS_CIRCLE.y + FONT.SHARD_STATUS.metrics("descent") / 4,
+            anchor = "w",
         )
 
         self.set_offline()
@@ -696,6 +959,11 @@ class ShardFrame(CustomFrame):
             self._master.cluster_entry.disable()
             self._master.token_entry.disable()
 
+    def set_starting_step(self, step):
+        """ Refines the STARTING message as the shard reaches each boot step. """
+
+        if self.is_starting():
+            self.status_msg.set(STRINGS.SHARD_STATUS.STEP[step] or STRINGS.SHARD_STATUS.STARTING)
     def set_stopping(self):
         self.status.set(SERVER_STATUS.STOPPING)
 

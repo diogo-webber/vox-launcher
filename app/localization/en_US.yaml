@@ -14,9 +14,8 @@ LANGUAGES:
     th_TH: ไทย (ไทย)
 
 TOKEN_TOOLTIP: |-
-    You need a Server Token to run a Dedicated Server.
-    Generate one on the Klei Account page.
-    Click here to open the website.
+    A server token is required to run a server.
+    Click here to get one on the Klei Account page.
 
 CLUSTER_NAME_DEFAULT: How does it work?
 ASK_DIRECTORY_TITLE: "  Select Directory"
@@ -56,6 +55,14 @@ SHARD_STATUS:
     STOPPING:   Stopping...
     RESTARTING: Restarting...
 
+    # Shown instead of STARTING as the shard reaches each boot step.
+    # Keep these short, they share a narrow column with the status dot.
+    STEP:
+        LOADING:  Loading...
+        MODS:     Mods...
+        ASSETS:   Assets...
+        SESSION:  Finalizing...
+
 CLUSTER_STATS:
     DAY: "Day: "
     SEASON: "Season: "
@@ -77,6 +84,14 @@ UPDATE_POPUP:
         DOWNLOADING: Downloading... It shouldn't take long!
         FAILED: The download has failed. It might be a network issue on your side or on Github's servers. Please try again later.
 
+# Shown once after an update downloaded within the app.
+PATCH_NOTES_POPUP:
+    DESCRIPTION: |-
+        Welcome to version {APP_VERSION}.
+
+        Consider clicking the button below to see what's new in this release.
+    BUTTON: Patch Notes
+
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Run console commands on {shard}. Press ENTER to execute.
     ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
@@ -86,6 +101,8 @@ LOG_SCREEN:
     SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "Memory:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+    SEARCH_RESULTS: "{index} of {total}"
+    SEARCH_NO_RESULTS: No results
 
 SMALL_BUTTON:
     SAVE: Save
@@ -97,6 +114,10 @@ COMMAND_CONFIRMATION:
     QUIT: Are you sure you want to stop the server without saving? Unsaved data will be lost!
     RESET: Are you sure you want to restart the server without saving? Unsaved data will be lost!
     ROLLBACK: How many saves would you like to roll back?
+    CLOSE_APP: |-
+        The server is still running.
+
+        Closing {APP_NAME} will save the world and shut the server down. Do you want to close anyway?
 
 COMMAND_ANNOUNCEMENT:
     SAVE: Saving world...
@@ -110,6 +131,28 @@ ENTRY:
     CLUSTER_TITLE: Cluster Directory
     TOKEN_TITLE: Server Token
     ENTRY_INVALID_INPUT: "✱ Invalid Input"
+
+    # Shown next to the field's title. Keep these short, they share the row with it.
+    INVALID:
+        EMPTY: "✱ Required"
+        MISSING: "✱ Invalid Folder"
+        NO_EXECUTABLE: "✱ Invalid Folder"
+        NO_CLUSTER_INI: "✱ Invalid Cluster"
+        NO_MASTER: "✱ Invalid Cluster"
+        CLOUD_SAVES: "✱ Cloud Save"
+        WRONG_LOCATION: "✱ Invalid Cluster"
+        TOKEN_FORMAT: "✱ Invalid Token"
+
+    # Shown when hovering the message above.
+    INVALID_HELP:
+        EMPTY: This field has to be filled in before the server can start.
+        MISSING: This folder doesn't exist. It may have been moved, renamed or deleted.
+        NO_EXECUTABLE: This isn't the game folder. It must contain bin64/dontstarve_dedicated_server_nullrenderer_x64.exe.
+        NO_CLUSTER_INI: This folder has no cluster.ini. Select a world created by the in-game menu, like Cluster_1.
+        NO_MASTER: This cluster has no Master folder.
+        CLOUD_SAVES: Cloud saves are not supported.
+        WRONG_LOCATION: Clusters must be inside your Klei account folder, usually Documents/Klei/DoNotStarveTogether/<numbers>/.
+        TOKEN_FORMAT: This isn't a valid server token.
 
 ERROR:
     TOKEN_INVALID: |-
@@ -182,6 +225,7 @@ SETTINGS_SCREEN:
     LAUNCH_OPTIONS:
         TITLE: Launch Options
         DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
+        LINK: Click here to see all launch options.
 
     CLOSE: Back
 

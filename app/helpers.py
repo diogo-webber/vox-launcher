@@ -352,6 +352,70 @@ def is_valid_token(token: str) -> bool:
 
 # ----------------------------------------------------------------------------------------- #
 
+class INVALID:
+    """ Reason keys for entry validation, resolved against STRINGS.ENTRY.INVALID. """
+
+    EMPTY = "EMPTY"
+    MISSING = "MISSING"
+    NO_EXECUTABLE = "NO_EXECUTABLE"
+    NO_CLUSTER_INI = "NO_CLUSTER_INI"
+    NO_MASTER = "NO_MASTER"
+    CLOUD_SAVES = "CLOUD_SAVES"
+    WRONG_LOCATION = "WRONG_LOCATION"
+    TOKEN_FORMAT = "TOKEN_FORMAT"
+
+def get_game_directory_error(directory: str):
+    """ Returns an INVALID reason for the game directory, or None when it's usable. """
+
+    if not directory.strip():
+        return INVALID.EMPTY
+
+    if not Path(directory).exists():
+        return INVALID.MISSING
+
+    if not validate_game_directory(directory):
+        return INVALID.NO_EXECUTABLE
+
+    return None
+
+def get_cluster_directory_error(directory: str):
+    """ Returns an INVALID reason for the cluster directory, or None when it's usable. """
+
+    if not directory.strip():
+        return INVALID.EMPTY
+
+    path = Path(directory)
+
+    if any(part.lower() == "cloudsaves" for part in path.parts):
+        return INVALID.CLOUD_SAVES
+
+    if not path.exists():
+        return INVALID.MISSING
+
+    if not (path / "cluster.ini").exists():
+        return INVALID.NO_CLUSTER_INI
+
+    if not (path / "Master").exists():
+        return INVALID.NO_MASTER
+
+    if not path.parent.name.isdigit():
+        return INVALID.WRONG_LOCATION
+
+    return None
+
+def get_token_error(token: str):
+    """ Returns an INVALID reason for the server token, or None when it's usable. """
+
+    if not token.strip():
+        return INVALID.EMPTY
+
+    if not is_valid_token(token):
+        return INVALID.TOKEN_FORMAT
+
+    return None
+
+# ----------------------------------------------------------------------------------------- #
+
 def get_app_logs():
     file = resource_path("logs/applog.txt")
 
@@ -366,6 +430,11 @@ def open_klei_account_page(*args, **kwargs):
     """ Opens Klei dedicated servers website in the default browser. """
 
     webbrowser.open("https://accounts.klei.com/account/game/servers?game=DontStarveTogether", new=0, autoraise=True)
+
+def open_url(url):
+    """ Opens an url in the default browser. """
+
+    webbrowser.open(url, new=0, autoraise=True)
 
 def open_github_issue(template="bug_report", traceback=None, include_applog=False):
     """
