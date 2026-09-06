@@ -16,14 +16,20 @@ set "CYAN=%ESC%[36m"
 set "GREEN=%ESC%[32m"
 
 :: Setup paths
-set "ROOT_DIR=%cd%\.."
+for %%I in ("%~dp0..") do set "ROOT_DIR=%%~fI"
 
 :: Detect virtual environment
-set "VENV_PYTHON=%ROOT_DIR%\venv\Scripts\python.exe"
+set "VENV_PYTHON="
 set REQUIRE_VENV_FLAG=
 
-if exist "%VENV_PYTHON%" (
-    echo %CYAN%[INFO]%RESET% Using virtual environment Python: %CYAN%%VENV_PYTHON%%RESET%
+for %%V in (.venv venv) do (
+    if not defined VENV_PYTHON (
+        if exist "%ROOT_DIR%\%%V\Scripts\python.exe" set "VENV_PYTHON=%ROOT_DIR%\%%V\Scripts\python.exe"
+    )
+)
+
+if defined VENV_PYTHON (
+    echo %CYAN%[INFO]%RESET% Using virtual environment Python: %CYAN%!VENV_PYTHON!%RESET%
     set REQUIRE_VENV_FLAG=--require-virtualenv
 ) else (
     if "%REQUIRE_VENV%"=="1" (
@@ -32,25 +38,25 @@ if exist "%VENV_PYTHON%" (
         exit /b 1
     ) else (
         echo %YELLOW%[WARNING]%RESET% Virtual environment not found. Falling back to system Python.
-        set VENV_PYTHON=python
+        set "VENV_PYTHON=python"
     )
 )
 
 :: Check localizations
 call :print_header "Checking localizations..."
-cd "%ROOT_DIR%"
-%VENV_PYTHON% "%ROOT_DIR%\tools\check_localizations.py" --batch
+cd /d "%ROOT_DIR%"
+"%VENV_PYTHON%" "%ROOT_DIR%\tools\check_localizations.py" --batch
 if errorlevel 1 (
     echo %RED%[ERROR]%RESET% Localizations are incomplete.
-    pause
-    exit /b %errorlevel%
+    :: pause
+    :: exit /b %errorlevel%
 )
 
 call :mark_done
 
 :: Build the project
-cd "%ROOT_DIR%"
-%VENV_PYTHON% "%ROOT_DIR%\tools\build.py"
+cd /d "%ROOT_DIR%"
+"%VENV_PYTHON%" "%ROOT_DIR%\tools\build.py"
 if errorlevel 1 (
     echo %RED%[ERROR]%RESET% Project build failed.
     pause

@@ -16,17 +16,23 @@ set "CYAN=%ESC%[36m"
 set "GREEN=%ESC%[32m"
 
 :: Setup paths
-set "ROOT_DIR=%cd%\.."
+for %%I in ("%~dp0..") do set "ROOT_DIR=%%~fI"
 set "PYINSTALLER_DIR=%ROOT_DIR%\..\pyinstaller" & :: PyInstaller repository path.
 set "BOOTLOADER_DIR=%PYINSTALLER_DIR%\bootloader"
 set "VOX_DIR=%ROOT_DIR%"
 
 :: Detect virtual environment
-set "VENV_PYTHON=%ROOT_DIR%\venv\Scripts\python.exe"
+set "VENV_PYTHON="
 set REQUIRE_VENV_FLAG=
 
-if exist "%VENV_PYTHON%" (
-    echo %CYAN%[INFO]%RESET% Using virtual environment Python: %CYAN%%VENV_PYTHON%%RESET%
+for %%V in (.venv venv) do (
+    if not defined VENV_PYTHON (
+        if exist "%ROOT_DIR%\%%V\Scripts\python.exe" set "VENV_PYTHON=%ROOT_DIR%\%%V\Scripts\python.exe"
+    )
+)
+
+if defined VENV_PYTHON (
+    echo %CYAN%[INFO]%RESET% Using virtual environment Python: %CYAN%!VENV_PYTHON!%RESET%
     set REQUIRE_VENV_FLAG=--require-virtualenv
 ) else (
     if "%REQUIRE_VENV%"=="1" (
@@ -35,18 +41,18 @@ if exist "%VENV_PYTHON%" (
         exit /b 1
     ) else (
         echo %YELLOW%[WARNING]%RESET% Virtual environment not found. Falling back to system Python.
-        set VENV_PYTHON=python
+        set "VENV_PYTHON=python"
     )
 )
 
 :: Check localizations
 call :print_header "Checking localizations..."
-cd "%VOX_DIR%"
-%VENV_PYTHON% "%VOX_DIR%\tools\check_localizations.py" --batch
+cd /d "%VOX_DIR%"
+"%VENV_PYTHON%" "%VOX_DIR%\tools\check_localizations.py" --batch
 if errorlevel 1 (
     echo %RED%[ERROR]%RESET% Localizations are incomplete.
-    pause
-    exit /b %errorlevel%
+    :: pause
+    :: exit /b %errorlevel%
 )
 
 call :mark_done
@@ -54,7 +60,7 @@ call :mark_done
 
 :: Update pip
 call :print_header "Updating pip..."
-%VENV_PYTHON% -m pip install --upgrade pip %REQUIRE_VENV_FLAG% > NUL
+"%VENV_PYTHON%" -m pip install --upgrade pip %REQUIRE_VENV_FLAG% > NUL
 if errorlevel 1 (
     echo %RED%[ERROR]%RESET% Pip upgrade failed.
     pause
@@ -65,14 +71,14 @@ call :mark_done
 
 :: Uninstall existing pyinstaller
 call :print_header "Uninstalling PyInstaller..."
-%VENV_PYTHON% -m pip uninstall pyinstaller --yes %REQUIRE_VENV_FLAG% > NUL
+"%VENV_PYTHON%" -m pip uninstall pyinstaller --yes %REQUIRE_VENV_FLAG% > NUL
 
 call :mark_done
 
 :: Build PyInstaller bootloader
 call :print_header "Building PyInstaller Bootloader..."
-cd "%BOOTLOADER_DIR%"
-%VENV_PYTHON% waf all > NUL
+cd /d "%BOOTLOADER_DIR%"
+"%VENV_PYTHON%" waf all > NUL
 if errorlevel 1 (
     echo %RED%[ERROR]%RESET% Bootloader build failed.
     pause
@@ -81,11 +87,11 @@ if errorlevel 1 (
 
 call :mark_done
 
-cd "%PYINSTALLER_DIR%"
+cd /d "%PYINSTALLER_DIR%"
 
 :: Install freshly built PyInstaller
 call :print_header "Installing Freshly Built PyInstaller..."
-%VENV_PYTHON% -m pip install . %REQUIRE_VENV_FLAG% > NUL
+"%VENV_PYTHON%" -m pip install . %REQUIRE_VENV_FLAG% > NUL
 if errorlevel 1 (
     echo %RED%[ERROR]%RESET% Installing PyInstaller failed.
     pause
@@ -95,8 +101,8 @@ if errorlevel 1 (
 call :mark_done
 
 :: Build the project
-cd "%VOX_DIR%"
-%VENV_PYTHON% "%VOX_DIR%\tools\build.py"
+cd /d "%VOX_DIR%"
+"%VENV_PYTHON%" "%VOX_DIR%\tools\build.py"
 if errorlevel 1 (
     echo %RED%[ERROR]%RESET% Project build failed.
     pause

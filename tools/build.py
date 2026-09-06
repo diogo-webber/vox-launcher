@@ -6,6 +6,9 @@ from datetime import datetime
 root_dir = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(root_dir))
 
+# Every path below is relative to the project root.
+os.chdir(root_dir)
+
 import PyInstaller.__main__ as PyInstaller
 import pyinstaller_versionfile
 
@@ -43,7 +46,7 @@ else:
 NEW_LINE = "\n"
 
 def print_header(title, color):
-    TERMINAL_X = os.get_terminal_size().columns
+    TERMINAL_X = shutil.get_terminal_size().columns
     PRETTY_LINE = "-" * TERMINAL_X
     RESET_LINE = PRETTY_LINE + NEW_LINE + RESET
 
@@ -88,6 +91,8 @@ LOG_LEVEL = "WARN"
 
 # ------------------------------------------------------------------------------ #
 
+os.makedirs(WORK_DIRECTORY, exist_ok=True)
+
 pyinstaller_versionfile.create_versionfile(
     output_file=VERSION_FILE_CREATE,
     version=APP_VERSION[1:],
@@ -123,6 +128,9 @@ command_args = [
     FILE,
 ]
 
+# Clean up empty args.
+command_args = [arg for arg in command_args if arg]
+
 # ------------------------------------------------------------------------------ #
 
 def rename_build_folder(old, new):
@@ -133,12 +141,12 @@ def rename_build_folder(old, new):
             else:
                 print(f"{YELLOW}[INFO]{RESET} Renaming build folder to: {YELLOW}{new.as_posix()}{RESET}")
 
-            old.rename(versioned_build_path)
+            old.rename(new)
 
             break
 
         except Exception as e:
-            if attempt+1 <= RENAME_ATTEMPTS:
+            if attempt+1 < RENAME_ATTEMPTS:
                 print(f"{RED}[ERROR]{RESET} Failed to rename build folder, files might be in use. Retrying in {YELLOW}100{RESET} miliseconds...")
 
                 time.sleep(1/10)
@@ -156,14 +164,13 @@ if __name__ == "__main__":
     # Define paths
     build_path = Path(BUILD_DIRECTORY) / EXE_NAME
     zip_temp_path = Path(WORK_DIRECTORY) / "temp.zip"
-    zip_path = build_path / ZIP_NAME
     versioned_build_path = Path(BUILD_DIRECTORY) / BUILD_NAME
 
     print() # For spacing.
 
     # Ensure build folder exists
     if not build_path.exists():
-        print(f"{RED}[ERROR]{RESET} Build output folder not found: {RED}{build_path.as_posix()}{RED}")
+        print(f"{RED}[ERROR]{RESET} Build output folder not found: {RED}{build_path.as_posix()}{RESET}")
         sys.exit(1)
 
     # Clean up old versioned folder if exists
@@ -180,7 +187,7 @@ if __name__ == "__main__":
 
     # Move zip to build folder
     final_zip_path = versioned_build_path / ZIP_NAME
-    zip_temp_path.rename(final_zip_path)
+    os.replace(zip_temp_path, final_zip_path)
 
     print(f"{GREEN}[SUCCESS]{RESET} Build zipped at: {GREEN}{final_zip_path.as_posix()}{RESET}")
 
