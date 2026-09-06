@@ -222,7 +222,8 @@ class PopUp:
             hover_color=COLOR.DARK_GRAY,
             text_color=COLOR.WHITE,
             border_color=COLOR.WHITE,
-            border_width=0.4,
+            border_width=0,
+
             text=self.button_1_text,
             font=FONT.SMALL_BUTTON,
             command=self.button_1_callback,
@@ -235,7 +236,7 @@ class PopUp:
             hover_color=COLOR.DARK_GRAY,
             text_color=COLOR.WHITE,
             border_color=COLOR.WHITE,
-            border_width=0.4,
+            border_width=0,
             text=self.button_2_text,
             font=FONT.SMALL_BUTTON,
             command=self.button_2_callback
