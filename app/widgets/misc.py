@@ -190,7 +190,8 @@ class PopUp:
         self.popup.wm_overrideredirect(True)
         self.popup.grab_set()  # Make other windows not clickable.
 
-        self.popup.grid_columnconfigure((0, slider_fn and 4 or 2), weight=1)
+        # Each button spans two columns, so all four must stay equal or they end up different widths.
+        self.popup.grid_columnconfigure((0, 1, 2, 3), weight=1, uniform="popup")
         self.popup.rowconfigure(0, weight=1)
 
         self.popup._frame = CustomFrame(

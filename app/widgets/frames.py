@@ -44,7 +44,6 @@ class LogsTopBar:
         self.open_folder_button.grid(
             row = 0,
             column = 5,
-            columnspan=3,
             padx=(65, 0),
         )
 

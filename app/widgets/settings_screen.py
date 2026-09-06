@@ -215,7 +215,7 @@ class SettingsScreen():
         menu_width = self.button_menu.winfo_reqwidth() / self.root._apply_widget_scaling(1.0)
 
         self.button_menu.place(
-            x = WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - menu_width * 1.25,
+            x = WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - menu_width,
             y = SETTINGS_WINDOW_MARGIN + self.arguments_entry._tooltip.get_height() + ARGUMENTS_ENTRY.h + BUTTON_MENU_GAP,
         )
 
