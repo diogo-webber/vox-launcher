@@ -961,7 +961,7 @@ class ColouredCircle(CTkFrame):
             width=size,
             **kwargs)
 
-        if relx and y:
+        if relx is not None and y is not None:
             self.place(relx=relx, y=y - size/2)
 
     def set_color(self, color):
