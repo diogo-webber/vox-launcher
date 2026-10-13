@@ -42,7 +42,7 @@ Vox Launcher is a Windows-only app that makes it easy to create and manage Don't
 
 <br>
 
-## 🚀 Quick Start
+## Quick Start
 
 <br>
 
@@ -124,62 +124,7 @@ Vox Launcher is a Windows-only app that makes it easy to create and manage Don't
 
 <br>
 
-### Troubleshooting
-
-<br>
-
-- **The `Cluster Directory` field says "Invalid Cluster".**
-
-<dl><dd><dl><dd><dl>
-
-> Select a world folder created by the in-game menu (e.g. `Cluster_1`). It must contain a `cluster.ini` file and a `Master` folder, and be inside your Klei account folder, usually `Documents/Klei/DoNotStarveTogether/<numbers>/`.  
-> Cloud saves are not supported.
-
-</dl></dd></dl></dd></dl>
-
-<br>
-
-- **The `Server Token` field says "Token Rejected".**
-
-<dl><dd><dl><dd><dl>
-
-> The token may have expired, been revoked, or be in use by another running server. Generate a new one on the [**Klei Accounts**][token_website] page.
-
-</dl></dd></dl></dd></dl>
-
-<br>
-
-- **The launcher asks me to launch a world from the in-game menu first.**
-
-<dl><dd><dl><dd><dl>
-
-> Vox Launcher needs some configuration data that the game generates the first time you host a world. Launch any world from the in-game menu, wait for it to start, stop it, then click `Try Again`.
-
-</dl></dd></dl></dd></dl>
-
-<br>
-
-- **The server fails to start with a port error.**
-
-<dl><dd><dl><dd><dl>
-
-> Another program (including a server hosted in-game) is likely using the same ports. Close any other running servers, or change the ports in each shard's `server.ini` file.
-
-</dl></dd></dl></dd></dl>
-
-<br>
-
-- **The server crashed with a Lua error.**
-
-<dl><dd><dl><dd><dl>
-
-> This is a game crash, not a Vox Launcher issue. Common causes are incompatible or outdated mods, corrupted save data, or a game bug. Try disabling recently added mods, or report it to Klei.
-
-</dl></dd></dl></dd></dl>
-
-<br>
-
-## 📷 App Showcase
+## App Showcase
 
 <br>
 
@@ -201,11 +146,9 @@ Vox Launcher is a Windows-only app that makes it easy to create and manage Don't
 
 Contributions are welcome! You can suggest features, report or fix bugs, and submit pull requests.
 
-<br>
-
 #### Running from source
 
-Requires Python 3.14. From the project root:
+From the project root:
 
 ```bash
 python -m venv .venv
@@ -231,6 +174,8 @@ The build script requires a virtual environment named `.venv` or `venv` in the p
 2. Use `en_US.yaml` as a template. Try to keep translations similar in length to avoid layout issues.
 3. Submit a **[Pull Request][pull_request]** titled `Added {Language} ({locale}) localization`.
 
+<br>
+
 Available languages:
 - English (`en_US`)
 - Chinese, Simplified (`zh_CN`)
@@ -241,7 +186,7 @@ Available languages:
 - Thai (`th_TH`)
 - Vietnamese (`vi_VN`)
 
-<br><br>
+<br>
 
 ## ❤️ Contributors
 
