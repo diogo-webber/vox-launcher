@@ -42,7 +42,7 @@ Vox Launcher is a Windows-only app that makes it easy to create and manage Don't
 
 <br>
 
-## Quick Start
+## 🚀 Quick Start
 
 <br>
 
@@ -64,7 +64,7 @@ Vox Launcher is a Windows-only app that makes it easy to create and manage Don't
 
 <br>
 
-## Frequently Asked Questions
+## ❓ Frequently Asked Questions
 
 <br>
 
@@ -179,7 +179,7 @@ Vox Launcher is a Windows-only app that makes it easy to create and manage Don't
 
 <br>
 
-## App Showcase
+## 📷 App Showcase
 
 <br>
 
@@ -195,7 +195,7 @@ Vox Launcher is a Windows-only app that makes it easy to create and manage Don't
 
 <br>
 
-## Contributing
+## 📌 Contributing
 
 <br>
 
@@ -243,7 +243,7 @@ Available languages:
 
 <br><br>
 
-## Contributors
+## ❤️ Contributors
 
 <br>
 
@@ -277,7 +277,7 @@ Big thanks to everyone who contributed to this project:
 
 <br><br>
 
-## License
+## 📜 License
 
 <br>
 
