@@ -30,15 +30,15 @@
 
 <br><br><br><br><br>
 
-Vox Launcher is a Windows-only app designed to simplify creating and managing Don't Starve Together dedicated servers.
+Vox Launcher is a Windows-only app that makes it easy to create and manage Don't Starve Together dedicated servers.
 
 <br>
 
-### Features:
+### Features
 - Buttons to **save**, **reset**, **rollback**, and **stop** the server.
-- A screen that shows server logs and has a console for running commands.
-- Displays key server info, such as **player count**, **day**, **season**, and **memory usage**.
-- Supports mods and any number of shards.
+- A log screen with a built-in console for running commands.
+- Live server info, such as **player count**, **day**, **season**, and **memory usage**.
+- Support for mods and any number of shards.
 
 <br>
 
@@ -46,12 +46,12 @@ Vox Launcher is a Windows-only app designed to simplify creating and managing Do
 
 <br>
 
-- Download the `App` by clicking [**here**][download].
-- Extract the zip contents and run `Vox Launcher.exe`.
-- Select your game installation folder under `Game Directory`, if it has not been automatically populated.
-- Create a world in-game and select it under `Cluster Directory`.
-- Paste your server token under `Server Token`. See instructions on how to obtain one in the app.
-- Click on the `LAUNCH` button and have fun!
+1. [**Download the latest release**][download].
+2. Extract the zip and run `Vox Launcher.exe`.
+3. Under `Game Directory`, select your game installation folder (if it wasn't detected automatically).
+4. Create a world in-game, then select it under `Cluster Directory`.
+5. Paste your token under `Server Token`. Hover over the ⓘ icon in the app for instructions on how to get one.
+6. Click `LAUNCH` and have fun!
 
 <br>
 
@@ -97,13 +97,13 @@ Vox Launcher is a Windows-only app designed to simplify creating and managing Do
 <dl><dd><dl><dd><dl>
 
 > Edit these via the in-game menu, then launch the world once from within the game to apply the changes.
-> Launching it through the game is essential for saving the changes!
+> Launching it through the game is required for the changes to be saved!
 
 </dl></dd></dl></dd></dl>
 
 <br>
 
-- **How do I get a Cluster Token?**
+- **How do I get a Server Token?**
 
 <dl><dd><dl><dd><dl>
 
@@ -124,55 +124,126 @@ Vox Launcher is a Windows-only app designed to simplify creating and managing Do
 
 <br>
 
+### Troubleshooting
+
+<br>
+
+- **The `Cluster Directory` field says "Invalid Cluster".**
+
+<dl><dd><dl><dd><dl>
+
+> Select a world folder created by the in-game menu (e.g. `Cluster_1`). It must contain a `cluster.ini` file and a `Master` folder, and be inside your Klei account folder, usually `Documents/Klei/DoNotStarveTogether/<numbers>/`.  
+> Cloud saves are not supported.
+
+</dl></dd></dl></dd></dl>
+
+<br>
+
+- **The `Server Token` field says "Token Rejected".**
+
+<dl><dd><dl><dd><dl>
+
+> The token may have expired, been revoked, or be in use by another running server. Generate a new one on the [**Klei Accounts**][token_website] page.
+
+</dl></dd></dl></dd></dl>
+
+<br>
+
+- **The launcher asks me to launch a world from the in-game menu first.**
+
+<dl><dd><dl><dd><dl>
+
+> Vox Launcher needs some configuration data that the game generates the first time you host a world. Launch any world from the in-game menu, wait for it to start, stop it, then click `Try Again`.
+
+</dl></dd></dl></dd></dl>
+
+<br>
+
+- **The server fails to start with a port error.**
+
+<dl><dd><dl><dd><dl>
+
+> Another program (including a server hosted in-game) is likely using the same ports. Close any other running servers, or change the ports in each shard's `server.ini` file.
+
+</dl></dd></dl></dd></dl>
+
+<br>
+
+- **The server crashed with a Lua error.**
+
+<dl><dd><dl><dd><dl>
+
+> This is a game crash, not a Vox Launcher issue. Common causes are incompatible or outdated mods, corrupted save data, or a game bug. Try disabling recently added mods, or report it to Klei.
+
+</dl></dd></dl></dd></dl>
+
+<br>
+
 ## App Showcase
 
 <br>
 
-From top left to bottom right: `Instructions`, `Starting Server`, `Server Online`, `Log Screen`.
-
-<br>
-
 <div align="center">
 
-<img align="left" src="/.github/readme_assets/offline.png" width=45%/>
-<img align="left" src="/.github/readme_assets/starting.png" width=45%/>
+| Instructions | Starting Server |
+| :---: | :---: |
+| <img src="/.github/readme_assets/offline.png"/> | <img src="/.github/readme_assets/starting.png"/> |
+| **Server Online** | **Log Screen** |
+| <img src="/.github/readme_assets/online.png"/> | <img src="/.github/readme_assets/logscreen.png"/> |
 
 </div>
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br>
 
-<div align="center">
-
-<img align="left" src="/.github/readme_assets/online.png" width=45%/>
-<img align="left" src="/.github/readme_assets/logscreen.png" width=45%/>
-
-</div>
-
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
-## 📌 Contributing
+## Contributing
 
 <br>
 
-Contributions are welcome! Feel free to suggest new features, submit pull requests, or fix bugs. The entry point is `app/main.py`.
-
-#### You can also help by translating the app:
-- Add a file in `app/localization/` named `{locale}.yaml`, where `{locale}` is the language code (see **[this list][locales]**).
-  
-- Use `en_US.yaml` as a template. Try to keep translations similar in length to avoid layout issues.
-  
-- Submit a **[Pull Request][pull_request]** titled: `Added {Language} ({locale}) localization`.
+Contributions are welcome! You can suggest features, report or fix bugs, and submit pull requests.
 
 <br>
 
-#### Installing dependencies:
-```ruby
+#### Running from source
+
+Requires Python 3.14. From the project root:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
 python -m pip install -r requirements.txt
+python app/main.py
 ```
+
+<br>
+
+#### Building from source
+
+The build script requires a virtual environment named `.venv` or `venv` in the project root (see above).
+
+- Run `tools\build_app.bat` to check localizations and build the app with PyInstaller.
+- Build output is written to the `builds/` folder.
+
+<br>
+
+#### Translating
+
+1. Create a file in `app/localization/` named `{locale}.yaml`, where `{locale}` is the language code (see **[this list][locales]**).
+2. Use `en_US.yaml` as a template. Try to keep translations similar in length to avoid layout issues.
+3. Submit a **[Pull Request][pull_request]** titled `Added {Language} ({locale}) localization`.
+
+Available languages:
+- English (`en_US`)
+- Chinese, Simplified (`zh_CN`)
+- Czech (`cs_CZ`)
+- Portuguese, Brazilian (`pt_BR`)
+- Russian (`ru_RU`)
+- Spanish (`es_ES`)
+- Thai (`th_TH`)
+- Vietnamese (`vi_VN`)
 
 <br><br>
 
-## ❤️ Contributors
+## Contributors
 
 <br>
 
@@ -206,8 +277,8 @@ Big thanks to everyone who contributed to this project:
 
 <br><br>
 
-## 📜 License
+## License
 
 <br>
 
-This project is under MIT license. See the [**LICENSE**](LICENSE) file for more details.
+This project is licensed under the MIT License. See the [**LICENSE**](LICENSE) file for details.

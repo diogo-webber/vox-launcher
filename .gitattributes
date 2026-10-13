@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Batch scripts with LF endings can break labels and `call :label`.
+*.bat text eol=crlf

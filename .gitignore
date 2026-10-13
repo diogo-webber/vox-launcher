@@ -6,8 +6,6 @@ __pycache__/
 # PyInstaller
 builddata/
 builds/
-*.spec
-versionfile.txt
 
 # Environments
 .env
