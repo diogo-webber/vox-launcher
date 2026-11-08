@@ -400,7 +400,7 @@ class App(CTk):
 
     def save_entries_data(self):
         self.entries_save_loader.save(
-            token       =  self.token_entry.get(),
+            token       =  protect_text(self.token_entry.get()),
             game_dir    = self.game_entry.get(),
             cluster_dir = self.cluster_entry.get(),
         )
@@ -421,9 +421,15 @@ class App(CTk):
             data.token and "<hidden>" or "empty",
         )
 
-        self.token_entry.set_text(data.token, load=True)
+        token = unprotect_text(data.token)
+
+        self.token_entry.set_text(token, load=True)
         self.game_entry.set_text(data.game_dir, load=True)
         self.cluster_entry.set_text(data.cluster_dir, load=True)
+
+        if data.token and not data.token.startswith(PROTECTED_PREFIX):
+            # Migrates a token saved as plain text by older versions.
+            self.save_entries_data()
 
     def stop_shards(self):
         self.shard_group.stop_all_shards()

@@ -3,7 +3,7 @@ import winreg, ctypes
 from dataclasses import dataclass
 import ctypes.wintypes
 import webbrowser
-import re, json, sys, math
+import re, json, sys, math, base64
 import logging
 import shlex
 import threading
@@ -760,6 +760,78 @@ def get_memory_usage(pid):
         return process.memory_info().rss, process.memory_percent()
     except (psutil.NoSuchProcess, psutil.AccessDenied):
         return None, None
+
+# ----------------------------------------------------------------------------------------- #
+
+class _DataBlob(ctypes.Structure):
+    _fields_ = [("cbData", ctypes.wintypes.DWORD), ("pbData", ctypes.POINTER(ctypes.c_char))]
+
+PROTECTED_PREFIX = "dpapi:"
+
+def _run_dpapi(function, data):
+    """ Runs CryptProtectData/CryptUnprotectData over bytes, returning the result bytes or None. """
+
+    buffer = ctypes.create_string_buffer(data, len(data))
+    source = _DataBlob(len(data), ctypes.cast(buffer, ctypes.POINTER(ctypes.c_char)))
+    result = _DataBlob()
+
+    if not function(ctypes.byref(source), None, None, None, None, 0, ctypes.byref(result)):
+        return None
+
+    try:
+        return ctypes.string_at(result.pbData, result.cbData)
+    finally:
+        ctypes.windll.kernel32.LocalFree(result.pbData)
+
+def protect_text(text):
+    """
+    Encrypts text with the Windows user account (DPAPI), so it is unreadable outside of it.
+
+    Args:
+        text (str): the text to protect.
+
+    Returns:
+        str: a PROTECTED_PREFIX tagged string, or the text itself when it is empty or encryption fails.
+    """
+
+    if not text:
+        return text
+
+    encrypted = _run_dpapi(ctypes.windll.crypt32.CryptProtectData, text.encode("utf-8"))
+
+    if encrypted is None:
+        logger.warning("Failed to encrypt the text with DPAPI, it will be stored as plain text.")
+        return text
+
+    return PROTECTED_PREFIX + base64.b64encode(encrypted).decode("ascii")
+
+def unprotect_text(text):
+    """
+    Reverses protect_text. Text without the PROTECTED_PREFIX (older saves) is returned as is.
+
+    Args:
+        text (str): the stored text.
+
+    Returns:
+        str: the original text, or an empty string if it can't be decrypted by this user.
+    """
+
+    if not text or not text.startswith(PROTECTED_PREFIX):
+        return text
+
+    try:
+        decrypted = _run_dpapi(ctypes.windll.crypt32.CryptUnprotectData, base64.b64decode(text[len(PROTECTED_PREFIX):]))
+
+    except ValueError:
+        decrypted = None
+
+    if decrypted is None:
+        logger.warning("Failed to decrypt the stored text, it was saved by another Windows user.")
+        return ""
+
+    return decrypted.decode("utf-8")
+
+# ----------------------------------------------------------------------------------------- #
 
 def terminate_process_tree(pid, timeout=3):
     """
