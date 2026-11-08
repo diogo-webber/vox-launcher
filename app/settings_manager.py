@@ -29,6 +29,7 @@ class SettingsManager:
         self.defaults = Settings.DEFAULTS.copy()
         self.values = {}
         self._after_ids = {}
+        self._pending = {}
         self.file: Path = resource_path("savedata/settings.json").resolve()
 
     def get(self, key):
@@ -59,11 +60,21 @@ class SettingsManager:
             self.app.after_cancel(self._after_ids[key])
 
         def delayed_save():
-            self.set(key, value)
+            self.set(key, self._pending.pop(key))
             del self._after_ids[key]
 
+        self._pending[key] = value
         self._after_ids[key] = self.app.after(delay, delayed_save)
         return True
+
+    def flush(self):
+        """ Applies every pending delayed value right away. """
+        for key, after_id in list(self._after_ids.items()):
+            self.app.after_cancel(after_id)
+
+            del self._after_ids[key]
+
+            self.set(key, self._pending.pop(key))
 
     def save(self):
         """ Writes current non-default values to disk. """

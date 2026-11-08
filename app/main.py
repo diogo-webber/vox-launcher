@@ -448,6 +448,10 @@ class App(CTk):
 
         logger.info("Closing the application.")
 
+        self._destroy()
+
+    def _destroy(self):
+        self.settings.flush()
         self.destroy()
 
     def _close_when_shards_stop(self, waited=0):
@@ -462,7 +466,7 @@ class App(CTk):
             if still_running:
                 logger.warning("The shards did not shut down within %ds, closing anyway.", SHUTDOWN_TIMEOUT // 1000)
 
-            self.destroy()
+            self._destroy()
 
             return
 
