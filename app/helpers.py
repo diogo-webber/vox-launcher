@@ -761,6 +761,36 @@ def get_memory_usage(pid):
     except (psutil.NoSuchProcess, psutil.AccessDenied):
         return None, None
 
+def terminate_process_tree(pid, timeout=3):
+    """
+    Terminates a process and all of its children, killing whatever ignores the request.
+
+    Args:
+        pid (int): the root process id.
+        timeout (int, float): seconds to wait before force killing.
+    """
+
+    try:
+        root = psutil.Process(pid)
+        processes = root.children(recursive=True) + [root]
+
+    except psutil.NoSuchProcess:
+        return
+
+    for process in processes:
+        try:
+            process.terminate()
+        except psutil.NoSuchProcess:
+            pass
+
+    _, alive = psutil.wait_procs(processes, timeout=timeout)
+
+    for process in alive:
+        try:
+            process.kill()
+        except psutil.NoSuchProcess:
+            pass
+
 # ----------------------------------------------------------------------------------------- #
 
 def get_game_directory():

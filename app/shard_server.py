@@ -209,12 +209,7 @@ class DedicatedServerShard():
         if self.shard_frame.is_starting() or self.shard_frame.is_restarting():
             logger.info(f"({self.shard}) Terminating the shard while it was still starting up.")
 
-            try:
-                if psutil.pid_exists(self.process.pid):
-                    psutil.Process(self.process.pid).terminate()
-
-            except psutil.NoSuchProcess:
-                logger.debug(f"({self.shard}) The server process was already gone when terminating it.")
+            terminate_process_tree(self.process.pid)
 
             self.on_stopped()
             self.app.stop_shards()
