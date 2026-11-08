@@ -288,7 +288,7 @@ class DedicatedServerShard():
             self.shard_frame.set_stopping()
             self.app.stop_shards()
 
-        elif "E_INVALID_TOKEN" in text or "E_EXPIRED_TOKEN" in text:
+        if "E_INVALID_TOKEN" in text or "E_EXPIRED_TOKEN" in text:
             logger.error(f"({self.shard}) The server rejected the token: it is invalid or has expired.")
 
             self.app.token_entry.toggle_warning(False, INVALID.TOKEN_REJECTED)
@@ -296,18 +296,19 @@ class DedicatedServerShard():
 
             self.app.error_popup.create(STRINGS.ERROR.TOKEN_INVALID)
 
-        elif "Received world rollback request" in text:
+        if "Received world rollback request" in text:
             logger.info(f"({self.shard}) A world rollback was requested, restarting every shard.")
 
             self.app.shard_group.set_all_shards_restarting()
 
-        elif "uploads added to server." in text:
+        # A shard that was just told to stop must not flip back to online from the same chunk.
+        if "uploads added to server." in text and self.is_running() and not self.shard_frame.is_stopping():
             if not self.shard_frame.is_online():
                 logger.info(f"({self.shard}) The shard is now online!")
 
             self.shard_frame.set_online()
 
-        elif "SOCKET_PORT_ALREADY_IN_USE" in text:
+        if "SOCKET_PORT_ALREADY_IN_USE" in text:
             logger.error(f"({self.shard}) A server port is already in use, or the cluster path is wrong.")
 
             self.app.stop_shards()
@@ -324,17 +325,17 @@ class DedicatedServerShard():
 
             self.app.error_popup.create(STRINGS.ERROR.PORTS.format(ports=", ".join(ports)))
 
-        elif "[Error] Server failed to start!" in text:
+        if "[Error] Server failed to start!" in text:
             logger.error(f"({self.shard}) The server failed to start, see the shard logs for details.")
 
             self.app.stop_shards()
 
             self.app.error_popup.create(STRINGS.ERROR.GENERAL)
 
-        elif self.shard_frame.is_master and "Sim paused" in text:
+        if self.shard_frame.is_master and "Sim paused" in text:
             self.execute_command(load_lua_file("onserverpaused"), log=False)
 
-        elif "LUA ERROR stack traceback" in text:
+        if "LUA ERROR stack traceback" in text:
             logger.warning(f"({self.shard}) The shard hit a Lua error, see the shard logs for the traceback.")
 
             self.app.error_popup.create(STRINGS.ERROR.SERVER_CRASH)
