@@ -39,7 +39,7 @@ class FONT_SIZE:
 
 # ------------------------------------------------------------------------------------ #
 
-APP_VERSION = "v1.4.1"
+APP_VERSION = "v1.5.0"
 
 PATCH_NOTES_URL = "https://github.com/diogo-webber/vox-launcher/releases/latest/"
 
