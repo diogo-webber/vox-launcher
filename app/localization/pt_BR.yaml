@@ -34,8 +34,8 @@ CLUSTER_SELECT:
         ENDLESS: Infinito
         WILDERNESS: Selvagem
         LIGHTSOUT: Luzes Apagadas
-        LAVAARENA: Forja
-        QUAGMIRE: Glutão
+        LAVAARENA: The Forge
+        QUAGMIRE: The Gorge
 ASK_DIRECTORY_TITLE: "  Selecione um diretório"
 
 CLUSTER_GROUP_TOOLTIP: |-
@@ -73,14 +73,20 @@ SHARD_STATUS:
     STOPPING:   Parando...
     RESTARTING: Reiniciando...
 
+    STEP:
+        LOADING:  Iniciando...
+        MODS:     Mods...
+        ASSETS:   Mundo...
+        SESSION:  Finalizando...
+
 CLUSTER_STATS:
     DAY: "Dia: "
     SEASON: "Estação: "
     PLAYERS: "Jogadores: "
 
 POPUP:
-    OK: Ok
-    CANCEL: Fechar
+    OK: OK
+    CANCEL: Cancelar
     LOG: Registros
     REPORT: Reportar
     RETRY: Atualizar
@@ -92,17 +98,26 @@ UPDATE_POPUP:
     DESCRIPTION:
         DEFAULT: Uma nova versão do aplicativo está disponível, por favor, considere baixá-la.
         DOWNLOADING: Baixando... isso não deve demorar muito!
-        FAILED: Infelizmente houve um erro... Talvez seja um problema com a sua conexão ou nos servidores do Github. Por favor, tente novamente mais tarde.
+        FAILED: Infelizmente houve um erro... Talvez seja um problema com a sua conexão ou nos servidores do GitHub. Por favor, tente novamente mais tarde.
+
+PATCH_NOTES_POPUP:
+    DESCRIPTION: |-
+        Bem-vindo à versão {APP_VERSION}.
+
+        Considere clicar no botão abaixo para ver as novidades desta versão.
+    BUTTON: Novidades
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Execute comandos de console em {shard}. Pressione ENTER para executá-los.
     ENTRY_PLACEHOLDER_OFFLINE: Este shard está desligado. Inicie o servidor para executar comandos.
     CLOSE: Voltar
     AUTO_SCROLL: Auto-rolagem
-    SHARD_FOLDER: Arquivos Locais
+    SHARD_FOLDER: Pasta do Shard
     SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "Memória:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+    SEARCH_RESULTS: "{index} de {total}"
+    SEARCH_NO_RESULTS: Sem resultados
 
 SMALL_BUTTON:
     SAVE: Salvar
@@ -110,10 +125,20 @@ SMALL_BUTTON:
     RESET: Reiniciar
     ROLLBACK: Reverter
 
+BUTTON_TOOLTIP:
+    SETTINGS: Configurações
+    SHARD_LOGS: Abrir Console
+    BROWSE_FOLDER: Procurar Pasta
+    TOGGLE_VISIBILITY: Mostrar / Ocultar
+
 COMMAND_CONFIRMATION:
     QUIT: Você realmente gostaria de parar o servidor sem salvar? Dados não salvos serão perdidos!
     RESET: Você realmente gostaria de reiniciar o servidor sem salvar? Dados não salvos serão perdidos!
     ROLLBACK: Quantos saves você gostaria de reverter?
+    CLOSE_APP: |-
+        O servidor ainda está em execução.
+
+        Fechar o {APP_NAME} salvará o mundo e desligará o servidor. Deseja fechar mesmo assim?
 
 COMMAND_ANNOUNCEMENT:
     SAVE: Salvando mundo...
@@ -129,12 +154,24 @@ ENTRY:
     ENTRY_INVALID_INPUT: "✱ Campo Inválido"
 
     INVALID:
+        EMPTY: "✱ Obrigatório"
+        MISSING: "✱ Pasta Inválida"
+        NO_EXECUTABLE: "✱ Pasta Inválida"
         WRONG_LOCATION: "✱ Local Inválido"
         IS_WORLD: "✱ Selecione a Pasta Pai"
         NO_CLUSTERS: "✱ Sem Mundos"
         INCOMPLETE_WORLD: "✱ Mundo Inválido"
+        CLOUD_SAVES: "✱ Save na Nuvem"
+        TOKEN_FORMAT: "✱ Token Inválido"
+        TOKEN_REJECTED: "✱ Token Recusado"
 
     INVALID_HELP:
+        EMPTY: Este campo precisa ser preenchido antes que o servidor possa iniciar.
+        MISSING: Esta pasta não existe. Ela pode ter sido movida, renomeada ou excluída.
+        NO_EXECUTABLE: Esta não é a pasta do jogo. Ela deve conter bin64/dontstarve_dedicated_server_nullrenderer_x64.exe.
+        CLOUD_SAVES: Saves na nuvem não são suportados.
+        TOKEN_FORMAT: Este não é um token de servidor válido.
+        TOKEN_REJECTED: O servidor recusou este token. Ele pode ter expirado, sido revogado ou estar em uso por outro servidor.
         IS_WORLD: Esta é a pasta de um mundo. Selecione a pasta que a contém, geralmente Documentos/Klei/DoNotStarveTogether/<números>/.
         INCOMPLETE_WORLD: Este mundo está incompleto, ele precisa de um arquivo cluster.ini e de uma pasta Master.
         NO_CLUSTERS: Nenhum mundo foi encontrado nesta pasta. Crie um no jogo, ou selecione a pasta que contém as pastas dos seus mundos (Cluster_1, Cluster_2...).
@@ -182,7 +219,7 @@ ERROR:
 
         Por favor, inicie qualquer mundo pelo menu do jogo, aguarde ele iniciar e então pare-o.
 
-        Depois disso, clique no botão Atualizar abaixo.
+        Depois disso, clique no botão "Atualizar" abaixo.
     SERVER_CRASH: |-
         Seu servidor crashou devido a um erro Lua. Por favor, consulte os arquivos de log do jogo para mais informações.
 
@@ -215,6 +252,7 @@ SETTINGS_SCREEN:
     LAUNCH_OPTIONS:
         TITLE: Opções de Inicialização
         DESC: Usuários avançados podem inserir opções de inicialização do servidor. O uso inadequado pode levar a comportamentos inesperados.
+        LINK: Clique aqui para ver todas as opções de inicialização.
 
     CLOSE: Voltar
 

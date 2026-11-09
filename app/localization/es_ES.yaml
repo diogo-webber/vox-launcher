@@ -14,6 +14,31 @@ TOKEN_TOOLTIP: |-
     Puedes generar uno desde tu cuenta de Klei.
     Haz clic aquí para abrir la web.
 
+CLUSTER_SELECT:
+    PLACEHOLDER: Selecciona un mundo
+    EMPTY: No se encontraron mundos
+    PLAYED_TODAY: Jugado hoy
+    PLAYED_YESTERDAY: Jugado ayer
+    PLAYED_DAYS: "Jugado hace {count} días"
+    PLAYED_DATE: "Jugado el {date}"
+    NEVER_PLAYED: Nunca jugado
+    MODS_ONE: 1 mod
+    MODS_MANY: "{count} mods"
+    NO_MODS: Sin mods
+
+    TOOLTIP:
+        GAME_MODE: Modo de juego
+        PLAYED: Última partida
+        MODS: Mods activados
+        FOLDER: Carpeta del mundo
+    GAME_MODE:
+        SURVIVAL: Supervivencia
+        ENDLESS: Interminable
+        WILDERNESS: Naturaleza
+        LIGHTSOUT: Sin luces
+        LAVAARENA: La Forja
+        QUAGMIRE: La Garganta
+
 ASK_DIRECTORY_TITLE: "  Selecciona un directorio"
 
 CLUSTER_GROUP_TOOLTIP: |-
@@ -51,6 +76,12 @@ SHARD_STATUS:
     STOPPING:   Cerrando...
     RESTARTING: Reiniciando...
 
+    STEP:
+        LOADING:  Iniciando...
+        MODS:     Mods...
+        ASSETS:   Mundo...
+        SESSION:  Finalizando...
+
 CLUSTER_STATS:
     DAY: "Día: "
     SEASON: "Estación: "
@@ -70,17 +101,26 @@ UPDATE_POPUP:
     DESCRIPTION:
         DEFAULT: Se ha lanzado una nueva versión de la aplicación, por favor considera descargarla.
         DOWNLOADING: Descargando... ¡no debería tardar mucho!
-        FAILED: La descarga ha fallado... Puede ser un problema de red de tu lado o en los servidores de Github. Inténtalo de nuevo más tarde.
+        FAILED: La descarga ha fallado... Puede ser un problema de red de tu lado o en los servidores de GitHub. Inténtalo de nuevo más tarde.
+
+PATCH_NOTES_POPUP:
+    DESCRIPTION: |-
+        Te damos la bienvenida a la versión {APP_VERSION}.
+
+        Puedes pulsar el botón de abajo para ver las novedades de esta versión.
+    BUTTON: Novedades
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Ejecuta comandos de consola en {shard}. Pulsa ENTER para ejecutarlos.
     ENTRY_PLACEHOLDER_OFFLINE: Este shard está desconectado. Inicia el servidor para ejecutar comandos.
     CLOSE: Volver
     AUTO_SCROLL: Auto-desplazar
-    SHARD_FOLDER: Archivos locales
+    SHARD_FOLDER: Carpeta del shard
     SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "Memoria:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+    SEARCH_RESULTS: "{index} de {total}"
+    SEARCH_NO_RESULTS: Sin resultados
 
 SMALL_BUTTON:
     SAVE: Guardar
@@ -88,10 +128,20 @@ SMALL_BUTTON:
     RESET: Reiniciar
     ROLLBACK: Rebobinar
 
+BUTTON_TOOLTIP:
+    SETTINGS: Ajustes
+    SHARD_LOGS: Abrir consola
+    BROWSE_FOLDER: Examinar carpeta
+    TOGGLE_VISIBILITY: Mostrar / Ocultar
+
 COMMAND_CONFIRMATION:
     QUIT: ¿Realmente deseas cerrar el servidor sin guardar? ¡Los datos no guardados se perderán!
     RESET: ¿Realmente deseas reiniciar el servidor sin guardar? ¡Los datos no guardados se perderán!
     ROLLBACK: ¿Cuántos guardados deseas rebobinar?
+    CLOSE_APP: |-
+        El servidor sigue en ejecución.
+
+        Al cerrar {APP_NAME} se guardará el mundo y se apagará el servidor. ¿Quieres cerrar de todos modos?
 
 COMMAND_ANNOUNCEMENT:
     SAVE: Guardando el mundo...
@@ -102,9 +152,33 @@ COMMAND_ANNOUNCEMENT:
 
 ENTRY:
     GAME_TITLE: Directorio del Juego
-    CLUSTER_TITLE: Directorio del Clúster
+    CLUSTER_TITLE: Directorio de Mundos
     TOKEN_TITLE: Token del Servidor
     ENTRY_INVALID_INPUT: "✱ Entrada Inválida"
+
+    INVALID:
+        EMPTY: "✱ Obligatorio"
+        MISSING: "✱ Carpeta inválida"
+        NO_EXECUTABLE: "✱ Carpeta inválida"
+        IS_WORLD: "✱ Elige carpeta padre"
+        NO_CLUSTERS: "✱ Sin mundos"
+        INCOMPLETE_WORLD: "✱ Mundo inválido"
+        CLOUD_SAVES: "✱ Guardado en nube"
+        WRONG_LOCATION: "✱ Carpeta inválida"
+        TOKEN_FORMAT: "✱ Token inválido"
+        TOKEN_REJECTED: "✱ Token rechazado"
+
+    INVALID_HELP:
+        EMPTY: Este campo debe rellenarse antes de que el servidor pueda iniciarse.
+        MISSING: Esta carpeta no existe. Puede que se haya movido, renombrado o eliminado.
+        NO_EXECUTABLE: Esta no es la carpeta del juego. Debe contener bin64/dontstarve_dedicated_server_nullrenderer_x64.exe.
+        IS_WORLD: Esta es la carpeta de un mundo. Selecciona la carpeta que lo contiene, normalmente Documentos/Klei/DoNotStarveTogether/<números>/.
+        INCOMPLETE_WORLD: Este mundo está incompleto, necesita un archivo cluster.ini y una carpeta Master.
+        NO_CLUSTERS: No se encontraron mundos en esta carpeta. Crea uno en el juego o selecciona la carpeta que contiene las carpetas de tus mundos (Cluster_1, Cluster_2...).
+        CLOUD_SAVES: Los guardados en la nube no son compatibles.
+        WRONG_LOCATION: Esta no es una carpeta de mundos. Selecciona la carpeta de tu cuenta de Klei, normalmente Documentos/Klei/DoNotStarveTogether/<números>/.
+        TOKEN_FORMAT: Este no es un token de servidor válido.
+        TOKEN_REJECTED: El servidor ha rechazado este token. Puede que haya caducado, se haya revocado o esté en uso por otro servidor.
 
 ERROR:
     TOKEN_INVALID: |-
@@ -126,7 +200,7 @@ ERROR:
     PORTS: |-
         El servidor no pudo iniciarse debido a una de las siguientes razones:
 
-        • El clúster no está en el mismo directorio que los mundos generados en el juego.
+        • El mundo no está en el mismo directorio que los mundos generados en el juego.
 
         • Uno o más de los siguientes puertos ({ports}) ya están siendo utilizados por otro programa, incluidos los servidores del juego.
 
@@ -146,9 +220,9 @@ ERROR:
     LAUNCH_DATA_INVALID: |-
         {APP_NAME} necesita datos de configuración inicial del servidor que se generan cuando ejecuta un mundo por primera vez desde el menú del juego.
 
-        Por favor, inicie cualquier clúster desde el menú del juego, espere a que arranque y luego deténgalo.
+        Por favor, inicie cualquier mundo desde el menú del juego, espere a que arranque y luego deténgalo.
 
-        Una vez hecho esto, haga clic en el botón Reintentar a continuación.
+        Una vez hecho esto, haga clic en el botón "Intentar de nuevo" a continuación.
     SERVER_CRASH: |-
         Su servidor ha fallado debido a un error Lua. Por favor, consulte los archivos de registro del juego para obtener más información.
 
@@ -159,6 +233,10 @@ ERROR:
         La ruta de {directory_name} seleccionada no es válida o no contiene los archivos esperados.
 
         Por favor, seleccione un directorio válido antes de iniciar el servidor.
+    WORLD_INVALID: |-
+        No hay ningún mundo válido seleccionado.
+
+        Por favor, elija un mundo de la lista bajo el campo Token del Servidor antes de iniciar el servidor.
     COMMAND_FAILED: |-
         Error al enviar comando al shard {shard}.
 
@@ -177,6 +255,7 @@ SETTINGS_SCREEN:
     LAUNCH_OPTIONS:
         TITLE: Opciones de lanzamiento
         DESC: Los usuarios avanzados pueden introducir opciones de lanzamiento del servidor. Un uso incorrecto puede causar un comportamiento inesperado.
+        LINK: Haz clic aquí para ver todas las opciones de lanzamiento.
 
     CLOSE: Volver
 

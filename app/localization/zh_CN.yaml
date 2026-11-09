@@ -13,6 +13,31 @@ TOKEN_TOOLTIP: |-
     服务器令牌需要在科雷账户页面生成。
     点击这里打开科雷账户页面网站。
 
+CLUSTER_SELECT:
+    PLACEHOLDER: 选择存档
+    EMPTY: 未找到存档
+    PLAYED_TODAY: 今天玩过
+    PLAYED_YESTERDAY: 昨天玩过
+    PLAYED_DAYS: "{count}天前玩过"
+    PLAYED_DATE: "玩于{date}"
+    NEVER_PLAYED: 从未玩过
+    MODS_ONE: 1 个模组
+    MODS_MANY: "{count} 个模组"
+    NO_MODS: 无模组
+
+    TOOLTIP:
+        GAME_MODE: 游戏模式
+        PLAYED: 上次游玩
+        MODS: 已启用的模组
+        FOLDER: 存档文件夹
+    GAME_MODE:
+        SURVIVAL: 生存
+        ENDLESS: 无尽
+        WILDERNESS: 荒野
+        LIGHTSOUT: 暗无天日
+        LAVAARENA: 熔炉
+        QUAGMIRE: 暴食
+
 ASK_DIRECTORY_TITLE: "  选择文件目录"
 
 CLUSTER_GROUP_TOOLTIP: |-
@@ -50,6 +75,12 @@ SHARD_STATUS:
     STOPPING:   关闭中...
     RESTARTING: 重启中...
 
+    STEP:
+        LOADING:  启动中...
+        MODS:     模组...
+        ASSETS:   世界...
+        SESSION:  即将完成...
+
 CLUSTER_STATS:
     DAY: "天数: "
     SEASON: "季节: "
@@ -69,17 +100,26 @@ UPDATE_POPUP:
     DESCRIPTION:
         DEFAULT: 应用程序有新版本发布，请考虑下载。
         DOWNLOADING: 正在下载... 应该不会花太长时间！
-        FAILED: 下载失败... 可能是您的网络问题或Github服务器问题。请稍后再试。
+        FAILED: 下载失败... 可能是您的网络问题或GitHub服务器问题。请稍后再试。
+
+PATCH_NOTES_POPUP:
+    DESCRIPTION: |-
+        欢迎使用 {APP_VERSION} 版本。
+
+        点击下方按钮查看此版本的更新内容。
+    BUTTON: 更新日志
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: 在{shard}世界运行控制台命令。按下ENTER以执行命令。
     ENTRY_PLACEHOLDER_OFFLINE: 此世界离线。启动服务器以运行命令。
     CLOSE: 返回
     AUTO_SCROLL: 自动滚动
-    SHARD_FOLDER: 本地文件
+    SHARD_FOLDER: 世界文件夹
     SHARD_NAME_TITLE: "世界名称："
     SHARD_MEMORY_TITLE: "内存占用："
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+    SEARCH_RESULTS: "{index} / {total}"
+    SEARCH_NO_RESULTS: 无结果
 
 SMALL_BUTTON:
     SAVE: 保存
@@ -87,10 +127,20 @@ SMALL_BUTTON:
     RESET: 重启
     ROLLBACK: 回档
 
+BUTTON_TOOLTIP:
+    SETTINGS: 设置
+    SHARD_LOGS: 打开控制台
+    BROWSE_FOLDER: 浏览文件夹
+    TOGGLE_VISIBILITY: 显示 / 隐藏
+
 COMMAND_CONFIRMATION:
     QUIT: 是否要在不保存的情况下关闭服务器？未保存的数据将丢失！
     RESET: 是否要在不保存的情况下重启服务器？未保存的数据将丢失！
     ROLLBACK: 你想进行几次回档？
+    CLOSE_APP: |-
+        服务器仍在运行。
+
+        关闭 {APP_NAME} 将保存存档并关闭服务器。是否仍要关闭？
 
 COMMAND_ANNOUNCEMENT:
     SAVE: 正在保存...
@@ -104,6 +154,30 @@ ENTRY:
     CLUSTER_TITLE: 存档文件目录
     TOKEN_TITLE: 服务器令牌
     ENTRY_INVALID_INPUT: "✱ 输入无效"
+
+    INVALID:
+        EMPTY: "✱ 必填"
+        MISSING: "✱ 文件夹无效"
+        NO_EXECUTABLE: "✱ 文件夹无效"
+        IS_WORLD: "✱ 请选择上级文件夹"
+        NO_CLUSTERS: "✱ 无存档"
+        INCOMPLETE_WORLD: "✱ 存档无效"
+        CLOUD_SAVES: "✱ 云存档"
+        WRONG_LOCATION: "✱ 文件夹无效"
+        TOKEN_FORMAT: "✱ 令牌无效"
+        TOKEN_REJECTED: "✱ 令牌被拒绝"
+
+    INVALID_HELP:
+        EMPTY: 必须先填写此项，服务器才能启动。
+        MISSING: 此文件夹不存在，可能已被移动、重命名或删除。
+        NO_EXECUTABLE: 这不是游戏文件夹。其中必须包含 bin64/dontstarve_dedicated_server_nullrenderer_x64.exe。
+        IS_WORLD: 这是一个存档文件夹。请选择包含它的文件夹，通常是 Documents/Klei/DoNotStarveTogether/<数字>/。
+        INCOMPLETE_WORLD: 此存档不完整，需要 cluster.ini 文件和 Master 文件夹。
+        NO_CLUSTERS: 此文件夹中未找到存档。请在游戏中创建一个，或选择包含你的存档文件夹（Cluster_1、Cluster_2...）的文件夹。
+        CLOUD_SAVES: 不支持云存档。
+        WRONG_LOCATION: 这不是存档所在的文件夹。请选择你的科雷账户文件夹，通常是 Documents/Klei/DoNotStarveTogether/<数字>/。
+        TOKEN_FORMAT: 这不是有效的服务器令牌。
+        TOKEN_REJECTED: 服务器拒绝了此令牌。它可能已过期、被吊销，或正被其他服务器使用。
 
 ERROR:
     TOKEN_INVALID: |-
@@ -125,7 +199,7 @@ ERROR:
     PORTS: |-
         服务器未能启动，可能原因如下：
 
-        • 集群未与游戏内生成的世界位于同一目录。
+        • 该存档未与游戏内创建的存档位于同一目录。
 
         • 以下一个或多个端口（{ports}）已被其他程序占用，包括游戏内服务器。
 
@@ -145,7 +219,7 @@ ERROR:
     LAUNCH_DATA_INVALID: |-
         {APP_NAME} 需要首次从游戏内菜单运行世界时生成的初始服务器配置数据。
 
-        请从游戏内菜单启动任意集群，等待其启动，然后停止它。
+        请从游戏内菜单启动任意存档，等待其启动，然后停止它。
 
         完成后，点击下方的重试按钮。
     SERVER_CRASH: |-
@@ -158,6 +232,10 @@ ERROR:
         所选的 {directory_name} 路径无效或不包含预期的文件。
 
         请在启动服务器之前选择有效的目录。
+    WORLD_INVALID: |-
+        未选择有效的存档。
+
+        请在启动服务器之前，从服务器令牌字段下方的列表中选择一个存档。
     COMMAND_FAILED: |-
         无法向 {shard} 分片发送命令。
 
@@ -177,6 +255,7 @@ SETTINGS_SCREEN:
     LAUNCH_OPTIONS:
         TITLE: 启动参数
         DESC: 高级用户可以输入服务器启动参数。不正确使用可能导致异常行为。
+        LINK: 点击这里查看所有启动参数。
 
     CLOSE: 返回
 

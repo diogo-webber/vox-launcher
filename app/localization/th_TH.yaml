@@ -12,6 +12,31 @@ TOKEN_TOOLTIP: |-
     สร้างได้ที่หน้า Klei Account
     คลิกที่นี่เพื่อเปิดเว็บไซต์
 
+CLUSTER_SELECT:
+    PLACEHOLDER: เลือกโลก
+    EMPTY: ไม่พบโลก
+    PLAYED_TODAY: เล่นวันนี้
+    PLAYED_YESTERDAY: เล่นเมื่อวาน
+    PLAYED_DAYS: "เล่นเมื่อ {count} วันก่อน"
+    PLAYED_DATE: "เล่นเมื่อ {date}"
+    NEVER_PLAYED: ยังไม่เคยเล่น
+    MODS_ONE: 1 mod
+    MODS_MANY: "{count} mod"
+    NO_MODS: ไม่มี mod
+
+    TOOLTIP:
+        GAME_MODE: โหมดเกม
+        PLAYED: เล่นล่าสุด
+        MODS: mod ที่เปิดใช้
+        FOLDER: โฟลเดอร์โลก
+    GAME_MODE:
+        SURVIVAL: Survival
+        ENDLESS: Endless
+        WILDERNESS: Wilderness
+        LIGHTSOUT: Lights Out
+        LAVAARENA: The Forge
+        QUAGMIRE: The Gorge
+
 ASK_DIRECTORY_TITLE: "  เลือกโฟลเดอร์"
 
 CLUSTER_GROUP_TOOLTIP: |-
@@ -49,6 +74,12 @@ SHARD_STATUS:
     STOPPING:   กำลังหยุด...
     RESTARTING: กำลังรีสตาร์ท...
 
+    STEP:
+        LOADING:  กำลังเริ่ม...
+        MODS:     Mod...
+        ASSETS:   โลก...
+        SESSION:  เกือบเสร็จ...
+
 CLUSTER_STATS:
     DAY: "วัน: "
     SEASON: "ฤดู: "
@@ -68,17 +99,26 @@ UPDATE_POPUP:
     DESCRIPTION:
         DEFAULT: มีเวอร์ชันใหม่ของแอป กรุณาดาวน์โหลด
         DOWNLOADING: กำลังดาวน์โหลด... รอสักครู่!
-        FAILED: ดาวน์โหลดล้มเหลว อาจเกิดจากปัญหาเครือข่ายหรือ Github กรุณาลองใหม่ภายหลัง
+        FAILED: ดาวน์โหลดล้มเหลว อาจเกิดจากปัญหาเครือข่ายหรือ GitHub กรุณาลองใหม่ภายหลัง
+
+PATCH_NOTES_POPUP:
+    DESCRIPTION: |-
+        ยินดีต้อนรับสู่เวอร์ชัน {APP_VERSION}
+
+        กดปุ่มด้านล่างเพื่อดูว่ามีอะไรใหม่ในเวอร์ชันนี้
+    BUTTON: มีอะไรใหม่
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: รันคำสั่งคอนโซลบน {shard} กด ENTER เพื่อรัน
     ENTRY_PLACEHOLDER_OFFLINE: Shard นี้ออฟไลน์ กรุณาเริ่มเซิร์ฟเวอร์ก่อน
     CLOSE: กลับ
     AUTO_SCROLL: เลื่อนอัตโนมัติ
-    SHARD_FOLDER: ไฟล์ท้องถิ่น
+    SHARD_FOLDER: โฟลเดอร์ shard
     SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "หน่วยความจำ:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+    SEARCH_RESULTS: "{index} จาก {total}"
+    SEARCH_NO_RESULTS: ไม่พบผลลัพธ์
 
 SMALL_BUTTON:
     SAVE: บันทึก
@@ -86,10 +126,20 @@ SMALL_BUTTON:
     RESET: รีสตาร์ท
     ROLLBACK: ย้อนกลับ
 
+BUTTON_TOOLTIP:
+    SETTINGS: ตั้งค่า
+    SHARD_LOGS: เปิดคอนโซล
+    BROWSE_FOLDER: เรียกดูโฟลเดอร์
+    TOGGLE_VISIBILITY: แสดง / ซ่อน
+
 COMMAND_CONFIRMATION:
     QUIT: คุณแน่ใจหรือไม่ที่จะหยุดเซิร์ฟเวอร์โดยไม่บันทึก? ข้อมูลที่ยังไม่บันทึกจะหายไป!
     RESET: คุณแน่ใจหรือไม่ที่จะรีสตาร์ทเซิร์ฟเวอร์โดยไม่บันทึก? ข้อมูลที่ยังไม่บันทึกจะหายไป!
     ROLLBACK: ต้องการย้อนกลับกี่เซฟ?
+    CLOSE_APP: |-
+        เซิร์ฟเวอร์ยังทำงานอยู่
+
+        การปิด {APP_NAME} จะบันทึกโลกและปิดเซิร์ฟเวอร์ ต้องการปิดต่อไปหรือไม่?
 
 COMMAND_ANNOUNCEMENT:
     SAVE: กำลังบันทึกโลก...
@@ -100,9 +150,33 @@ COMMAND_ANNOUNCEMENT:
 
 ENTRY:
     GAME_TITLE: โฟลเดอร์เกม
-    CLUSTER_TITLE: โฟลเดอร์คลัสเตอร์
+    CLUSTER_TITLE: โฟลเดอร์โลก
     TOKEN_TITLE: โทเค็นเซิร์ฟเวอร์
     ENTRY_INVALID_INPUT: "✱ ข้อมูลไม่ถูกต้อง"
+
+    INVALID:
+        EMPTY: "✱ จำเป็น"
+        MISSING: "✱ โฟลเดอร์ผิด"
+        NO_EXECUTABLE: "✱ โฟลเดอร์ผิด"
+        IS_WORLD: "✱ เลือกโฟลเดอร์แม่"
+        NO_CLUSTERS: "✱ ไม่มีโลก"
+        INCOMPLETE_WORLD: "✱ โลกไม่สมบูรณ์"
+        CLOUD_SAVES: "✱ เซฟบนคลาวด์"
+        WRONG_LOCATION: "✱ โฟลเดอร์ผิด"
+        TOKEN_FORMAT: "✱ โทเค็นผิด"
+        TOKEN_REJECTED: "✱ โทเค็นถูกปฏิเสธ"
+
+    INVALID_HELP:
+        EMPTY: ต้องกรอกช่องนี้ก่อนจึงจะเริ่มเซิร์ฟเวอร์ได้
+        MISSING: ไม่พบโฟลเดอร์นี้ อาจถูกย้าย เปลี่ยนชื่อ หรือลบไปแล้ว
+        NO_EXECUTABLE: นี่ไม่ใช่โฟลเดอร์เกม ต้องมี bin64/dontstarve_dedicated_server_nullrenderer_x64.exe อยู่ข้างใน
+        IS_WORLD: นี่คือโฟลเดอร์ของโลก ให้เลือกโฟลเดอร์ที่เก็บมันอยู่ ซึ่งมักจะเป็น Documents/Klei/DoNotStarveTogether/<ตัวเลข>/
+        INCOMPLETE_WORLD: โลกนี้ไม่สมบูรณ์ ต้องมีไฟล์ cluster.ini และโฟลเดอร์ Master
+        NO_CLUSTERS: ไม่พบโลกในโฟลเดอร์นี้ ให้สร้างในเกม หรือเลือกโฟลเดอร์ที่เก็บโฟลเดอร์โลกของคุณ (Cluster_1, Cluster_2...)
+        CLOUD_SAVES: ไม่รองรับเซฟบนคลาวด์
+        WRONG_LOCATION: นี่ไม่ใช่โฟลเดอร์ที่เก็บโลก ให้เลือกโฟลเดอร์บัญชี Klei ของคุณ ซึ่งมักจะเป็น Documents/Klei/DoNotStarveTogether/<ตัวเลข>/
+        TOKEN_FORMAT: นี่ไม่ใช่โทเค็นเซิร์ฟเวอร์ที่ถูกต้อง
+        TOKEN_REJECTED: เซิร์ฟเวอร์ปฏิเสธโทเค็นนี้ อาจหมดอายุ ถูกเพิกถอน หรือถูกใช้โดยเซิร์ฟเวอร์อื่นอยู่
 
 ERROR:
     TOKEN_INVALID: |-
@@ -124,7 +198,7 @@ ERROR:
     PORTS: |-
         เซิร์ฟเวอร์ไม่สามารถเริ่มได้เนื่องจาก:
 
-        • คลัสเตอร์ไม่ได้อยู่ในโฟลเดอร์เดียวกับโลกที่สร้างในเกม
+        • โลกไม่ได้อยู่ในโฟลเดอร์เดียวกับโลกที่สร้างในเกม
 
         • พอร์ต ({ports}) ถูกใช้งานโดยโปรแกรมอื่นหรือเซิร์ฟเวอร์อื่น
 
@@ -140,11 +214,11 @@ ERROR:
 
         หากเซิร์ฟเวอร์กำลังรันอยู่ จะมีการบันทึกและปิดอย่างปลอดภัย
 
-        กรุณารายงานปัญหานี้บน Github
+        กรุณารายงานปัญหานี้บน GitHub
     LAUNCH_DATA_INVALID: |-
         {APP_NAME} ต้องการข้อมูลการตั้งค่าเริ่มต้นของเซิร์ฟเวอร์ ซึ่งจะถูกสร้างเมื่อคุณเปิดโลกครั้งแรกจากเมนูในเกม
 
-        กรุณาเปิดคลัสเตอร์จากเมนูในเกม รอให้เริ่มแล้วหยุดมัน
+        กรุณาเปิดโลกใดก็ได้จากเมนูในเกม รอให้เริ่มแล้วหยุดมัน
 
         เสร็จแล้วกดปุ่ม ลองใหม่ ด้านล่าง
     SERVER_CRASH: |-
@@ -157,6 +231,10 @@ ERROR:
         เส้นทาง {directory_name} ที่เลือกไม่ถูกต้องหรือไม่มีไฟล์ที่คาดหวัง
 
         กรุณาเลือกโฟลเดอร์ที่ถูกต้องก่อนเริ่มเซิร์ฟเวอร์
+    WORLD_INVALID: |-
+        ยังไม่ได้เลือกโลกที่ใช้ได้
+
+        กรุณาเลือกโลกจากรายการใต้ช่องโทเค็นเซิร์ฟเวอร์ก่อนเริ่มเซิร์ฟเวอร์
     COMMAND_FAILED: |-
         ไม่สามารถส่งคำสั่งไปยัง shard {shard} ได้
 
@@ -175,6 +253,7 @@ SETTINGS_SCREEN:
     LAUNCH_OPTIONS:
         TITLE: ตัวเลือกการเปิดเซิร์ฟเวอร์
         DESC: สำหรับผู้ใช้ขั้นสูง สามารถใส่ options เพิ่มเติมได้ การใช้ผิดอาจทำให้เกิดปัญหา
+        LINK: คลิกที่นี่เพื่อดูตัวเลือกการเปิดเซิร์ฟเวอร์ทั้งหมด
 
     CLOSE: กลับ
 

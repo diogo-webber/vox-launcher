@@ -7,6 +7,31 @@ TOKEN_TOOLTIP: |-
     Hãy tạo một cái trên trang Klei Account.
     Bấm vô đây để mở trang web.
 
+CLUSTER_SELECT:
+    PLACEHOLDER: Chọn một thế giới
+    EMPTY: Không tìm thấy thế giới nào
+    PLAYED_TODAY: Đã chơi hôm nay
+    PLAYED_YESTERDAY: Đã chơi hôm qua
+    PLAYED_DAYS: "Đã chơi {count} ngày trước"
+    PLAYED_DATE: "Đã chơi ngày {date}"
+    NEVER_PLAYED: Chưa từng chơi
+    MODS_ONE: 1 mod
+    MODS_MANY: "{count} mod"
+    NO_MODS: Không có mod
+
+    TOOLTIP:
+        GAME_MODE: Chế độ chơi
+        PLAYED: Lần chơi gần nhất
+        MODS: Mod đang bật
+        FOLDER: Thư mục thế giới
+    GAME_MODE:
+        SURVIVAL: Survival
+        ENDLESS: Endless
+        WILDERNESS: Wilderness
+        LIGHTSOUT: Lights Out
+        LAVAARENA: The Forge
+        QUAGMIRE: The Gorge
+
 ASK_DIRECTORY_TITLE: "  Chọn thư mục"
 
 CLUSTER_GROUP_TOOLTIP: |-
@@ -44,6 +69,12 @@ SHARD_STATUS:
     STOPPING:   Đang dừng...
     RESTARTING: Đang khởi động lại...
 
+    STEP:
+        LOADING:  Khởi động...
+        MODS:     Mod...
+        ASSETS:   Thế giới...
+        SESSION:  Hoàn tất...
+
 CLUSTER_STATS:
     DAY: "Ngày: "
     SEASON: "Mùa: "
@@ -63,17 +94,26 @@ UPDATE_POPUP:
     DESCRIPTION:
         DEFAULT: Đã có phiên bản mới của ứng dụng. Bạn nên cân nhắc cập nhật nha.
         DOWNLOADING: Đang tải về... Sẽ không tốn nhiều thời gian đâu!
-        FAILED: Tải về thất bại. Đây có thể do sự cố mạng bên phía bạn hoặc do máy chủ Github. Vui lòng thử lại sau.
+        FAILED: Tải về thất bại. Đây có thể do sự cố mạng bên phía bạn hoặc do máy chủ GitHub. Vui lòng thử lại sau.
+
+PATCH_NOTES_POPUP:
+    DESCRIPTION: |-
+        Chào mừng bạn đến với phiên bản {APP_VERSION}.
+
+        Bấm nút bên dưới để xem có gì mới trong bản phát hành này.
+    BUTTON: Có gì mới
 
 LOG_SCREEN:
     ENTRY_PLACEHOLDER: Chạy các lệnh console trên {shard}. Bấm ENTER để thực thi.
     ENTRY_PLACEHOLDER_OFFLINE: Shard này đang ngoại tuyến. Khởi động máy chủ để chạy các lệnh.
     CLOSE: Quay lại
     AUTO_SCROLL: Tự động cuộn
-    SHARD_FOLDER: Tệp cục bộ
+    SHARD_FOLDER: Thư mục shard
     SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "Bộ nhớ:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
+    SEARCH_RESULTS: "{index} trên {total}"
+    SEARCH_NO_RESULTS: Không có kết quả
 
 SMALL_BUTTON:
     SAVE: Lưu
@@ -81,10 +121,20 @@ SMALL_BUTTON:
     RESET: Khởi động lại
     ROLLBACK: Rollback
 
+BUTTON_TOOLTIP:
+    SETTINGS: Cài đặt
+    SHARD_LOGS: Mở Console
+    BROWSE_FOLDER: Duyệt thư mục
+    TOGGLE_VISIBILITY: Hiện / Ẩn
+
 COMMAND_CONFIRMATION:
     QUIT: Bạn có chắc chắn muốn dừng máy chủ mà không lưu lại không? Dữ liệu chưa lưu sẽ bị mất!
     RESET: Bạn có chắc chắn muốn khởi động lại máy chủ mà không lưu lại không? Dữ liệu chưa lưu sẽ bị mất!
     ROLLBACK: Bạn muốn rollback bao nhiêu bản lưu (save)?
+    CLOSE_APP: |-
+        Máy chủ vẫn đang chạy.
+
+        Đóng {APP_NAME} sẽ lưu thế giới và tắt máy chủ. Bạn vẫn muốn đóng chứ?
 
 COMMAND_ANNOUNCEMENT:
     SAVE: Đang lưu thế giới...
@@ -95,9 +145,33 @@ COMMAND_ANNOUNCEMENT:
 
 ENTRY:
     GAME_TITLE: Thư Mục Game
-    CLUSTER_TITLE: Thư Mục Cluster
+    CLUSTER_TITLE: Thư Mục Thế Giới
     TOKEN_TITLE: Server Token
     ENTRY_INVALID_INPUT: "✱ Dữ liệu đầu vô không hợp lệ"
+
+    INVALID:
+        EMPTY: "✱ Bắt buộc"
+        MISSING: "✱ Sai thư mục"
+        NO_EXECUTABLE: "✱ Sai thư mục"
+        IS_WORLD: "✱ Chọn thư mục cha"
+        NO_CLUSTERS: "✱ Không có thế giới"
+        INCOMPLETE_WORLD: "✱ Thế giới lỗi"
+        CLOUD_SAVES: "✱ Save đám mây"
+        WRONG_LOCATION: "✱ Sai thư mục"
+        TOKEN_FORMAT: "✱ Token sai"
+        TOKEN_REJECTED: "✱ Token bị từ chối"
+
+    INVALID_HELP:
+        EMPTY: Cần điền ô này trước khi máy chủ có thể khởi động.
+        MISSING: Thư mục này không tồn tại. Có thể nó đã bị di chuyển, đổi tên hoặc xóa.
+        NO_EXECUTABLE: Đây không phải thư mục game. Thư mục phải chứa bin64/dontstarve_dedicated_server_nullrenderer_x64.exe.
+        IS_WORLD: Đây là thư mục của một thế giới. Hãy chọn thư mục chứa nó, thường là Documents/Klei/DoNotStarveTogether/<các chữ số>/.
+        INCOMPLETE_WORLD: Thế giới này chưa đầy đủ, cần có tệp cluster.ini và thư mục Master.
+        NO_CLUSTERS: Không tìm thấy thế giới nào trong thư mục này. Hãy tạo một thế giới trong game, hoặc chọn thư mục chứa các thư mục thế giới của bạn (Cluster_1, Cluster_2...).
+        CLOUD_SAVES: Chưa hỗ trợ save trên đám mây.
+        WRONG_LOCATION: Đây không phải thư mục chứa các thế giới. Hãy chọn thư mục tài khoản Klei của bạn, thường là Documents/Klei/DoNotStarveTogether/<các chữ số>/.
+        TOKEN_FORMAT: Đây không phải Server Token hợp lệ.
+        TOKEN_REJECTED: Máy chủ đã từ chối token này. Có thể nó đã hết hạn, bị thu hồi hoặc đang được máy chủ khác sử dụng.
 
 ERROR:
     TOKEN_INVALID: |-
@@ -119,7 +193,7 @@ ERROR:
     PORTS: |-
         Máy chủ không thể khởi động do một trong các lý do sau:
 
-        • Cluster không nằm cùng thư mục với các thế giới được tạo trong game.
+        • Thế giới không nằm cùng thư mục với các thế giới được tạo trong game.
 
         • Một hoặc nhiều cổng (port) ({ports}) hiện đang bị một chương trình khác sử dụng, bao gồm cả các máy chủ trong game.
 
@@ -135,11 +209,11 @@ ERROR:
 
         Nếu có máy chủ nào đang chạy, nó sẽ được lưu lại và tắt một cách an toàn.
 
-        Vui lòng cân nhắc báo cáo lỗi này bằng cách tạo một issue trên Github.
+        Vui lòng cân nhắc báo cáo lỗi này bằng cách tạo một issue trên GitHub.
     LAUNCH_DATA_INVALID: |-
         {APP_NAME} cần dữ liệu cấu hình máy chủ ban đầu – dữ liệu này được tạo ra khi bạn chạy một thế giới lần đầu tiên từ menu trong game.
 
-        Vui lòng khởi chạy bất kỳ cluster nào từ menu trong game, đợi nó khởi động xong rồi tắt đi.
+        Vui lòng khởi chạy bất kỳ thế giới nào từ menu trong game, đợi nó khởi động xong rồi tắt đi.
 
         Sau khi hoàn tất, hãy nhấp vào nút Thử Lại bên dưới.
     SERVER_CRASH: |-
@@ -152,6 +226,10 @@ ERROR:
         Đường dẫn {directory_name} đã chọn không hợp lệ hoặc không chứa các tệp tin cần thiết.
 
         Vui lòng chọn một thư mục hợp lệ trước khi khởi chạy máy chủ.
+    WORLD_INVALID: |-
+        Chưa chọn thế giới hợp lệ nào.
+
+        Vui lòng chọn một thế giới trong danh sách bên dưới ô Server Token trước khi khởi chạy máy chủ.
     COMMAND_FAILED: |-
         Không thể gởi lệnh đến shard {shard}.
 
@@ -170,6 +248,7 @@ SETTINGS_SCREEN:
     LAUNCH_OPTIONS:
         TITLE: Tùy Chọn Khởi Chạy
         DESC: Người sử dụng nâng cao có thể nhập các tùy chọn khởi chạy máy chủ. Sử dụng không đúng cách có thể dẫn tới lỗi ngoài dự kiến.
+        LINK: Bấm vô đây để xem tất cả tùy chọn khởi chạy.
 
     CLOSE: Quay lại
 
