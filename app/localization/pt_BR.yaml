@@ -12,12 +12,35 @@ TOKEN_TOOLTIP: |-
     Obtenha um na página de contas da Klei.
     Clique aqui para abrir o website.
 
-CLUSTER_NAME_DEFAULT: Como funciona?
+CLUSTER_SELECT:
+    PLACEHOLDER: Selecione um mundo
+    EMPTY: Nenhum mundo encontrado
+    PLAYED_TODAY: Jogado hoje
+    PLAYED_YESTERDAY: Jogado ontem
+    PLAYED_DAYS: "Jogado há {count} dias"
+    PLAYED_DATE: "Jogado em {date}"
+    NEVER_PLAYED: Nunca jogado
+    MODS_ONE: 1 mod
+    MODS_MANY: "{count} mods"
+    NO_MODS: Sem mods
+
+    TOOLTIP:
+        GAME_MODE: Modo de jogo
+        PLAYED: Último jogo
+        MODS: Mods ativados
+        FOLDER: Pasta do mundo
+    GAME_MODE:
+        SURVIVAL: Sobrevivência
+        ENDLESS: Infinito
+        WILDERNESS: Selvagem
+        LIGHTSOUT: Luzes Apagadas
+        LAVAARENA: Forja
+        QUAGMIRE: Glutão
 ASK_DIRECTORY_TITLE: "  Selecione um diretório"
 
 CLUSTER_GROUP_TOOLTIP: |-
     ➊    Selecione a pasta de instalação em {GAME_TITLE}, caso ela não esteja automaticamente selecionada.
-    ➋    Crie um mundo usando o menu do jogo e selecione-o em {CLUSTER_TITLE}.
+    ➋    Crie um mundo no jogo, selecione a pasta dos mundos em {CLUSTER_TITLE} e escolha-o na lista.
     ➌    Cole um token de servidor em {TOKEN_TITLE}. Veja o ícone ⓘ para instruções de como obter um.
     ➍    Finalmente, clique no botão {LAUNCH} e divirta-se!
 
@@ -101,9 +124,21 @@ COMMAND_ANNOUNCEMENT:
 
 ENTRY:
     GAME_TITLE: Diretório do Jogo
-    CLUSTER_TITLE: Diretório do Cluster
+    CLUSTER_TITLE: Diretório dos Mundos
     TOKEN_TITLE: Token de Servidor
     ENTRY_INVALID_INPUT: "✱ Campo Inválido"
+
+    INVALID:
+        WRONG_LOCATION: "✱ Local Inválido"
+        IS_WORLD: "✱ Selecione a Pasta Pai"
+        NO_CLUSTERS: "✱ Sem Mundos"
+        INCOMPLETE_WORLD: "✱ Mundo Inválido"
+
+    INVALID_HELP:
+        IS_WORLD: Esta é a pasta de um mundo. Selecione a pasta que a contém, geralmente Documentos/Klei/DoNotStarveTogether/<números>/.
+        INCOMPLETE_WORLD: Este mundo está incompleto, ele precisa de um arquivo cluster.ini e de uma pasta Master.
+        NO_CLUSTERS: Nenhum mundo foi encontrado nesta pasta. Crie um no jogo, ou selecione a pasta que contém as pastas dos seus mundos (Cluster_1, Cluster_2...).
+        WRONG_LOCATION: Esta não é uma pasta de mundos. Selecione a pasta da sua conta Klei, geralmente Documentos/Klei/DoNotStarveTogether/<números>/.
 
 ERROR:
     TOKEN_INVALID: |-
@@ -125,7 +160,7 @@ ERROR:
     PORTS: |-
         O servidor não pôde ser iniciado devido a uma das seguintes razões:
 
-        • O cluster não está no mesmo diretório que os mundos gerados pelo menu do jogo.
+        • O mundo não está no mesmo diretório que os mundos gerados pelo menu do jogo.
 
         • Uma ou mais das seguintes portas ({ports}) já estão sendo usadas por outro programa, incluindo servidores iniciados pelo jogo.
 
@@ -145,7 +180,7 @@ ERROR:
     LAUNCH_DATA_INVALID: |-
         O {APP_NAME} precisa de dados de configuração inicial do servidor que são gerados quando você executa um mundo pela primeira vez pelo menu do jogo.
 
-        Por favor, inicie qualquer cluster pelo menu do jogo, aguarde ele iniciar e então pare-o.
+        Por favor, inicie qualquer mundo pelo menu do jogo, aguarde ele iniciar e então pare-o.
 
         Depois disso, clique no botão Atualizar abaixo.
     SERVER_CRASH: |-
@@ -158,6 +193,10 @@ ERROR:
         O caminho de {directory_name} selecionado é inválido ou não contém os arquivos esperados.
 
         Por favor, selecione um diretório válido antes de iniciar o servidor.
+    WORLD_INVALID: |-
+        Nenhum mundo válido está selecionado.
+
+        Por favor, escolha um mundo na lista abaixo do campo Token de Servidor antes de iniciar o servidor.
     COMMAND_FAILED: |-
         Falha ao enviar comando para o shard {shard}.
 

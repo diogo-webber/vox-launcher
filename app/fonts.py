@@ -1,5 +1,5 @@
 from customtkinter import CTkFont
-from tkinter.font import BOLD, NORMAL
+from tkinter.font import BOLD, NORMAL, Font
 
 from constants import FONT_SIZE
 from strings import STRINGS
@@ -21,6 +21,41 @@ class CustomFont(CTkFont):
             weight = bold and BOLD or NORMAL,
         )
 
+        self._pixel_font = None
+
+    def text_width(self, text):
+        """ Width of text in unscaled pixels, as CTk draws it (Tk's own measure() would treat the size as points). """
+
+        if self._pixel_font is None:
+            self._pixel_font = Font(family=self.cget("family"), size=-abs(self.cget("size")), weight=self.cget("weight"))
+
+        return self._pixel_font.measure(text)
+
+    def line_height(self):
+        """ Height of one line of text, in unscaled pixels. """
+
+        self.text_width("") # Makes sure the pixel font exists.
+
+        return self._pixel_font.metrics("linespace")
+
+    def baseline_offset(self):
+        """ How far, in unscaled pixels, the baseline sits below the middle of the text's line. """
+
+        self.text_width("") # Makes sure the pixel font exists.
+
+        return (self._pixel_font.metrics("ascent") - self._pixel_font.metrics("descent")) / 2
+
+    def fit_text(self, text, width):
+        """ Clips text with an ellipsis so it fits in width unscaled pixels. """
+
+        if self.text_width(text) <= width:
+            return text
+
+        while text and self.text_width(text + "…") > width:
+            text = text[:-1]
+
+        return text + "…"
+
 class Fonts:
     def create_fonts(self) -> None:
         self.ENTRY_TOOLTIP = CustomFont(FONT_SIZE.ENTRY_TOOLTIP            )
@@ -28,6 +63,7 @@ class Fonts:
         self.ENTRY_ARIAL   = CustomFont(FONT_SIZE.ENTRY,         bold=False, family="Arial")
         self.INVALID_INPUT = CustomFont(FONT_SIZE.INVALID_INPUT            )
         self.CLUSTER_NAME  = CustomFont(FONT_SIZE.CLUSTER_NAME             )
+        self.LOGS_BAR      = CustomFont(FONT_SIZE.LOGS_BAR                 )
         self.CLUSTER_STATS = CustomFont(FONT_SIZE.CLUSTER_STATS            )
         self.SHARD_TYPE    = CustomFont(FONT_SIZE.SHARD_TYPE               )
         self.SHARD_STATUS  = CustomFont(FONT_SIZE.SHARD_STATUS             )

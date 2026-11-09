@@ -360,8 +360,9 @@ class INVALID:
     EMPTY = "EMPTY"
     MISSING = "MISSING"
     NO_EXECUTABLE = "NO_EXECUTABLE"
-    NO_CLUSTER_INI = "NO_CLUSTER_INI"
-    NO_MASTER = "NO_MASTER"
+    IS_WORLD = "IS_WORLD"
+    NO_CLUSTERS = "NO_CLUSTERS"
+    INCOMPLETE_WORLD = "INCOMPLETE_WORLD"
     CLOUD_SAVES = "CLOUD_SAVES"
     WRONG_LOCATION = "WRONG_LOCATION"
     TOKEN_FORMAT = "TOKEN_FORMAT"
@@ -381,8 +382,41 @@ def get_game_directory_error(directory: str):
 
     return None
 
-def get_cluster_directory_error(directory: str):
-    """ Returns an INVALID reason for the cluster directory, or None when it's usable. """
+def is_cluster_folder(folder):
+    """ Whether folder is a world the launcher can run: it needs a cluster.ini and a Master shard. """
+
+    folder = Path(folder)
+
+    return (folder / "cluster.ini").exists() and (folder / "Master").exists()
+
+def list_clusters(directory):
+    """
+    Lists the usable clusters inside a clusters directory.
+
+    Args:
+        directory (Path, str): the folder holding the clusters.
+
+    Returns:
+        list: (folder name, display name) tuples sorted by display name. Only folders with a cluster.ini and a Master shard are listed.
+    """
+
+    try:
+        folders = list(Path(directory).iterdir())
+
+    except OSError as e:
+        logger.warning(f"Failed to list the clusters in '{directory}': {e}")
+        return []
+
+    clusters = []
+
+    for folder in folders:
+        if folder.is_dir() and is_cluster_folder(folder):
+            clusters.append((folder.name, get_sanitized_cluster_name(folder / "cluster.ini") or folder.name))
+
+    return sorted(clusters, key=lambda cluster: (cluster[1].lower(), cluster[0].lower()))
+
+def get_clusters_directory_error(directory: str):
+    """ Returns an INVALID reason for the folder holding the clusters, or None when it's usable. """
 
     if not directory.strip():
         return INVALID.EMPTY
@@ -392,17 +426,35 @@ def get_cluster_directory_error(directory: str):
     if any(part.lower() == "cloudsaves" for part in path.parts):
         return INVALID.CLOUD_SAVES
 
-    if not path.exists():
+    if not path.is_dir():
         return INVALID.MISSING
 
-    if not (path / "cluster.ini").exists():
-        return INVALID.NO_CLUSTER_INI
+    # Old versions asked for the world itself, so a world picked here is a likely mistake.
+    if (path / "cluster.ini").exists():
+        return INVALID.IS_WORLD
 
-    if not (path / "Master").exists():
-        return INVALID.NO_MASTER
-
-    if not is_config_directory(get_cluster_launch_paths(path)["conf_dir"]):
+    # The same rule as for a cluster, as if one lived inside this folder.
+    if not is_config_directory(get_cluster_launch_paths(path / "cluster")["conf_dir"]):
         return INVALID.WRONG_LOCATION
+
+    if not list_clusters(path):
+        return INVALID.NO_CLUSTERS
+
+    return None
+
+def get_cluster_error(directory: str):
+    """ Returns an INVALID reason for the selected world's folder, or None when it's usable. """
+
+    if not directory.strip():
+        return INVALID.EMPTY
+
+    path = Path(directory)
+
+    if not path.is_dir():
+        return INVALID.MISSING
+
+    if not is_cluster_folder(path):
+        return INVALID.INCOMPLETE_WORLD
 
     return None
 
@@ -1111,13 +1163,113 @@ _INVALID_UNICODE_RANGES = [
 
 _CUSTOM_UNICODE_PATTERN = re.compile("[" + "".join(f"{chr(start)}-{chr(end)}" for start, end in _INVALID_UNICODE_RANGES) + "]")
 
-def get_sanitized_cluster_name(config_file):
-    cluster_name = get_key_from_ini_file(config_file, "cluster_name") or ""
+def _get_sanitized_ini_text(config_file, key):
+    text = get_key_from_ini_file(config_file, key) or ""
 
     # Remove custom unicode characters.
-    cleaned = _CUSTOM_UNICODE_PATTERN.sub("", cluster_name)
+    cleaned = _CUSTOM_UNICODE_PATTERN.sub("", text)
 
     # Remove duplicated whitespaces.
     cleaned = re.sub(r'\s+', " ", cleaned).strip()
 
     return cleaned
+
+def get_sanitized_cluster_name(config_file):
+    return _get_sanitized_ini_text(config_file, "cluster_name")
+
+# ------------------------------------------------------------------------------------------ #
+
+_MOD_KEY_PATTERN = re.compile(r'\["(workshop-\d+)"\]')
+_MOD_ENABLED_PATTERN = re.compile(r'enabled\s*=\s*true')
+
+def count_enabled_mods(cluster):
+    """
+    Counts the workshop mods enabled in any shard of a cluster, from its modoverrides.lua files.
+
+    Args:
+        cluster (Path): the cluster path.
+
+    Returns:
+        count (int): how many different mods are enabled.
+    """
+
+    enabled = set()
+
+    for shard in get_shard_names(cluster):
+        try:
+            text = (cluster / shard / "modoverrides.lua").read_text(encoding="utf-8", errors="backslashreplace")
+
+        except OSError:
+            continue
+
+        keys = list(_MOD_KEY_PATTERN.finditer(text))
+
+        for index, key in enumerate(keys):
+            # A mod's block runs until the next mod's key.
+            end = keys[index + 1].start() if index + 1 < len(keys) else len(text)
+
+            if _MOD_ENABLED_PATTERN.search(text, key.end(), end):
+                enabled.add(key.group(1))
+
+    return len(enabled)
+
+def get_last_played(cluster):
+    """
+    Finds when a cluster was last saved, from its newest save file.
+
+    Args:
+        cluster (Path): the cluster path.
+
+    Returns:
+        timestamp (float, None): the time, or None if it has no saves.
+    """
+
+    latest = None
+
+    for shard in get_shard_names(cluster):
+        try:
+            for file in (cluster / shard / "save").rglob("*"):
+                if file.is_file():
+                    modified = file.stat().st_mtime
+
+                    latest = modified if latest is None else max(latest, modified)
+
+        except OSError as e:
+            logger.debug(f"Failed to read the saves of '{cluster / shard}': {e}")
+
+    return latest
+
+@dataclass
+class ClusterDetails:
+    """ What the world list shows about a cluster. """
+
+    folder: str
+    name: str
+    description: str
+    game_mode: str
+    mods: int
+    last_played: float
+
+def get_cluster_details(directory, folder):
+    """
+    Reads the details of a cluster.
+
+    Args:
+        directory (Path, str): the folder holding the clusters.
+        folder (str): the cluster's folder name.
+
+    Returns:
+        ClusterDetails: the cluster's name, description, game mode, enabled mods and last played time.
+    """
+
+    cluster = Path(directory) / folder
+    config_file = cluster / "cluster.ini"
+
+    return ClusterDetails(
+        folder=folder,
+        name=get_sanitized_cluster_name(config_file) or folder,
+        description=_get_sanitized_ini_text(config_file, "cluster_description"),
+        game_mode=(get_key_from_ini_file(config_file, "game_mode") or "survival").lower(), # The game's default.
+        mods=count_enabled_mods(cluster),
+        last_played=get_last_played(cluster),
+    )

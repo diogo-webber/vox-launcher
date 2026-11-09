@@ -1,4 +1,4 @@
-import sys, os, psutil
+import sys, os
 import random
 import logging, logging.config
 
@@ -132,14 +132,24 @@ class DedicatedServerShard():
             return
 
         game_directory_valid    = self.app.game_entry.validate_text()
-        cluster_directory_valid = self.app.cluster_entry.validate_text()
+        clusters_directory_valid = self.app.clusters_entry.validate_text()
+        cluster_valid           = clusters_directory_valid and self.app.cluster_entry.validate_text()
 
-        if not game_directory_valid or not cluster_directory_valid:
+        if not game_directory_valid or not cluster_valid:
+            if not game_directory_valid:
+                invalid_name, invalid_kind = STRINGS.ENTRY.GAME_TITLE, "game"
+            elif not clusters_directory_valid:
+                invalid_name, invalid_kind = STRINGS.ENTRY.CLUSTER_TITLE, "clusters"
+            else:
+                invalid_name, invalid_kind = None, "cluster"
+
             if self.shard_frame.is_master:
-                invalid_name = not game_directory_valid and STRINGS.ENTRY.GAME_TITLE or STRINGS.ENTRY.CLUSTER_TITLE
-                self.app.error_popup.create(STRINGS.ERROR.DIRECTORY_INVALID.format(directory_name=invalid_name))
+                if invalid_kind == "cluster":
+                    self.app.error_popup.create(STRINGS.ERROR.WORLD_INVALID)
+                else:
+                    self.app.error_popup.create(STRINGS.ERROR.DIRECTORY_INVALID.format(directory_name=invalid_name))
 
-            logger.warning(f"({self.shard}) Start cancelled, the {not game_directory_valid and 'game' or 'cluster'} directory is invalid.")
+            logger.warning(f"({self.shard}) Start cancelled, the {invalid_kind} directory is invalid.")
 
             return
 

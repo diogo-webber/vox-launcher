@@ -49,7 +49,7 @@ Vox Launcher is a Windows-only app that makes it easy to create and manage Don't
 1. [**Download the latest release**][download].
 2. Extract the zip and run `Vox Launcher.exe`.
 3. Under `Game Directory`, select your game installation folder (if it wasn't detected automatically).
-4. Create a world in-game, then select it under `Cluster Directory`.
+4. Create a world in-game, then select the folder that holds your worlds under `Worlds Directory` (it's usually filled in automatically) and pick the world from the list below.
 5. Paste your token under `Server Token`. Hover over the ⓘ icon in the app for instructions on how to get one.
 6. Click `LAUNCH` and have fun!
 

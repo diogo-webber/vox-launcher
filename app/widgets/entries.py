@@ -1,7 +1,6 @@
 
 from customtkinter import CTkFrame, CTkLabel, CTkEntry
 from tkinter import filedialog, StringVar, DISABLED, NORMAL
-from pathlib import Path
 import logging
 
 from strings import STRINGS
@@ -9,7 +8,7 @@ from constants import COLOR, OFFSET, SIZE, LOGGER, Pos, Size
 from widgets.buttons import ImageButton
 from widgets.frames import CustomFrame
 from widgets.misc import Tooltip
-from helpers import get_sanitized_cluster_name, get_shard_names, get_token_error, redraw_safe_size
+from helpers import get_token_error, redraw_safe_size
 from fonts import FONT
 
 logger = logging.getLogger(LOGGER)
@@ -227,50 +226,19 @@ class DirectoryEntry(CustomEntry):
         super().enable()
         self.button.enable()
 
-class ClusterDirectoryEntry(DirectoryEntry):
+class ClustersDirectoryEntry(DirectoryEntry):
+    """ The folder holding the clusters, whose worlds are then picked in the cluster dropdown. """
+
     def on_text_changed(self, *args, load=False):
-        super().on_text_changed(load=load)
+        self.validate_text()
 
-        directory_path = Path(self.get())
+        # "Scroll" to the X end.
+        self.entry.xview_moveto(1.0)
 
-        token_file =  directory_path / "cluster_token.txt"
-        config_file =  directory_path / "cluster.ini"
+        self._master.cluster_entry.set_directory(self.get() if self.valid else None, load=load)
 
-        if token_file.exists():
-            token = token_file.read_text(encoding="utf-8", errors="backslashreplace")
-
-            self._master.token_entry.set_text(token)
-
-        if config_file.exists():
-            cluster_name = get_sanitized_cluster_name(config_file)
-
-            self._master.cluster_name.text.set(cluster_name or STRINGS.CLUSTER_NAME_DEFAULT)
-
-            if self.valid:
-                shard_names = get_shard_names(directory_path)
-                single_shard = len(shard_names) == 1
-
-                current_shards = list(self._master.shard_group.shards.keys())
-
-                rebuild = current_shards != shard_names and not (single_shard and "PlaceHolder" in current_shards)
-
-                if rebuild:
-                    self._master.shard_group.remove_all_shards()
-
-                    for shard_name in shard_names:
-                        self._master.shard_group.add_shard(code=shard_name)
-
-                    if single_shard:
-                        self._master.shard_group.add_placeholder_shard()
-                else:
-                    # I hate this a lot, thinking about rebuilding at least the log panel.
-                    for shard in self._master.shard_group.shards.values():
-                        shard.cleanup_state()
-
-                return
-
-        self._master.shard_group.remove_all_shards()
-        self._master.cluster_name.text.set(STRINGS.CLUSTER_NAME_DEFAULT)
+        if not load:
+            self._master.save_entries_data()
 
 
 class TokenEntry(CustomEntry):

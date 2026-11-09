@@ -39,7 +39,7 @@ class LogsTopBar:
             master=self._frame,
             text=STRINGS.LOG_SCREEN.SHARD_FOLDER,
             command=self._open_shard_folder,
-            font=FONT.CLUSTER_STATS,
+            font=FONT.LOGS_BAR,
             size=Size(100, 20),
             pos=Pos(0, 0),
             image=image,
@@ -73,7 +73,7 @@ class LogsTopBar:
             anchor="center",
             text=title,
             text_color=COLOR.WHITE,
-            font=FONT.CLUSTER_STATS,
+            font=FONT.LOGS_BAR,
         )
 
         value_label =  CTkLabel(
@@ -83,7 +83,7 @@ class LogsTopBar:
             text=text,
             textvariable=textvariable,
             text_color=COLOR.WHITE_HOVER,
-            font=FONT.CLUSTER_STATS,
+            font=FONT.LOGS_BAR,
         )
 
         title_label.grid(
@@ -924,6 +924,7 @@ class ShardFrame(CustomFrame):
             self._master.cluster_stats.hide()
 
             self._master.game_entry.enable()
+            self._master.clusters_entry.enable()
             self._master.cluster_entry.enable()
             self._master.token_entry.enable()
 
@@ -963,6 +964,7 @@ class ShardFrame(CustomFrame):
             )
 
             self._master.game_entry.disable()
+            self._master.clusters_entry.disable()
             self._master.cluster_entry.disable()
             self._master.token_entry.disable()
 

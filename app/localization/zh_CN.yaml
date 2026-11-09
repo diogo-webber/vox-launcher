@@ -13,7 +13,6 @@ TOKEN_TOOLTIP: |-
     服务器令牌需要在科雷账户页面生成。
     点击这里打开科雷账户页面网站。
 
-CLUSTER_NAME_DEFAULT: 如何使用？
 ASK_DIRECTORY_TITLE: "  选择文件目录"
 
 CLUSTER_GROUP_TOOLTIP: |-

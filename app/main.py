@@ -5,7 +5,7 @@ from pathlib import Path
 import traceback, requests
 import subprocess, threading
 
-from customtkinter import CTk, CTkLabel, set_widget_scaling, set_window_scaling
+from customtkinter import CTk, set_widget_scaling, set_window_scaling
 from tkinter import StringVar
 
 from constants import *
@@ -15,7 +15,8 @@ from fonts import FONT
 from settings_manager import SettingsManager, Settings
 
 from widgets.buttons import CustomButton, ImageButton
-from widgets.entries import TokenEntry, DirectoryEntry, ClusterDirectoryEntry
+from widgets.entries import TokenEntry, DirectoryEntry, ClustersDirectoryEntry
+from widgets.cluster_dropdown import ClusterDropdown
 from widgets.frames import ScrollableShardGroupFrame
 from widgets.misc import Tooltip, CommandPopUp, ServerErrorPopUp, AppExceptionPopUp, AppOutdatedPopUp, LaunchDataPopUp, ClusterStats, RestartRequiredPopUp, PatchNotesPopUp
 from widgets.settings_screen import SettingsScreen
@@ -156,10 +157,10 @@ class App(CTk):
             pos=POS.GAME_DIRECTORY,
         )
 
-        self.cluster_entry = ClusterDirectoryEntry(
+        self.clusters_entry = ClustersDirectoryEntry(
             master=self,
             tooltip=STRINGS.ENTRY.CLUSTER_TITLE,
-            validate_fn=get_cluster_directory_error,
+            validate_fn=get_clusters_directory_error,
             initialdir=CLUSTER_INITIAL_DIR,
             size=SIZE.DIRECTORY_ENTRY,
             pos=POS.CLUSTER_DIRECTORY,
@@ -186,30 +187,23 @@ class App(CTk):
 
         """
         Middle section:
-            - Cluster name
+            - Cluster selection
             - Cluster Stats
             - Shard Group
         """
 
-        cluster_name_text = StringVar(value=STRINGS.CLUSTER_NAME_DEFAULT)
-
-        self.cluster_name = CTkLabel(
-            master=self,
-            height=0,
-            anchor="nw",
-            textvariable=cluster_name_text,
-            text_color=COLOR.WHITE,
-            font=FONT.CLUSTER_NAME
-        )
-
-        self.cluster_name.text = cluster_name_text
-
-        self.cluster_name.place(
-            x=POS.CLUSTER_NAME.x,
-            y=POS.CLUSTER_NAME.y
+        # Exposes the selected cluster's path through get(), like the entries do.
+        self.cluster_entry = ClusterDropdown(
+            app=self,
+            size=SIZE.CLUSTER_DROPDOWN,
+            pos=POS.CLUSTER_DROPDOWN,
         )
 
         self.cluster_stats = ClusterStats(master=self)
+        self.cluster_stats.baseline_reference = self.cluster_entry.name_label
+
+        # The stats frame starts under the wider dropdown and would cover its end.
+        self.cluster_entry.button.lift()
 
         self.shard_group = ScrollableShardGroupFrame(
             master=self,
@@ -312,6 +306,9 @@ class App(CTk):
         if GAME_DIR and self.game_entry.get() == "":
             self.game_entry.set_text(GAME_DIR.as_posix(), load=True)
 
+        if CLUSTER_INITIAL_DIR and self.clusters_entry.get() == "":
+            self.clusters_entry.set_text(CLUSTER_INITIAL_DIR.as_posix(), load=True)
+
         # # Debug Stuff
         # self.save_button.show()
         # self.quit_button.show()
@@ -400,12 +397,13 @@ class App(CTk):
 
     def save_entries_data(self):
         self.entries_save_loader.save(
-            token       =  protect_text(self.token_entry.get()),
-            game_dir    = self.game_entry.get(),
-            cluster_dir = self.cluster_entry.get(),
+            token        =  protect_text(self.token_entry.get()),
+            game_dir     = self.game_entry.get(),
+            clusters_dir = self.clusters_entry.get(),
+            cluster      = self.cluster_entry.selected_folder or "",
         )
 
-        logger.debug("Saved the game folder, cluster folder and token to disk.")
+        logger.debug("Saved the game folder, clusters folder, cluster and token to disk.")
 
     def load_saved_entries(self):
         data = self.entries_save_loader.load()
@@ -414,10 +412,25 @@ class App(CTk):
             logger.info("No saved entries found, starting with empty fields.")
             return
 
+        clusters_dir = data["clusters_dir"] or ""
+        cluster = data["cluster"] or ""
+        migrate_cluster = False
+
+        if not clusters_dir and data["cluster_dir"]:
+            # Older versions saved the path of the cluster itself.
+            legacy = Path(data["cluster_dir"])
+
+            clusters_dir = legacy.parent.as_posix()
+            cluster = legacy.name
+            migrate_cluster = True
+
+            logger.info("Migrating the saved cluster folder '%s' to the clusters folder '%s' and the cluster '%s'.", legacy, clusters_dir, cluster)
+
         logger.info(
-            "Loaded entries: Game Folder = '%s', Cluster Folder = '%s', Token = %s.",
+            "Loaded entries: Game Folder = '%s', Clusters Folder = '%s', Cluster = '%s', Token = %s.",
             data.game_dir or "empty",
-            data.cluster_dir or "empty",
+            clusters_dir or "empty",
+            cluster or "none",
             data.token and "<hidden>" or "empty",
         )
 
@@ -425,10 +438,11 @@ class App(CTk):
 
         self.token_entry.set_text(token, load=True)
         self.game_entry.set_text(data.game_dir, load=True)
-        self.cluster_entry.set_text(data.cluster_dir, load=True)
+        self.clusters_entry.set_text(clusters_dir, load=True)
+        self.cluster_entry.select(cluster or None, load=True)
 
-        if data.token and not data.token.startswith(PROTECTED_PREFIX):
-            # Migrates a token saved as plain text by older versions.
+        if migrate_cluster or (data.token and not data.token.startswith(PROTECTED_PREFIX)):
+            # Rewrites the file in the current format (clusters folder + cluster, encrypted token).
             self.save_entries_data()
 
     def stop_shards(self):

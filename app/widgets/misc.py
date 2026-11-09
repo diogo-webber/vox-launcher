@@ -2,11 +2,12 @@ from pathlib import Path
 
 from customtkinter import CTkImage, CTkLabel, CTkToplevel, CTkButton, CTkSlider
 from tkinter import StringVar, IntVar, Toplevel, filedialog, DISABLED, NORMAL, TclError
+from tkinter import font as tkfont
 from PIL import Image
 import requests, os
 
 from strings import STRINGS
-from constants import COLOR, SIZE, POS, Size, PATCH_NOTES_URL
+from constants import COLOR, SIZE, POS, Size, PATCH_NOTES_URL, CLUSTER_STATS_PADX
 from settings_manager import Settings
 from widgets.frames import CustomFrame
 from helpers import resource_path, open_file, open_github_issue, open_url, add_folder_to_zip
@@ -17,6 +18,9 @@ class ClusterStats:
     STAT_KEYS = ("day", "season", "players")
 
     def __init__(self, master) -> None:
+        # Label whose text baseline the stats line up with, once shown.
+        self.baseline_reference = None
+
         self.day     = StringVar()
         self.season  = StringVar()
         self.players = StringVar()
@@ -27,6 +31,10 @@ class ClusterStats:
             size=SIZE.CLUSTER_STATS,
             pos=POS.CLUSTER_STATS,
         )
+
+        # CTkFrame shrinks to its children, which would pull the labels above the dropdown's centre.
+        self._frame.grid_propagate(False)
+        self._frame.grid_rowconfigure(0, weight=1)
 
         self.day_label     = self.create_stats_label(self.day,     title=STRINGS.CLUSTER_STATS.DAY,     column=0)
         self.season_label  = self.create_stats_label(self.season,  title=STRINGS.CLUSTER_STATS.SEASON,  column=2)
@@ -56,13 +64,15 @@ class ClusterStats:
         title_label.grid(
             row = 0,
             column = column,
-            padx=(65, 5),
+            padx=(CLUSTER_STATS_PADX, 5),
         )
 
         value_label.grid(
             row = 0,
             column = column + 1,
         )
+
+        return title_label
 
     def update(self, data: dict):
         self.show()
@@ -72,9 +82,35 @@ class ClusterStats:
                 getattr(self, k).set(str(v))
 
     def show(self):
+        shown = bool(self._frame.winfo_manager())
+
         self._frame.place(
             x=POS.CLUSTER_STATS.x,
             y=POS.CLUSTER_STATS.y,
+        )
+
+        if not shown and self.baseline_reference is not None:
+            self._align_baseline()
+
+    @staticmethod
+    def _baseline(label):
+        """ Screen y of the text's baseline, from the font actually drawn (CTk scales it). """
+
+        inner = label._label
+        font = tkfont.Font(font=inner.cget("font"))
+
+        return inner.winfo_rooty() + (inner.winfo_height() - font.metrics("linespace")) / 2 + font.metrics("ascent")
+
+    def _align_baseline(self):
+        """ Moves the stats so their text sits on the baseline of the reference label, whose font is bigger. """
+
+        self._frame.update_idletasks()
+
+        gap = self._baseline(self.baseline_reference) - self._baseline(self.day_label)
+
+        self._frame.place(
+            x=POS.CLUSTER_STATS.x,
+            y=POS.CLUSTER_STATS.y + gap / self._frame._get_widget_scaling(),
         )
 
     def hide(self):
