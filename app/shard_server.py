@@ -22,11 +22,14 @@ PROCESS_ID = os.getpid()
 # Log phrases that mark a boot step, in the order the server reaches them.
 # Timings are from a clean local boot; mods and bigger worlds stretch MODS and ASSETS the most.
 STARTING_STEPS = (
-    ("LOADING LUA",                     "LOADING"),  # ~1s
+    ("LOADING LUA",                     "LOADING"),  # <1s
     ("ModIndex: Beginning normal load", "MODS"   ),  # ~4s, runs twice (frontend, then sim)
-    ("LOAD BE",                         "ASSETS" ),  # ~7-9s, longest phase
-    ("Begin Session",                   "SESSION"),  # ~2-4s until the shard is online
+    ("Loading world:",                  "ASSETS" ),  # ~8s, longest phase (LOAD BE)
+    ("Begin Session",                   "SESSION"),  # ~2s until the shard is online
 )
+
+# Logged right after the MODS marker on worlds without mods, which then keep the LOADING label.
+NO_MODS_PHRASE = "No mods registered"
 
 # ------------------------------------------------------------------------------------ #
 
@@ -285,6 +288,9 @@ class DedicatedServerShard():
                 self.shard_frame.set_starting_step(step)
 
                 logger.debug(f"({self.shard}) Boot step reached: {step}.")
+
+        if NO_MODS_PHRASE in text and STARTING_STEPS[self.starting_step][1] == "MODS":
+            self.shard_frame.set_starting_step("MODS", label="LOADING")
 
     def handle_output_keywords(self, text):
         if "[Shard] Stopping" in text:

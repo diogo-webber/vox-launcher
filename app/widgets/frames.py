@@ -985,14 +985,14 @@ class ShardFrame(CustomFrame):
             self._master.cluster_entry.disable()
             self._master.token_entry.disable()
 
-    def set_starting_step(self, step):
+    def set_starting_step(self, step, label=None):
         """ Refines the STARTING message and the status ring as the shard reaches each boot step. """
 
         if self.is_starting() or self.is_restarting():
             self.status_circle.show_progress([name for _, name in STARTING_STEPS].index(step), len(STARTING_STEPS))
 
         if self.is_starting():
-            self.status_msg.set(STRINGS.SHARD_STATUS.STEP[step] or STRINGS.SHARD_STATUS.STARTING)
+            self.status_msg.set(STRINGS.SHARD_STATUS.STEP[label or step] or STRINGS.SHARD_STATUS.STARTING)
 
     def set_stopping(self):
         self.status.set(SERVER_STATUS.STOPPING)
