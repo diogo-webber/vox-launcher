@@ -1,4 +1,5 @@
 import logging, logging.config
+import ctypes
 import yaml
 from functools import partial
 from pathlib import Path
@@ -79,6 +80,8 @@ CLUSTER_INITIAL_DIR = get_clusters_directory()
 
 DEBUG_MODE = LOGGER == "development"
 DEBUG_FORCE_PATCH_NOTES = False
+
+PROCESS_DPI_PER_MONITOR_AWARE = 2
 
 # ------------------------------------------------------------------------------------ #
 
@@ -542,6 +545,9 @@ class App(CTk):
 
 if __name__ == "__main__":
     #set_debug_scale(1)
+
+    # CTk only does this after Tk exists, by which point winfo_screenwidth/height are already DPI-virtualized.
+    ctypes.windll.shcore.SetProcessDpiAwareness(PROCESS_DPI_PER_MONITOR_AWARE)
 
     app = App()
 
