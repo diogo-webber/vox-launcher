@@ -121,7 +121,8 @@ class DedicatedServerShard():
 
         launch_data = self.app.launch_data_save_loader.load()
 
-        if launch_data is None and self.shard_frame.is_master:
+        # Data saved without a workshop path is useless, so look again (e.g. after the user's in-game launch).
+        if not (launch_data and launch_data.ugc_directory) and self.shard_frame.is_master:
             launch_data = retrieve_launch_data(self.app.cluster_entry.get(), self.app.launch_data_save_loader)
 
         return launch_data and launch_data["ugc_directory"] or None

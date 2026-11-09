@@ -1081,10 +1081,12 @@ def _check_log_file(cluster_path, save_loader):
     except OSError:
         return None
 
-    if _find_command_line_argument(text, "backup_log_count"):
-        # If backup_log_count exists, it's likely that this cluster was launched outside of Vox.
+    ugc_directory = _find_command_line_argument(text, "ugc_directory")
+
+    # If backup_log_count exists, it's likely that this cluster was launched outside of Vox.
+    if ugc_directory and _find_command_line_argument(text, "backup_log_count"):
         save_loader.save(
-            ugc_directory=_find_command_line_argument(text, "ugc_directory"),
+            ugc_directory=ugc_directory,
         )
 
         logger.info(f"Recovered the launch data from '{log_path}'.")

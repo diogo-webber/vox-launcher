@@ -361,11 +361,17 @@ class PopUp:
             command=self.button_2_callback
         )
 
+        has_slider = False
+
         if slider_fn:
             from_, to = slider_fn(self.root)
 
             self.slider_value = from_
 
+            # CTkSlider divides by its range, so a single choice gets no slider.
+            has_slider = to > from_
+
+        if has_slider:
             self._slider = CTkSlider(
                 master=self.popup,
                 from_=from_,
@@ -379,7 +385,7 @@ class PopUp:
 
             self._slider.set(from_)
 
-            self._slider_text = IntVar(value=1)
+            self._slider_text = IntVar(value=from_)
 
             self._slider_label = CTkLabel(
                 master=self.popup,
@@ -394,7 +400,7 @@ class PopUp:
             self._slider_label.grid(row=1, column=0, columnspan=1, padx=(20, 10), pady=(0, 20), sticky="ew")
             self._slider.grid(      row=1, column=1, columnspan=3, padx=(10, 20), pady=(0, 20), sticky="ew")
 
-        buttons_row = slider_fn and 2 or 1
+        buttons_row = has_slider and 2 or 1
 
         self.popup._label.grid(row=0, column=0, columnspan=4, padx=20, pady=20, sticky="ew")
 
@@ -616,8 +622,8 @@ class AppOutdatedPopUp(PopUp):
             response.raise_for_status()  # Raise an exception for HTTP errors.
 
             if response.status_code == 200 and can_update_in_place():
-                self.root.settings.set(Settings.SHOW_PATCH_NOTES, True)
                 self.root.pending_update_script = stage_update(response.content)
+                self.root.settings.set(Settings.SHOW_PATCH_NOTES, True)
 
                 self.confirmed = True
                 self._close()

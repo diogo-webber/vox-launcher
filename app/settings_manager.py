@@ -34,6 +34,10 @@ class SettingsManager:
 
     def get(self, key):
         """ Returns the current value for a setting, or its default. """
+        # A debounced value is already the user's choice, even if not saved yet.
+        if key in self._pending:
+            return self._pending[key]
+
         return self.values.get(key, self.defaults.get(key))
 
     def set(self, key, value):
@@ -92,7 +96,13 @@ class SettingsManager:
 
         try:
             data = json.loads(self.file.read_text(encoding="utf-8", errors="backslashreplace"))
+        except OSError as e:
+            logger.warning(f"Failed to read the settings file '{self.file}', falling back to the defaults: {e}")
+            return False
         except json.JSONDecodeError:
+            data = None
+
+        if not isinstance(data, dict):
             logger.warning(f"The settings file '{self.file}' is corrupted, backing it up and falling back to the defaults.")
             self.file.replace(self.file.with_suffix(".corrupt.json"))
             return False

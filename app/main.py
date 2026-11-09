@@ -463,7 +463,7 @@ class App(CTk):
             logger.info("Closing the application, waiting for the shards to save and shut down.")
 
             self.stop_shards()
-            self._close_when_shards_stop()
+            self._close_when_shards_stop(self._destroy)
 
             return
 
@@ -479,7 +479,7 @@ class App(CTk):
             logger.info("Installing the downloaded update.")
             launch_update_script(self.pending_update_script)
 
-    def _close_when_shards_stop(self, waited=0):
+    def _close_when_shards_stop(self, on_closed, waited=0):
         """ The server is killed with this process, so give it a moment to finish saving. """
 
         SHUTDOWN_TIMEOUT = 30000
@@ -491,19 +491,28 @@ class App(CTk):
             if still_running:
                 logger.warning("The shards did not shut down within %ds, closing anyway.", SHUTDOWN_TIMEOUT // 1000)
 
-            self._destroy()
+            on_closed()
 
             return
 
-        self.after(POLL_INTERVAL, self._close_when_shards_stop, waited + POLL_INTERVAL)
+        self.after(POLL_INTERVAL, self._close_when_shards_stop, on_closed, waited + POLL_INTERVAL)
 
     def restart_application(self, *args, **kwargs):
         """Restart the PyInstaller-exe or Python script safely."""
-        logger.info("Restarting the application.")
+        logger.info("Restarting the application, waiting for the shards to save and shut down.")
+
+        self.stop_shards()
+        self._close_when_shards_stop(self._restart)
+
+    def _restart(self):
+        self.settings.flush()
+
+        # A frozen app's argv[0] is the exe itself, which sys.executable already covers.
+        args = sys.argv[1:] if getattr(sys, "frozen", False) else sys.argv
 
         try:
             # Restart the process and exit the current instance.
-            subprocess.Popen([sys.executable] + sys.argv, close_fds=True)
+            subprocess.Popen([sys.executable] + args, close_fds=True)
         except OSError as e:
             logger.warning(f"Failed to restart through '{sys.executable}' ({e}), trying '{sys.argv[0]}'.")
 

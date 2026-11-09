@@ -19,7 +19,7 @@ def get_system_language_code():
     windll = ctypes.windll.kernel32
     lang_id = windll.GetUserDefaultUILanguage()
 
-    return locale.windows_locale[lang_id]
+    return locale.windows_locale.get(lang_id, "en_US")
 
 def get_default_language_code():
     """

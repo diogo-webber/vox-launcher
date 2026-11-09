@@ -615,10 +615,23 @@ class ShardLogPanel():
             else:
                 self._mouse_scroll_event()
 
+    def _cancel_file_append(self):
+        job = getattr(self, "_append_job", None)
+
+        if job:
+            self.root.after_cancel(job)
+            self._append_job = None
+
+        self._append_lines = []
+        self._append_index = 0
+
+    def destroy(self):
+        self._cancel_file_append()
+        self.topbar.stop_tracking_memory()
+        self.root.destroy()
+
     def append_text_from_file(self, text):
-        # Cancel any ongoing insert
-        if hasattr(self, "_append_job"):
-            self.root.after_cancel(self._append_job)
+        self._cancel_file_append()
 
         self.textbox.configure(state=NORMAL)
 
@@ -647,6 +660,7 @@ class ShardLogPanel():
         if self._append_index >= len(self._append_lines):
             self._append_lines = []
             self._append_index = 0
+            self._append_job = None
 
             # Final scroll and highlight
             if self._visible:
@@ -664,7 +678,8 @@ class ShardLogPanel():
 
         text = ''.join(self._append_lines[self._append_index : self._append_index + 500])
 
-        start_idx = self.textbox.index(END)
+        # Text inserted at END lands before Tk's trailing newline, i.e. at end-1c.
+        start_idx = self.textbox.index("end-1c")
         self.textbox.insert(END, text)
         self._highlight_range(start_idx, text)
 
@@ -672,6 +687,8 @@ class ShardLogPanel():
         self._append_job = self.root.after(1, self._append_next_chunk)
 
     def reset_text(self):
+        self._cancel_file_append() # Otherwise the old log keeps streaming into the cleared box.
+
         self.textbox.configure(state=NORMAL) # To be able to delete text!
         self.textbox.delete("1.0", END)
         self.textbox.configure(state=DISABLED)
@@ -680,7 +697,7 @@ class ShardLogPanel():
         self.search_bar.run_search() # The matches point into text that is gone now.
 
     def on_load_log_file(self, text=None):
-        if text and not self.server.is_running():
+        if text and self.root.winfo_exists() and not self.server.is_running():
             self.reset_text()
             self.append_text_from_file(text)
 
@@ -735,7 +752,7 @@ class ShardLogPanel():
                 return
 
             self._highlight_range(self.textbox.index(start), text)
-            self._highlight_end = self.textbox.index(END)
+            self._highlight_end = self.textbox.index("end-1c")
             return
 
         text = self.textbox.get("1.0", END)
@@ -751,7 +768,7 @@ class ShardLogPanel():
                     self._char_to_index(text, e),
                 )
 
-        self._highlight_end = self.textbox.index(END)
+        self._highlight_end = self.textbox.index("end-1c")
 
     def _mouse_scroll_event(self, *args, **kwargs):
         # yview() still reports the old position while the scroll event is being handled.
@@ -1170,7 +1187,7 @@ class ScrollableShardGroupFrame(CTkScrollableFrame):
             frame.destroy()
 
             if hasattr(frame, "shard_log_panel"):
-                frame.shard_log_panel.root.destroy()
+                frame.shard_log_panel.destroy()
 
         self.shards = {}
 
