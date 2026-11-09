@@ -265,7 +265,7 @@ class DedicatedServerShard():
     def handle_starting_progress(self, text):
         """ A chunk can span several steps and some markers are logged again later, so only ever move forward. """
 
-        if not self.shard_frame.is_starting():
+        if not (self.shard_frame.is_starting() or self.shard_frame.is_restarting()):
             return
 
         for index, (phrase, step) in enumerate(STARTING_STEPS):

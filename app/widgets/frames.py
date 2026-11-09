@@ -1,14 +1,14 @@
 from customtkinter import CTkFrame, CTkLabel, CTkTextbox, CTkEntry, CTkButton, CTkSwitch, CTkScrollableFrame, CTkImage
-from tkinter import StringVar, END, CENTER, DISABLED, NORMAL, BOTH
-import re, logging
+from tkinter import StringVar, END, CENTER, DISABLED, NORMAL, BOTH, Label
+import re, logging, math, time
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageDraw, ImageTk
 
 from strings import STRINGS, get_readable_system_language
 from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
 from widgets.buttons import RelativeXImageButton, ImageButton, CustomButton
 from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHighlightData, PeriodicTask, read_file_nonblocking
-from shard_server import DedicatedServerShard
+from shard_server import DedicatedServerShard, STARTING_STEPS
 from fonts import FONT
 
 logger = logging.getLogger(LOGGER)
@@ -874,7 +874,7 @@ class ShardFrame(CustomFrame):
 
         Tooltip(widget=self.logs, text=STRINGS.BUTTON_TOOLTIP.SHARD_LOGS, above=True)
 
-        self.status_circle = ColouredCircle(
+        self.status_circle = StatusRing(
             master=self,
             color=COLOR.WHITE,
             relx = 0.80,
@@ -931,7 +931,10 @@ class ShardFrame(CustomFrame):
         self.status.set(SERVER_STATUS.RESTARTING)
 
         self.status_msg.set(STRINGS.SHARD_STATUS.RESTARTING)
-        self.status_circle.set_color(COLOR.YELLOW)
+        self.status_circle.show_progress(0, len(STARTING_STEPS))
+
+        # The shard boots again, so its steps are tracked from the start.
+        self.server.starting_step = -1
 
         if self.is_master:
             self._master.launch_button.set_style(
@@ -950,7 +953,7 @@ class ShardFrame(CustomFrame):
         self.status.set(SERVER_STATUS.STARTING)
 
         self.status_msg.set(STRINGS.SHARD_STATUS.STARTING)
-        self.status_circle.set_color(COLOR.YELLOW)
+        self.status_circle.show_progress(0, len(STARTING_STEPS))
 
         if self.is_master:
             self._master.launch_button.set_style(
@@ -964,10 +967,14 @@ class ShardFrame(CustomFrame):
             self._master.token_entry.disable()
 
     def set_starting_step(self, step):
-        """ Refines the STARTING message as the shard reaches each boot step. """
+        """ Refines the STARTING message and the status ring as the shard reaches each boot step. """
+
+        if self.is_starting() or self.is_restarting():
+            self.status_circle.show_progress([name for _, name in STARTING_STEPS].index(step), len(STARTING_STEPS))
 
         if self.is_starting():
             self.status_msg.set(STRINGS.SHARD_STATUS.STEP[step] or STRINGS.SHARD_STATUS.STARTING)
+
     def set_stopping(self):
         self.status.set(SERVER_STATUS.STOPPING)
 
@@ -1240,3 +1247,251 @@ class ColouredCircle(CTkFrame):
             fg_color = color,
             border_color = color,
         )
+
+
+class StatusRing(ColouredCircle):
+    """ Status dot that can turn into a segmented ring, one segment per boot step. """
+
+    EMPTY_COLOR = "#3c3c3c"
+    THICKNESS = 2.75
+    GAP_DEGREES = 14 # Visible gap between the rounded ends of two segments.
+    SUPERSAMPLE = 8
+    FRAME_INTERVAL = 33 # ms between animation frames.
+    PULSE_PERIOD = 1.75 # s for a full fade in and out of the active segment.
+    INTRO_DURATION = 0.25 # s for the dot to shrink while the ring grows.
+    STEP_FADE = 0.40 # s for a finished segment to settle on the filled color.
+    COLOR_FADE = 0.20 # s for the segments to fade to the target color on exit.
+    CLOSE_DURATION = 0.1 # s for the ring to fill in into the solid dot.
+
+    def __init__(self, color, size, **kwargs):
+        super().__init__(color=color, size=size, **kwargs)
+
+        # Prefixed, as CTkFrame already owns names like _canvas and _draw.
+        self._ring_size = size
+        self._ring_label = None
+        self._ring_job = None
+        self._ring_mode = None # None, "intro", "steady" or "exit".
+        self._ring_started = 0.0
+        self._ring_pulse_started = 0.0
+        self._ring_last = 0.0
+        self._ring_step = 0
+        self._ring_total = 1
+        self._ring_fills = []
+        self._ring_dot_color = color
+        self._ring_exit_colors = []
+        self._ring_exit_target = None
+
+    def show_progress(self, step, total):
+        """ Segments before step are filled, the one at step pulses and the rest are empty. """
+
+        if self._ring_mode == "exit":
+            # Interrupted on its way out, so settle on the dot it was heading to.
+            target = self._ring_exit_target
+
+            self.hide_progress()
+
+            self._ring_dot_color = target
+            ColouredCircle.set_color(self, target)
+
+        now = time.monotonic()
+
+        if self._ring_label is None:
+            self._ring_label = Label(self, bg=COLOR.DARK_GRAY, bd=0, highlightthickness=0)
+            self._ring_label.place(x=0, y=0)
+
+            self._ring_mode = "intro"
+            self._ring_started = now
+            self._ring_pulse_started = now
+            self._ring_last = now
+            self._ring_step = step
+            self._ring_total = total
+            self._ring_fills = [1.0 if index < step else 0.0 for index in range(total)]
+
+        elif step != self._ring_step:
+            if step > self._ring_step:
+                # The segment that was pulsing carries on from its current brightness.
+                self._ring_fills[self._ring_step] = self._pulse_level(now)
+            else:
+                self._ring_fills[step:] = [0.0] * (total - step)
+
+            self._ring_step = step
+            self._ring_pulse_started = now # The new active segment fades in from empty.
+
+        if self._ring_job is None:
+            self._tick()
+
+    def hide_progress(self):
+        if self._ring_job is not None:
+            self.after_cancel(self._ring_job)
+            self._ring_job = None
+
+        if self._ring_label is not None:
+            self._ring_label.destroy()
+            self._ring_label = None
+
+        self._ring_mode = None
+
+    def set_color(self, color):
+        if self._ring_mode == "steady":
+            self._ring_exit_colors = self._segment_colors(time.monotonic())
+            self._ring_exit_target = color
+            self._ring_mode = "exit"
+            self._ring_started = time.monotonic()
+
+            return
+
+        self.hide_progress()
+
+        self._ring_dot_color = color
+
+        super().set_color(color)
+
+    def destroy(self):
+        self.hide_progress()
+
+        super().destroy()
+
+    def _tick(self):
+        self._ring_job = None
+
+        now = time.monotonic()
+        dt = now - self._ring_last
+        self._ring_last = now
+
+        elapsed = now - self._ring_started
+
+        for index in range(min(self._ring_step, self._ring_total)):
+            self._ring_fills[index] = min(1.0, self._ring_fills[index] + dt / self.STEP_FADE)
+
+        if self._ring_mode == "intro" and elapsed >= self.INTRO_DURATION:
+            self._ring_mode = "steady"
+
+        if self._ring_mode == "exit" and elapsed >= self.COLOR_FADE + self.CLOSE_DURATION:
+            target = self._ring_exit_target
+
+            self.hide_progress()
+
+            self._ring_dot_color = target
+            ColouredCircle.set_color(self, target)
+
+            return
+
+        self._draw_ring(now, elapsed)
+
+        self._ring_job = self.after(self.FRAME_INTERVAL, self._tick)
+
+    @staticmethod
+    def _ease(amount):
+        amount = max(0.0, min(1.0, amount))
+
+        return amount * amount * (3 - 2 * amount)
+
+    def _pulse_level(self, now):
+        # 0 to 1 and back, as a triangle wave that starts at 0 when the segment becomes active.
+        return 1 - abs(((now - self._ring_pulse_started) % self.PULSE_PERIOD) / self.PULSE_PERIOD * 2 - 1)
+
+    def _segment_colors(self, now):
+        pulse = self._pulse_level(now)
+
+        return [
+            self._blend(self.EMPTY_COLOR, COLOR.YELLOW, pulse if index == self._ring_step else self._ring_fills[index])
+            for index in range(self._ring_total)
+        ]
+
+    def _draw_ring(self, now, elapsed):
+        colors = self._segment_colors(now)
+        disc = None
+        core = None
+        ring = 1.0
+        gap = 1.0
+
+        if self._ring_mode == "intro":
+            amount = self._ease(elapsed / self.INTRO_DURATION)
+
+            disc = (self._ring_dot_color, 1 - amount)
+            ring = amount
+
+        elif self._ring_mode == "exit":
+            target = self._ring_exit_target
+
+            if elapsed < self.COLOR_FADE:
+                amount = self._ease(elapsed / self.COLOR_FADE)
+
+                colors = [self._blend(color, target, amount) for color in self._ring_exit_colors]
+            else:
+                amount = self._ease((elapsed - self.COLOR_FADE) / self.CLOSE_DURATION)
+
+                colors = [target] * self._ring_total
+                gap = 1 - amount
+                core = (target, amount)
+
+        pixels = max(1, round(self._apply_widget_scaling(self._ring_size)))
+        photo = ImageTk.PhotoImage(self._render_ring(pixels, colors, disc, ring, gap, core))
+
+        self._ring_label.configure(image=photo)
+        self._ring_label.image = photo # Tk only holds a weak reference.
+
+    def _render_ring(self, pixels, colors, disc, ring, gap, core):
+        """
+        Draws oversized and scales down, which Tk's own arcs can't do: that gives smooth edges.
+
+        Args:
+            colors (list): the color of each segment.
+            disc (tuple, None): (color, scale) of a solid dot in the middle.
+            ring (float): size of the ring, from 0 to 1.
+            gap (float): how much of the gap between segments is left, from 0 to 1.
+            core (tuple, None): (color, amount) of a disc filling the inside of the ring.
+        """
+
+        scale = self.SUPERSAMPLE
+        big = pixels * scale
+        centre = big / 2
+
+        image = Image.new("RGB", (big, big), COLOR.DARK_GRAY)
+        draw = ImageDraw.Draw(image)
+
+        if disc and disc[1] > 0:
+            radius = centre * disc[1]
+
+            draw.ellipse([centre - radius, centre - radius, centre + radius, centre + radius], fill=disc[0])
+
+        outer = centre * ring
+
+        if outer > 1:
+            thickness = min(self.THICKNESS * pixels / self._ring_size * scale, outer)
+            radius = outer - thickness / 2
+
+            sweep = 360 / self._ring_total
+
+            # The round caps stick out of each end by half the thickness, so the arcs are shortened to match.
+            inset = min(math.degrees(thickness / 2 / radius) + self.GAP_DEGREES * gap / 2, sweep / 2 - 0.5)
+
+            box = [centre - outer, centre - outer, centre + outer - 1, centre + outer - 1]
+
+            for index, color in enumerate(colors):
+                # Angles run clockwise from 3 o'clock, so 270 is the top.
+                start = 270 + index * sweep + inset
+                end = 270 + (index + 1) * sweep - inset
+
+                draw.arc(box, start, end, fill=color, width=max(1, round(thickness)))
+
+                for angle in (start, end):
+                    x = centre + radius * math.cos(math.radians(angle))
+                    y = centre + radius * math.sin(math.radians(angle))
+
+                    draw.ellipse([x - thickness / 2, y - thickness / 2, x + thickness / 2, y + thickness / 2], fill=color)
+
+            if core and core[1] > 0:
+                # Overlaps the ring a little, so no seam is left between the two.
+                inner = min((outer - thickness) * core[1] + scale, outer)
+
+                draw.ellipse([centre - inner, centre - inner, centre + inner, centre + inner], fill=core[0])
+
+        return image.resize((pixels, pixels), Image.Resampling.BOX) # LANCZOS would ring dark halos around the arcs.
+
+    @staticmethod
+    def _blend(start, end, amount):
+        a = [int(start[i:i + 2], 16) for i in (1, 3, 5)]
+        b = [int(end[i:i + 2], 16) for i in (1, 3, 5)]
+
+        return "#" + "".join(f"{round(x + (y - x) * amount):02x}" for x, y in zip(a, b))
