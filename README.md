@@ -177,14 +177,14 @@ The build script requires a virtual environment named `.venv` or `venv` in the p
 <br>
 
 Available languages:
-- English (`en_US`)
-- Chinese, Simplified (`zh_CN`)
-- Czech (`cs_CZ`)
-- Portuguese, Brazilian (`pt_BR`)
-- Russian (`ru_RU`)
-- Spanish (`es_ES`)
-- Thai (`th_TH`)
-- Vietnamese (`vi_VN`)
+- English (`en_US`).
+- Chinese, Simplified (`zh_CN`) by [Noctice](https://github.com/Noctice).
+- Czech (`cs_CZ`) by [ClifffordW](https://github.com/ClifffordW).
+- Portuguese, Brazilian (`pt_BR`).
+- Russian (`ru_RU`) by [MisterKIgorge](https://github.com/MisterKIgorge).
+- Spanish (`es_ES`) by [bitasuperactive](https://github.com/bitasuperactive) and [VitaBh](https://github.com/VitaBh).
+- Thai (`th_TH`) by [mihime](https://github.com/mihime).
+- Vietnamese (`vi_VN`) by [hlquang](https://github.com/hlquang).
 
 <br>
 
