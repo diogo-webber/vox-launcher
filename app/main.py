@@ -276,6 +276,7 @@ class App(CTk):
         self.error_popup = ServerErrorPopUp(root=self)
         self.exception_popup = AppExceptionPopUp(root=self)
         self.update_popup = AppOutdatedPopUp(root=self)
+        self.pending_update_script = None
         self.launch_data_popup = LaunchDataPopUp(root=self)
         self.restart_popup = RestartRequiredPopUp(root=self)
         self.patch_notes_popup = PatchNotesPopUp(root=self)
@@ -412,13 +413,13 @@ class App(CTk):
             logger.info("No saved entries found, starting with empty fields.")
             return
 
-        clusters_dir = data["clusters_dir"] or ""
-        cluster = data["cluster"] or ""
+        clusters_dir = data.clusters_dir or ""
+        cluster = data.cluster or ""
         migrate_cluster = False
 
-        if not clusters_dir and data["cluster_dir"]:
+        if not clusters_dir and data.cluster_dir:
             # Older versions saved the path of the cluster itself.
-            legacy = Path(data["cluster_dir"])
+            legacy = Path(data.cluster_dir)
 
             clusters_dir = legacy.parent.as_posix()
             cluster = legacy.name
@@ -434,10 +435,10 @@ class App(CTk):
             data.token and "<hidden>" or "empty",
         )
 
-        token = unprotect_text(data.token)
+        token = unprotect_text(data.token) or ""
 
         self.token_entry.set_text(token, load=True)
-        self.game_entry.set_text(data.game_dir, load=True)
+        self.game_entry.set_text(data.game_dir or "", load=True)
         self.clusters_entry.set_text(clusters_dir, load=True)
         self.cluster_entry.select(cluster or None, load=True)
 
@@ -473,6 +474,10 @@ class App(CTk):
     def _destroy(self):
         self.settings.flush()
         self.destroy()
+
+        if self.pending_update_script:
+            logger.info("Installing the downloaded update.")
+            launch_update_script(self.pending_update_script)
 
     def _close_when_shards_stop(self, waited=0):
         """ The server is killed with this process, so give it a moment to finish saving. """

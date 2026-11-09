@@ -7,7 +7,7 @@ import re, json, sys, math, base64
 import logging
 import shlex
 import threading
-import psutil, os, zipfile
+import psutil, os, zipfile, shutil, subprocess
 from urllib.parse import quote as encode_for_url
 from customtkinter import set_window_scaling, set_widget_scaling
 
@@ -52,6 +52,13 @@ class DotDict:
             indent = 4,
             ensure_ascii = False
         )
+
+    def __getattr__(self, key):
+        # Only called for missing attributes; None lets old save files lack newer keys.
+        if key.startswith("_"):
+            raise AttributeError(key)
+
+        return None
 
     def __getitem__(self, key):
         return getattr(self, key, None)
@@ -1098,6 +1105,71 @@ def _add_to_zip(zipf, folder_path, base_path, arc_folder):
 def add_folder_to_zip(zip_filename, folder_path, arc_folder):
     with zipfile.ZipFile(zip_filename, "a", zipfile.ZIP_DEFLATED) as zipf:
         _add_to_zip(zipf, folder_path, folder_path, arc_folder)
+
+# Folders of the data directory that belong to the user and survive an update.
+_UPDATE_KEPT_FOLDERS = ("savedata", "logs")
+
+def can_update_in_place():
+    """ In-place updates only make sense for the packaged app. """
+
+    return bool(getattr(sys, "frozen", False))
+
+def stage_update(zip_bytes):
+    """
+    Extracts a release zip and writes the script that installs it once this process exits.
+
+    Args:
+        zip_bytes (bytes): the content of the release zip.
+
+    Returns:
+        Path: the script to run, see launch_update_script().
+    """
+
+    import io, tempfile
+
+    app_dir = Path(sys.executable).resolve().parent
+    work_dir = Path(tempfile.mkdtemp(prefix="vox_update_"))
+    staging = work_dir / "staging"
+
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zipf:
+        zipf.extractall(staging)
+
+    if not (staging / Path(sys.executable).name).exists():
+        raise FileNotFoundError("The downloaded package does not contain the launcher executable.")
+
+    # The new version must not overwrite the user's data.
+    for folder in _UPDATE_KEPT_FOLDERS:
+        shutil.rmtree(staging / "appdata" / folder, ignore_errors=True)
+
+    script = work_dir / "update.bat"
+
+    # Waits for this process to exit, copies the new files over and starts the new version.
+    script.write_bytes((
+        "@echo off\r\n"
+        "chcp 65001 >nul\r\n"
+        f'powershell -NoProfile -NonInteractive -Command "Wait-Process -Id {os.getpid()} -ErrorAction SilentlyContinue"\r\n'
+        f'robocopy "{staging}" "{app_dir}" /E /R:30 /W:1 /NFL /NDL /NJH /NJS >nul\r\n'
+        f'start "" "{Path(sys.executable).resolve()}"\r\n'
+        f'rmdir /s /q "{work_dir}"\r\n'
+    ).encode("utf-8"))
+
+    return script
+
+def launch_update_script(script):
+    """ Starts the update script detached from this process, so it outlives it. """
+
+    # The hidden console is inherited by the script's child processes, so none opens a window.
+    CREATE_NO_WINDOW = 0x08000000
+    CREATE_NEW_PROCESS_GROUP = 0x00000200
+
+    subprocess.Popen(
+        ["cmd", "/c", str(script)],
+        creationflags=CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        close_fds=True,
+    )
 
 def set_debug_scale(scale):
     set_window_scaling(scale)

@@ -4,13 +4,13 @@ from customtkinter import CTkImage, CTkLabel, CTkToplevel, CTkButton, CTkSlider
 from tkinter import StringVar, IntVar, Toplevel, filedialog, DISABLED, NORMAL, TclError
 from tkinter import font as tkfont
 from PIL import Image
-import requests, os
+import requests, os, zipfile
 
 from strings import STRINGS
 from constants import COLOR, SIZE, POS, Size, PATCH_NOTES_URL, CLUSTER_STATS_PADX
 from settings_manager import Settings
 from widgets.frames import CustomFrame
-from helpers import resource_path, open_file, open_github_issue, open_url, add_folder_to_zip
+from helpers import resource_path, open_file, open_github_issue, open_url, add_folder_to_zip, can_update_in_place, stage_update
 from fonts import FONT
 
 class ClusterStats:
@@ -615,6 +615,18 @@ class AppOutdatedPopUp(PopUp):
 
             response.raise_for_status()  # Raise an exception for HTTP errors.
 
+            if response.status_code == 200 and can_update_in_place():
+                self.root.settings.set(Settings.SHOW_PATCH_NOTES, True)
+                self.root.pending_update_script = stage_update(response.content)
+
+                self.confirmed = True
+                self._close()
+
+                # Closing the app runs the staged update once the process exits.
+                self.root.after(0, self.root.on_close)
+
+                return
+
             if response.status_code == 200:
                 file = filedialog.asksaveasfile(
                     mode = "wb",
@@ -651,7 +663,7 @@ class AppOutdatedPopUp(PopUp):
             else:
                 self.set_text(text=STRINGS.UPDATE_POPUP.DESCRIPTION.FAILED)
 
-        except (requests.exceptions.Timeout, requests.exceptions.RequestException):
+        except (requests.exceptions.RequestException, OSError, zipfile.BadZipFile, FileNotFoundError):
                 self.set_text(text=STRINGS.UPDATE_POPUP.DESCRIPTION.FAILED)
 
         self.confirmed = False
