@@ -95,7 +95,7 @@ CLUSTER_STATS:
     PLAYERS: "Players: "
 
 POPUP:
-    OK: Ok
+    OK: OK
     CANCEL: Cancel
     LOG: Server Log
     REPORT: Report
@@ -106,9 +106,9 @@ UPDATE_POPUP:
     DOWNLOAD: Download
     IGNORE: Ignore
     DESCRIPTION:
-        DEFAULT: A new version of the app is available. Please consider downloading it.
+        DEFAULT: A new version of the app is available. Download it to get the latest fixes and features.
         DOWNLOADING: Downloading... It shouldn't take long!
-        FAILED: The download has failed. It might be a network issue on your side or on Github's servers. Please try again later.
+        FAILED: The download has failed. It might be a network issue on your side or on GitHub's servers. Please try again later.
 
 # Shown once after an update downloaded within the app.
 PATCH_NOTES_POPUP:
@@ -123,7 +123,7 @@ LOG_SCREEN:
     ENTRY_PLACEHOLDER_OFFLINE: This shard is offline. Start the server to run commands.
     CLOSE: Back
     AUTO_SCROLL: Auto Scroll
-    SHARD_FOLDER: Local Files
+    SHARD_FOLDER: Shard Folder
     SHARD_NAME_TITLE: "Shard:"
     SHARD_MEMORY_TITLE: "Memory:"
     SHARD_MEMORY_FMT: "{mb} MB ({percent}%)"
@@ -189,7 +189,7 @@ ENTRY:
         CLOUD_SAVES: Cloud saves are not supported.
         WRONG_LOCATION: This isn't a folder of worlds. Select your Klei account folder, usually Documents/Klei/DoNotStarveTogether/<numbers>/.
         TOKEN_FORMAT: This isn't a valid server token.
-        TOKEN_REJECTED: The server refused this token. It may have expired, been revoked, or already be in use by another running server.
+        TOKEN_REJECTED: The server refused this token. It may have expired, been revoked, or be in use by another server.
 
 ERROR:
     TOKEN_INVALID: |-
@@ -211,13 +211,13 @@ ERROR:
     PORTS: |-
         The server failed to start due to one of the following reasons:
 
-        • The world is not in the same directory as the worlds generated in-game.
+        • The world is not located in the same folder as the worlds created in-game.
 
         • One or more of the following ports ({ports}) are already in use by another program, including in-game servers.
 
         Close any other running servers or change the ports in each shard's server.ini file.
 
-        If neither applies, please report the issue.
+        If neither applies, please report this issue.
     EXCEPTION: |-
         An unexpected error occurred!
 
@@ -227,15 +227,15 @@ ERROR:
 
         If a server is currently running, it will be saved and safely shut down.
 
-        Please consider reporting this error by creating an issue on Github.
+        Please consider reporting this error by creating an issue on GitHub.
     LAUNCH_DATA_INVALID: |-
         {APP_NAME} needs initial server configuration data that is generated when you first run a world from the in-game menu.
 
         Please launch any world from the in-game menu, wait for it to start, then stop it.
 
-        Once done, click the Try Again button below.
+        Once done, click the "Try Again" button below.
     SERVER_CRASH: |-
-        Your server has crashed due to a Lua error. Please refer to the game's log files for more information.
+        Your server has crashed due to a Lua error. Check the server log for details.
 
         Common causes: incompatible or outdated mods, corrupted world save data, or a game bug.
 
