@@ -82,7 +82,7 @@ CLUSTER_STATS:
     PLAYERS: "Người chơi: "
 
 POPUP:
-    OK: Đồng Ý
+    CLOSE: Đóng
     CANCEL: Huỷ
     LOG: Nhật Ký Máy Chủ
     REPORT: Báo Cáo

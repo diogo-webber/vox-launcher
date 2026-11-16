@@ -88,7 +88,7 @@ CLUSTER_STATS:
     PLAYERS: "Hráči: "
 
 POPUP:
-    OK: OK
+    CLOSE: Zavřít
     CANCEL: Zrušit
     LOG: Záznam serveru
     REPORT: Nahlásit

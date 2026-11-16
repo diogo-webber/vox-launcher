@@ -88,7 +88,7 @@ CLUSTER_STATS:
     PLAYERS: "Игроки: "
 
 POPUP:
-    OK: Ок
+    CLOSE: Закрыть
     CANCEL: Отмена
     LOG: Логи сервера
     REPORT: Сообщить

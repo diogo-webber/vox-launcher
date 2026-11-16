@@ -96,7 +96,7 @@ CLUSTER_STATS:
     PLAYERS: "Players: "
 
 POPUP:
-    OK: OK
+    CLOSE: Close
     CANCEL: Cancel
     LOG: Server Log
     REPORT: Report

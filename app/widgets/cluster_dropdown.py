@@ -74,9 +74,9 @@ class ClusterDropdown:
     MIN_BUTTON_WIDTH = 140
 
     CARD_RADIUS = 12
+    CARD_BORDER = 2
+    CARDS_PER_PANEL = 3
     CARD_PADDING = 16
-    CARD_PADDING_Y = 10
-    CARD_MIN_HEIGHT = 48
     CARD_TEXT_GAP = 2
     CARD_TEXT_ROOM = 24 # Between the text and the chips.
     CHIP_HEIGHT = 22
@@ -320,32 +320,27 @@ class ClusterDropdown:
 
         return STRINGS.CLUSTER_SELECT.PLAYED_DATE.format(date=played.strftime("%x"))
 
-    def _card_height(self, details):
-        height = self.CARD_PADDING_Y * 2 + FONT.CLUSTER_NAME.line_height()
-
-        if details.description:
-            height += self.CARD_TEXT_GAP + FONT.ENTRY.line_height()
-
-        return max(height, self.CARD_MIN_HEIGHT)
-
     def _build_cards(self):
         for child in self.panel.winfo_children():
             child.destroy()
 
         width = self.panel.content_width
         details = [get_cluster_details(self.directory, folder) for folder, _ in self.options]
-        heights = [self._card_height(detail) for detail in details]
 
-        gaps = FRAME_GAP * (len(details) - 1)
+        # Three cards without a description fill the panel between the usual gaps. Heights are split in
+        # whole, even screen pixels, which CTk draws cleanly, instead of snapping each one down to a logical size.
+        count = self.CARDS_PER_PANEL
+        gap_px = int(self.panel._apply_widget_scaling(FRAME_GAP))
+        free_px = round(self.panel._apply_widget_scaling(self.panel.content_height)) - gap_px * (count - 1)
 
-        # A few worlds would leave the panel mostly empty, so they share its whole height instead.
-        fill = sum(heights) + gaps <= self.panel.content_height
-
-        if fill:
-            heights = [(self.panel.content_height - gaps) / len(details)] * len(details)
+        base_px = free_px // count // 2 * 2
+        extra_px = (free_px - base_px * count) // 2 * 2
+        line_px = round(self.panel._apply_widget_scaling(self.CARD_TEXT_GAP + FONT.ENTRY.line_height())) // 2 * 2
 
         for index, detail in enumerate(details):
-            self._create_card(detail, width, heights[index], last=fill and index == len(details) - 1)
+            height_px = base_px + (index < extra_px // 2 and 2 or 0) + (detail.description and line_px or 0)
+
+            self._create_card(detail, width, self.panel._reverse_widget_scaling(float(height_px)), last=index == len(details) - 1)
 
     def _create_card(self, details, width, height, last=False):
         name_height = FONT.CLUSTER_NAME.line_height()
@@ -360,10 +355,12 @@ class ClusterDropdown:
             pos=Pos(0, 0),
         )
 
-        card.configure(fg_color=COLOR.DARK_GRAY, hover_color=COLOR.MID_GRAY)
+        # The cards are barely lighter than the panel, so hovering is drawn as a border instead of a fill.
+        card.configure(fg_color=COLOR.DARK_GRAY, hover_color=COLOR.DARK_GRAY, border_width=self.CARD_BORDER, border_color=COLOR.DARK_GRAY)
+        card.hover_border_color = COLOR.SCROLLBAR_HOVER
 
-        if details.folder == self.selected_folder:
-            card.configure(border_width=1, border_color=COLOR.SCROLLBAR)
+        # The size is already a clean pixel count, so the integer snapping done by the button is undone.
+        card.configure(height=height)
 
         card.pack(fill="x", pady=(0, 0 if last else FRAME_GAP))
 

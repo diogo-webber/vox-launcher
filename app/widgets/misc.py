@@ -306,7 +306,7 @@ class PopUp:
         self.popup = None
         self.confirmed = None
         self.slider_value = None
-        self.button_1_text = STRINGS.POPUP.OK
+        self.button_1_text = STRINGS.POPUP.CLOSE
         self.button_2_text = ""
 
     def create(self, text, slider_fn=None):
@@ -486,6 +486,13 @@ class CommandPopUp(PopUp):
         super().__init__(root)
         self.button_2_text = STRINGS.POPUP.CANCEL
 
+    def create(self, text, confirm_text, slider_fn=None):
+        """ confirm_text names the action being confirmed, e.g. Stop. """
+
+        self.button_1_text = confirm_text
+
+        return super().create(text, slider_fn=slider_fn)
+
     def button_1_callback(self):
         self.confirmed = True
 
@@ -519,6 +526,7 @@ class AppExceptionPopUp(PopUp):
     def __init__(self, root):
         super().__init__(root)
 
+        self.button_1_text = STRINGS.POPUP.RESTART
         self.button_2_text = STRINGS.POPUP.REPORT
         self.traceback = None
 

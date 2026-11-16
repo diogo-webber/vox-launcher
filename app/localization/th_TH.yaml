@@ -87,7 +87,7 @@ CLUSTER_STATS:
     PLAYERS: "ผู้เล่น: "
 
 POPUP:
-    OK: ตกลง
+    CLOSE: ปิด
     CANCEL: ยกเลิก
     LOG: Log เซิร์ฟเวอร์
     REPORT: รายงาน

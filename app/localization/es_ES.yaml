@@ -89,7 +89,7 @@ CLUSTER_STATS:
     PLAYERS: "Jugadores: "
 
 POPUP:
-    OK: Aceptar
+    CLOSE: Cerrar
     CANCEL: Cancelar
     LOG: Registros del servidor
     REPORT: Reportar

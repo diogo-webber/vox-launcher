@@ -255,7 +255,7 @@ class App(CTk):
         self.quit_button = CustomButton(
             master=self,
             text=STRINGS.SMALL_BUTTON.QUIT,
-            command=partial(self.execute_special_command, "c_shutdown(false)", confirmation_text=STRINGS.COMMAND_CONFIRMATION.QUIT, announcement=STRINGS.COMMAND_ANNOUNCEMENT.QUIT),
+            command=partial(self.execute_special_command, "c_shutdown(false)", confirm_text=STRINGS.SMALL_BUTTON.QUIT, confirmation_text=STRINGS.COMMAND_CONFIRMATION.QUIT, announcement=STRINGS.COMMAND_ANNOUNCEMENT.QUIT),
             font=FONT.SMALL_BUTTON,
             size=SIZE.SMALL_BUTTON,
             pos=POS.QUIT_BUTTON,
@@ -264,7 +264,7 @@ class App(CTk):
         self.reset_button = CustomButton(
             master=self,
             text=STRINGS.SMALL_BUTTON.RESET,
-            command=partial(self.execute_special_command, "c_reset()", confirmation_text=STRINGS.COMMAND_CONFIRMATION.RESET, announcement=STRINGS.COMMAND_ANNOUNCEMENT.RESET),
+            command=partial(self.execute_special_command, "c_reset()", confirm_text=STRINGS.SMALL_BUTTON.RESET, confirmation_text=STRINGS.COMMAND_CONFIRMATION.RESET, announcement=STRINGS.COMMAND_ANNOUNCEMENT.RESET),
             font=FONT.SMALL_BUTTON,
             size=SIZE.SMALL_BUTTON,
             pos=POS.RESET_BUTTON,
@@ -273,7 +273,7 @@ class App(CTk):
         self.rollback_button = CustomButton(
             master=self,
             text=STRINGS.SMALL_BUTTON.ROLLBACK,
-            command=partial(self.execute_special_command, load_lua_file("rollback_cmd"), announcement=STRINGS.COMMAND_ANNOUNCEMENT.ROLLBACK, slider_fn=rollback_slider_fn, confirmation_text=STRINGS.COMMAND_CONFIRMATION.ROLLBACK),
+            command=partial(self.execute_special_command, load_lua_file("rollback_cmd"), confirm_text=STRINGS.SMALL_BUTTON.ROLLBACK, announcement=STRINGS.COMMAND_ANNOUNCEMENT.ROLLBACK, slider_fn=rollback_slider_fn, confirmation_text=STRINGS.COMMAND_CONFIRMATION.ROLLBACK),
             font=FONT.SMALL_BUTTON,
             size=SIZE.SMALL_BUTTON,
             pos=POS.ROLLBACK_BUTTON,
@@ -397,9 +397,9 @@ class App(CTk):
         self.save_button.configure(text=STRINGS.SMALL_BUTTON.SAVE)
         self.save_button.enable()
 
-    def execute_special_command(self, command, announcement=None, slider_fn=None, confirmation_text=None):
+    def execute_special_command(self, command, confirm_text=None, announcement=None, slider_fn=None, confirmation_text=None):
         if confirmation_text:
-            confirmed, slider_value = self.confirmation_popup.create(confirmation_text, slider_fn=slider_fn)
+            confirmed, slider_value = self.confirmation_popup.create(confirmation_text, confirm_text, slider_fn=slider_fn)
 
             if confirmed:
                 command_fmt = slider_value and command.format(value=slider_value) or command
@@ -475,7 +475,7 @@ class App(CTk):
         shard = getattr(self, "master_shard", None)
 
         if shard is not None and shard.is_running():
-            confirmed, _ = self.confirmation_popup.create(STRINGS.COMMAND_CONFIRMATION.CLOSE_APP)
+            confirmed, _ = self.confirmation_popup.create(STRINGS.COMMAND_CONFIRMATION.CLOSE_APP, STRINGS.POPUP.CLOSE)
 
             if not confirmed:
                 return

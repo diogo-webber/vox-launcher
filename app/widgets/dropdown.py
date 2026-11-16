@@ -75,16 +75,27 @@ class OverlaysMixin:
 
     overlay_labels = ()
     overlay_backdrops = ()
+    hover_border_color = None # Drawn instead of a fill change, when set.
 
     def _on_enter(self, event=None):
         super()._on_enter(event)
 
         self._tint_overlay()
 
+        if self.hover_border_color and self.cget("state") == "normal":
+            self._rest_border_color = self.cget("border_color")
+
+            self.configure(border_color=self.hover_border_color)
+
     def _on_leave(self, event=None):
         super()._on_leave(event)
 
         self._tint_overlay()
+
+        if self.hover_border_color and getattr(self, "_rest_border_color", None):
+            self.configure(border_color=self._rest_border_color)
+
+            self._rest_border_color = None
 
     def _tint_overlay(self):
         color = self._canvas.itemcget("inner_parts", "fill")
