@@ -269,6 +269,7 @@ SETTINGS_SCREEN:
         TITLE: Launch Options
         DESC: Advanced users may enter server launch options. Improper use may lead to unexpected behavior.
         LINK: Click here to see all launch options.
+        RESERVED: Options in red are reserved by the app. Please don't use them.
 
     CLOSE: Back
 

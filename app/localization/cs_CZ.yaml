@@ -257,6 +257,7 @@ SETTINGS_SCREEN:
         TITLE: Možnosti spuštění
         DESC: Pokročilí uživatelé mohou zadat možnosti spuštění serveru. Nesprávné použití může vést k neočekávanému chování.
         LINK: Kliknutím sem zobrazíte všechny možnosti spuštění.
+        RESERVED: Možnosti v červené barvě jsou vyhrazeny aplikací. Prosím, nepoužívejte je.
 
     CLOSE: Zpět
 

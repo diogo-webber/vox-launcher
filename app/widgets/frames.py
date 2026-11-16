@@ -5,7 +5,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageTk
 
 from strings import STRINGS, get_readable_system_language
-from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, Pos, Size
+from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, RADIUS_LG, Pos, Size
 from widgets.buttons import RelativeXImageButton, ImageButton, CustomButton
 from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHighlightData, PeriodicTask, read_file_nonblocking
 from shard_server import DedicatedServerShard, STARTING_STEPS
@@ -793,7 +793,7 @@ class ShardLogPanel():
 
 
 class CustomFrame(CTkFrame):
-    def __init__(self, color, size, pos=None, corner_radius=15, border_color=None, bg_color="transparent", **kwargs):
+    def __init__(self, color, size, pos=None, corner_radius=RADIUS_LG, border_color=None, bg_color="transparent", **kwargs):
         super().__init__(
             border_color=border_color or color,
             fg_color=color,
@@ -1066,7 +1066,7 @@ class TextBoxAsLabel(CTkTextbox):
             master = master,
             width = SIZE.SHARD_GROUP.w - 10,
             height = SIZE.SHARD_GROUP.h + 5,
-            corner_radius = 15,
+            corner_radius = RADIUS_LG,
             fg_color = COLOR.GRAY,
             text_color = COLOR.WHITE,
             activate_scrollbars=False,
@@ -1112,7 +1112,7 @@ class TextBoxAsLabel(CTkTextbox):
 
 
 class ScrollableShardGroupFrame(CTkScrollableFrame):
-    def __init__(self, master, color, pos, size, corner_radius=15, border_color=None, bg_color="transparent", **kwargs):
+    def __init__(self, master, color, pos, size, corner_radius=RADIUS_LG, border_color=None, bg_color="transparent", **kwargs):
         self.pos = pos
 
         self.shards = {}

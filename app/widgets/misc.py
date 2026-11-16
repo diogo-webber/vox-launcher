@@ -4,7 +4,7 @@ from customtkinter import CTkImage, CTkLabel, CTkToplevel, CTkButton, CTkSlider
 from tkinter import StringVar, IntVar, Toplevel, filedialog, DISABLED, NORMAL, TclError
 from tkinter import font as tkfont
 from PIL import Image
-import requests, os, zipfile
+import requests, os, zipfile, time
 
 from strings import STRINGS
 from constants import COLOR, SIZE, POS, Size, PATCH_NOTES_URL, CLUSTER_STATS_PADX
@@ -123,6 +123,11 @@ TOOLTIP_WINDOW_MARGIN = 14
 TOOLTIP_TRANSPARENT_COLOR = "#010203"  # Keyed out by the window manager, so it must not appear in the tooltip.
 
 class Tooltip:
+    HOVER_DELAY = 300
+    WARM_WINDOW = 0.3 # Seconds after one closes in which the next opens at once.
+
+    _last_closed = float("-inf")
+
     def __init__(self, master=None, text="", image=None, pos=None, image_size=None, onclick=None, widget=None, above=False, anchor=None, show_when_disabled=False):
         self.text = text
         self.pos = pos
@@ -189,7 +194,9 @@ class Tooltip:
         if self.taskid:
             self.widget.after_cancel(self.taskid)
 
-        self.taskid = self.widget.after(250, self.show_tooltip)
+        warm = time.monotonic() - Tooltip._last_closed < self.WARM_WINDOW
+
+        self.taskid = self.widget.after(0 if warm else self.HOVER_DELAY, self.show_tooltip)
 
     def show_tooltip(self):
         if self.cursor:
@@ -288,6 +295,8 @@ class Tooltip:
         if self.tooltip:
             self.tooltip.destroy()
             self.tooltip = None
+
+            Tooltip._last_closed = time.monotonic()
 
 class PopUp:
     danger = False # Styles the primary button as a destructive action.

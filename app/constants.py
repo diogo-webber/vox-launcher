@@ -62,10 +62,14 @@ LARGE_GAP = SMALL_GAP * 2
 FRAME_GAP = 10
 BUTTON_GAP = 7
 
+RADIUS_SM = 6
+RADIUS_MD = 10
+RADIUS_LG = 14
+
 # The stats start this far after the widest the world dropdown gets, and inset their first label by the padding.
 CLUSTER_STATS_GAP = 30
 CLUSTER_STATS_PADX = 65
-ENTRY_CORNER_RADIUS = 10
+ENTRY_CORNER_RADIUS = RADIUS_MD
 
 # Extra room left of the world dropdown's text, so its hover highlight doesn't hug it.
 CLUSTER_DROPDOWN_PADDING = 8

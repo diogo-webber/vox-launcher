@@ -258,6 +258,7 @@ SETTINGS_SCREEN:
         TITLE: Opciones de lanzamiento
         DESC: Los usuarios avanzados pueden introducir opciones de lanzamiento del servidor. Un uso incorrecto puede causar un comportamiento inesperado.
         LINK: Haz clic aquí para ver todas las opciones de lanzamiento.
+        RESERVED: Las opciones en rojo están reservadas por la aplicación. Por favor, no las uses.
 
     CLOSE: Volver
 

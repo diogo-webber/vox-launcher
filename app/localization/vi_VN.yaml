@@ -251,6 +251,7 @@ SETTINGS_SCREEN:
         TITLE: Tùy Chọn Khởi Chạy
         DESC: Người sử dụng nâng cao có thể nhập các tùy chọn khởi chạy máy chủ. Sử dụng không đúng cách có thể dẫn tới lỗi ngoài dự kiến.
         LINK: Bấm vô đây để xem tất cả tùy chọn khởi chạy.
+        RESERVED: Các tùy chọn màu đỏ đã được ứng dụng dành riêng. Vui lòng không sử dụng chúng.
 
     CLOSE: Quay lại
 

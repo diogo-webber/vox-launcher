@@ -7,7 +7,7 @@ from widgets.frames import CustomFrame
 from widgets.dropdown import CustomDropdown
 from widgets.buttons import CustomButton, ImageButton
 from widgets.misc import Tooltip
-from constants import COLOR, SIZE, POS, OFFSET, FONT_SIZE, WINDOW_MARGIN, SETTINGS_WINDOW_MARGIN, WINDOW_HEIGHT, WINDOW_WIDTH, Pos, Size
+from constants import COLOR, RADIUS_LG, SIZE, POS, OFFSET, FONT_SIZE, WINDOW_MARGIN, SETTINGS_WINDOW_MARGIN, WINDOW_HEIGHT, WINDOW_WIDTH, RADIUS_MD, Pos, Size
 from strings import STRINGS, get_default_language_code
 from fonts import FONT
 from helpers import open_github_issue, resource_path, open_folder, open_url
@@ -163,32 +163,9 @@ class SettingsScreen():
 
         # -------------------------- #
 
-        # self.switch = CTkSwitch(
-        #     master=self.root,
-        #     text="Switch Exemple",
-        #     #command=command,
-        #     onvalue=True,
-        #     offvalue=False,
-        #     fg_color=COLOR.GRAY_HOVER,
-        #     progress_color=COLOR.GREEN,
-        #     button_color=COLOR.WHITE,
-        #     button_hover_color=COLOR.WHITE,
-        #     text_color=COLOR.WHITE,
-        #     font=FONT.SETTING_LONG_BUTTON,
-        #     width=SIZE.LOGS_AUTO_SCROLL_SWITCH.w + 20,
-        #     height=SIZE.LOGS_AUTO_SCROLL_SWITCH.h,
-        # )
-
-        # self.switch.place(
-        #     x = SETTINGS_WINDOW_MARGIN,
-        #     y = SETTINGS_WINDOW_MARGIN + 300,
-        # )
-
-        # -------------------------- #
-
         self.arguments_entry = CTkTextbox(
             master = self.root,
-            corner_radius=15,
+            corner_radius=RADIUS_LG,
             border_color=COLOR.GRAY,
             text_color=COLOR.WHITE_HOVER,
             fg_color=COLOR.GRAY,
@@ -223,6 +200,25 @@ class SettingsScreen():
         )
 
         self.arguments_entry._tooltip.set_position()
+
+        self.options_hint = CTkLabel(
+            master=self.root,
+            height=0,
+            width=ARGUMENTS_ENTRY.w,
+            wraplength=ARGUMENTS_ENTRY.w,
+            anchor="w",
+            justify="left",
+            text=STRINGS.SETTINGS_SCREEN.LAUNCH_OPTIONS.RESERVED,
+            text_color=COLOR.DANGER_TEXT,
+            font=FONT.SETTING_DESC,
+        )
+
+        self._hint_pos = Pos(
+            WINDOW_WIDTH - SETTINGS_WINDOW_MARGIN - ARGUMENTS_ENTRY.w,
+            SETTINGS_WINDOW_MARGIN + self.arguments_entry._tooltip.get_height() + ARGUMENTS_ENTRY.h + 8,
+        )
+
+        self._refresh_options_hint()
 
         # -------------------------- #
 
@@ -348,3 +344,14 @@ class SettingsScreen():
             tag = any(arg in matched_word for arg in INVALID_TEXTBOX_ARGS) and "badoption" or "goodoption"
 
             self.arguments_entry.tag_add(tag, f"1.0+{start}c", f"1.0+{end}c")
+
+        if hasattr(self, "_hint_pos"):
+            self._refresh_options_hint()
+
+    def _refresh_options_hint(self):
+        """ Explains the red flags, which the app sets itself. """
+
+        if self.arguments_entry.tag_ranges("badoption"):
+            self.options_hint.place(x=self._hint_pos.x, y=self._hint_pos.y)
+        else:
+            self.options_hint.place_forget()

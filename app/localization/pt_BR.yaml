@@ -255,6 +255,7 @@ SETTINGS_SCREEN:
         TITLE: Opções de Inicialização
         DESC: Usuários avançados podem inserir opções de inicialização do servidor. O uso inadequado pode levar a comportamentos inesperados.
         LINK: Clique aqui para ver todas as opções de inicialização.
+        RESERVED: As opções em vermelho são reservadas pelo app. Por favor, não as utilize.
 
     CLOSE: Voltar
 

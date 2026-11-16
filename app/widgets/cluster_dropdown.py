@@ -5,7 +5,7 @@ from pathlib import Path
 import customtkinter as ctk
 from PIL import Image
 
-from constants import COLOR, CLUSTER_DROPDOWN_PADDING, CLUSTER_DROPDOWN_TEXT_NUDGE, ENTRY_CORNER_RADIUS, FRAME_GAP, LOGGER, POS, SIZE, Pos, Size
+from constants import COLOR, CLUSTER_DROPDOWN_PADDING, CLUSTER_DROPDOWN_TEXT_NUDGE, ENTRY_CORNER_RADIUS, FRAME_GAP, LOGGER, POS, RADIUS_LG, SIZE, Pos, Size
 from strings import STRINGS
 from fonts import FONT
 from widgets.dropdown import OverlaidButton, OverlaidRightAnchoredButton, bind_overlay
@@ -17,7 +17,7 @@ logger = logging.getLogger(LOGGER)
 class WorldPanel(ctk.CTkScrollableFrame):
     """ Scrolling area built like the shard group it covers, so the two line up exactly. """
 
-    RADIUS = 15
+    RADIUS = RADIUS_LG # Must match the shard group it covers.
 
     def __init__(self, master, size):
         self.panel_width = size.w - self.RADIUS * 2

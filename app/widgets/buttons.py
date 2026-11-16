@@ -1,6 +1,6 @@
 from customtkinter import CTkImage, CTkButton
 from PIL import Image
-from constants import COLOR, Pos
+from constants import COLOR, RADIUS_LG, RADIUS_MD, Pos
 from tkinter.font import NORMAL
 from tkinter import DISABLED
 
@@ -57,7 +57,7 @@ class RelativeXImageButton(ImageButton):
         self.place( relx=self.relx, y=self.y )
 
 class CustomButton(CTkButton):
-    def __init__(self, pos, size, corner_radius=15, **kwargs):
+    def __init__(self, pos, size, corner_radius=RADIUS_LG, **kwargs):
         self.x = pos.x
         self.y = pos.y
 

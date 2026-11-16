@@ -258,6 +258,7 @@ SETTINGS_SCREEN:
         TITLE: 启动参数
         DESC: 高级用户可以输入服务器启动参数。不正确使用可能导致异常行为。
         LINK: 点击这里查看所有启动参数。
+        RESERVED: 红色的参数已被应用保留，请勿使用。
 
     CLOSE: 返回
 
