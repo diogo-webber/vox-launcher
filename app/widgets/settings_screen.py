@@ -198,9 +198,9 @@ class SettingsScreen():
             width=ARGUMENTS_ENTRY.w,
         )
 
-        self.arguments_entry._textbox.configure(selectbackground=COLOR.DARK_GRAY)
+        self.arguments_entry._textbox.configure(selectbackground=COLOR.SELECTION_BG, selectforeground=COLOR.WHITE)
         self.arguments_entry.tag_config("goodoption", foreground=COLOR.LIGHT_BLUE)
-        self.arguments_entry.tag_config("badoption", foreground=COLOR.LIGHT_RED)
+        self.arguments_entry.tag_config("badoption", foreground=COLOR.DANGER_TEXT)
         self.arguments_entry.highlight_pattern = re.compile(r"([-+]\w+)")
 
         self.arguments_entry.bind("<KeyRelease>", self.on_arguments_textbox_key)

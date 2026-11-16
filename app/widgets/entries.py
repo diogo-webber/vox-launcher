@@ -58,7 +58,7 @@ class CustomEntry(CTkFrame):
             **kwargs
         )
 
-        self.entry._entry.configure(selectbackground=COLOR.DARK_GRAY)
+        self.entry._entry.configure(selectbackground=COLOR.SELECTION_BG, selectforeground=COLOR.WHITE)
 
         self.entry.place(
             x=8,
@@ -87,7 +87,7 @@ class CustomEntry(CTkFrame):
             height=0,
             anchor="center",
             text=STRINGS.ENTRY.ENTRY_INVALID_INPUT,
-            text_color=COLOR.RED,
+            text_color=COLOR.DANGER_TEXT,
             text_color_disabled=COLOR.DARK_GRAY,
             fg_color="transparent",
             font=FONT.INVALID_INPUT,
@@ -156,7 +156,7 @@ class CustomEntry(CTkFrame):
         self._warning_state = state
         self.valid = valid
 
-        self.configure(border_color=self.valid and COLOR.GRAY or COLOR.RED)
+        self.configure(border_color=self.valid and COLOR.GRAY or COLOR.DANGER_TEXT)
 
         self.invalid_text.configure(
             state=self.valid and DISABLED or NORMAL,

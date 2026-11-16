@@ -289,6 +289,8 @@ class Tooltip:
             self.tooltip = None
 
 class PopUp:
+    danger = False # Styles the primary button as a destructive action.
+
     def __init__(self, root):
         self.root = root
         self.popup = None
@@ -316,7 +318,7 @@ class PopUp:
         self.popup._frame = CustomFrame(
             master=self.popup,
             color=COLOR.GRAY,
-            border_color=COLOR.WHITE,
+            border_color=COLOR.BORDER_STRONG,
             pos=POS.POPUP,
             size=SIZE.POPUP,
             corner_radius=10,
@@ -336,10 +338,10 @@ class PopUp:
 
         self.popup.button_1 = CTkButton(
             master=self.popup,
-            width=50,
-            fg_color=COLOR.DARK_GRAY,
-            hover_color=COLOR.DARK_GRAY,
-            text_color=COLOR.WHITE,
+            width=110,
+            fg_color=self.danger and COLOR.RED or COLOR.GRAY_HOVER,
+            hover_color=self.danger and COLOR.RED_HOVER or COLOR.SCROLLBAR,
+            text_color=self.danger and COLOR.TEXT_ON_DANGER or COLOR.WHITE,
             border_color=COLOR.WHITE,
             border_width=0,
 
@@ -350,9 +352,9 @@ class PopUp:
 
         self.popup.button_2 = CTkButton(
             master=self.popup,
-            width=50,
+            width=110,
             fg_color=COLOR.DARK_GRAY,
-            hover_color=COLOR.DARK_GRAY,
+            hover_color=COLOR.MID_GRAY,
             text_color=COLOR.WHITE,
             border_color=COLOR.WHITE,
             border_width=0,
@@ -468,6 +470,8 @@ class PopUp:
         self.button_2_callback()
 
 class CommandPopUp(PopUp):
+    danger = True
+
     def __init__(self, root):
         super().__init__(root)
         self.button_2_text = STRINGS.POPUP.CANCEL

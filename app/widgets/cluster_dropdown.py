@@ -252,7 +252,7 @@ class ClusterDropdown:
     def _set_valid(self, valid, reason=None):
         self.button.configure(
             border_width=0 if valid else 2,
-            border_color=COLOR.RED,
+            border_color=COLOR.DANGER_TEXT,
         )
 
         self.tooltip.set_text(not valid and reason and STRINGS.ENTRY.INVALID_HELP[reason] or "")

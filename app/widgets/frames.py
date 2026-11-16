@@ -191,7 +191,7 @@ class LogSearchBar:
             textvariable=self.term,
         )
 
-        self.entry._entry.configure(selectbackground=COLOR.GRAY_HOVER)
+        self.entry._entry.configure(selectbackground=COLOR.SELECTION_BG, selectforeground=COLOR.WHITE)
 
         self.entry.grid(row=0, column=0, padx=(FRAME_GAP, 8))
 
@@ -383,7 +383,7 @@ class ShardLogPanel():
         if scrollbar is not None:
             scrollbar.bind("<B1-Motion>", self._mouse_scroll_event)
 
-        self.textbox._textbox.configure(selectbackground=COLOR.GRAY)
+        self.textbox._textbox.configure(selectbackground=COLOR.SELECTION_BG, selectforeground=COLOR.WHITE)
 
         self.add_highlight(pattern=r'\[\d{2}:\d{2}:\d{2}\]:', name="timestamp", color=COLOR.CONSOLE_GRAY)
         self.add_highlight(pattern=r'World \d* is now connected', name="online", color=COLOR.GREEN)
@@ -411,7 +411,7 @@ class ShardLogPanel():
             placeholder_text=STRINGS.LOG_SCREEN.ENTRY_PLACEHOLDER.format(shard=STRINGS.SHARD_NAME[self.shard.upper()] or self.shard),
         )
 
-        self.entry._entry.configure(selectbackground=COLOR.GRAY)
+        self.entry._entry.configure(selectbackground=COLOR.SELECTION_BG, selectforeground=COLOR.WHITE)
 
         self.entry.place(
             x = OFFSET.LOGS_ENTRY.x,
@@ -427,14 +427,13 @@ class ShardLogPanel():
             text=STRINGS.LOG_SCREEN.CLOSE,
             command=self.hide,
             corner_radius=10,
-            fg_color=COLOR.RED,
-            hover_color=COLOR.RED_HOVER,
+            fg_color=COLOR.DARK_GRAY,
+            hover_color=COLOR.GRAY_HOVER,
             text_color=COLOR.WHITE,
             width=SIZE.LOGS_CLOSE.w,
             height=SIZE.LOGS_CLOSE.h,
             font=FONT.LAUNCH_BUTTON,
-            border_width=1,
-            border_color=COLOR.DARK_GRAY,
+            border_width=0,
         )
 
         self.button.place(
@@ -929,6 +928,7 @@ class ShardFrame(CustomFrame):
                 text=STRINGS.LAUNCH_BUTTON.LAUNCH,
                 fg_color=COLOR.GRAY,
                 hover_color=COLOR.GRAY_HOVER,
+                text_color=COLOR.WHITE,
             )
 
             self._master.launch_button.enable()
@@ -959,6 +959,7 @@ class ShardFrame(CustomFrame):
                 text=STRINGS.LAUNCH_BUTTON.CANCEL,
                 fg_color=COLOR.RED,
                 hover_color=COLOR.RED_HOVER,
+                text_color=COLOR.TEXT_ON_DANGER,
             )
 
             self._master.save_button.hide()
@@ -978,6 +979,7 @@ class ShardFrame(CustomFrame):
                 text=STRINGS.LAUNCH_BUTTON.CANCEL,
                 fg_color=COLOR.RED,
                 hover_color=COLOR.RED_HOVER,
+                text_color=COLOR.TEXT_ON_DANGER,
             )
 
             self._master.game_entry.disable()
@@ -1005,6 +1007,7 @@ class ShardFrame(CustomFrame):
                 text=STRINGS.LAUNCH_BUTTON.STOPPING,
                 fg_color=COLOR.GRAY,
                 hover_color=COLOR.GRAY_HOVER,
+                text_color=COLOR.WHITE,
             )
 
             self._master.launch_button.disable()
