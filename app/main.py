@@ -582,4 +582,9 @@ if __name__ == "__main__":
     if DEBUG_MODE:
         app.bind("<Control-r>", app.restart_application)
 
+    # Lays the window out while transparent, otherwise it shows up with its widgets still being drawn.
+    app.attributes("-alpha", 0)
+    app.update()
+    app.attributes("-alpha", 1)
+
     app.mainloop()

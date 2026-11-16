@@ -8,7 +8,7 @@ from strings import STRINGS
 from fonts import FONT
 from widgets.buttons import CustomButton
 from widgets.misc import TOOLTIP_TRANSPARENT_COLOR
-from helpers import resource_path
+from helpers import resource_path, show_when_drawn
 
 class DropdownPopup:
     """ Floating list under a widget. It is its own window, so what is behind its rounded corners shows through. """
@@ -53,7 +53,7 @@ class DropdownPopup:
         y = self.anchor.winfo_rooty() + self.anchor.winfo_height() + round(self.gap * scale)
 
         self.window.geometry(f"+{x}+{y}")
-        self.window.deiconify()
+        show_when_drawn(self.window)
         self.window.lift()
 
         self.visible = True

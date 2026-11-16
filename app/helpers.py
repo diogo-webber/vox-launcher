@@ -1,5 +1,6 @@
 from pathlib import Path
 import winreg, ctypes
+from contextlib import contextmanager
 from dataclasses import dataclass
 import ctypes.wintypes
 import webbrowser
@@ -8,6 +9,8 @@ import logging
 import shlex
 import threading
 import psutil, os, zipfile, shutil, subprocess
+import tkinter
+from PIL import Image, ImageTk
 from urllib.parse import quote as encode_for_url
 from customtkinter import set_window_scaling, set_widget_scaling
 
@@ -1211,6 +1214,155 @@ def redraw_safe_size(widget, value, grow_only=False):
                 return candidate
 
     return value
+
+COVER_KEY_COLOR = "#010203" # Keyed out, so the cover is see-through until its snapshot is drawn.
+
+GWL_EXSTYLE = -20
+WS_EX_TRANSPARENT = 0x00000020
+WS_EX_NOACTIVATE = 0x08000000
+SRCCOPY = 0x00CC0020
+
+_user32 = ctypes.WinDLL("user32")
+_gdi32 = ctypes.WinDLL("gdi32")
+
+_user32.GetDC.restype = ctypes.wintypes.HDC
+_user32.GetDC.argtypes = [ctypes.wintypes.HWND]
+_user32.ReleaseDC.argtypes = [ctypes.wintypes.HWND, ctypes.wintypes.HDC]
+_user32.GetParent.restype = ctypes.wintypes.HWND
+_user32.GetParent.argtypes = [ctypes.wintypes.HWND]
+_user32.GetForegroundWindow.restype = ctypes.wintypes.HWND
+_user32.GetWindowLongW.argtypes = [ctypes.wintypes.HWND, ctypes.c_int]
+_user32.SetWindowLongW.argtypes = [ctypes.wintypes.HWND, ctypes.c_int, ctypes.c_long]
+_gdi32.CreateCompatibleDC.restype = ctypes.wintypes.HDC
+_gdi32.CreateCompatibleDC.argtypes = [ctypes.wintypes.HDC]
+_gdi32.CreateCompatibleBitmap.restype = ctypes.wintypes.HBITMAP
+_gdi32.CreateCompatibleBitmap.argtypes = [ctypes.wintypes.HDC, ctypes.c_int, ctypes.c_int]
+_gdi32.SelectObject.restype = ctypes.wintypes.HGDIOBJ
+_gdi32.SelectObject.argtypes = [ctypes.wintypes.HDC, ctypes.wintypes.HGDIOBJ]
+_gdi32.BitBlt.argtypes = [ctypes.wintypes.HDC] + [ctypes.c_int] * 4 + [ctypes.wintypes.HDC, ctypes.c_int, ctypes.c_int, ctypes.wintypes.DWORD]
+_gdi32.GetDIBits.argtypes = [ctypes.wintypes.HDC, ctypes.wintypes.HBITMAP, ctypes.c_uint, ctypes.c_uint, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_uint]
+_gdi32.DeleteObject.argtypes = [ctypes.wintypes.HGDIOBJ]
+_gdi32.DeleteDC.argtypes = [ctypes.wintypes.HDC]
+
+class _BitmapInfoHeader(ctypes.Structure):
+    _fields_ = [
+        ("biSize",          ctypes.wintypes.DWORD),
+        ("biWidth",         ctypes.wintypes.LONG),
+        ("biHeight",        ctypes.wintypes.LONG),
+        ("biPlanes",        ctypes.wintypes.WORD),
+        ("biBitCount",      ctypes.wintypes.WORD),
+        ("biCompression",   ctypes.wintypes.DWORD),
+        ("biSizeImage",     ctypes.wintypes.DWORD),
+        ("biXPelsPerMeter", ctypes.wintypes.LONG),
+        ("biYPelsPerMeter", ctypes.wintypes.LONG),
+        ("biClrUsed",       ctypes.wintypes.DWORD),
+        ("biClrImportant",  ctypes.wintypes.DWORD),
+    ]
+
+def _grab_window(hwnd, width, height):
+    """ Copies a window's client area as drawn, without what overlaps it. Much faster than reading the whole screen. """
+
+    source = _user32.GetDC(hwnd)
+    dc = _gdi32.CreateCompatibleDC(source)
+    bitmap = _gdi32.CreateCompatibleBitmap(source, width, height)
+    previous = _gdi32.SelectObject(dc, bitmap)
+
+    try:
+        _gdi32.BitBlt(dc, 0, 0, width, height, source, 0, 0, SRCCOPY)
+
+        # Negative height asks for the rows top to bottom.
+        header = _BitmapInfoHeader(biSize=ctypes.sizeof(_BitmapInfoHeader), biWidth=width, biHeight=-height, biPlanes=1, biBitCount=32)
+        pixels = ctypes.create_string_buffer(width * height * 4)
+
+        _gdi32.GetDIBits(dc, bitmap, 0, height, pixels, ctypes.byref(header), 0)
+
+        return Image.frombuffer("RGB", (width, height), pixels, "raw", "BGRX", 0, 1)
+    finally:
+        _gdi32.SelectObject(dc, previous)
+        _gdi32.DeleteObject(bitmap)
+        _gdi32.DeleteDC(dc)
+        _user32.ReleaseDC(hwnd, source)
+
+def _cover_with_snapshot(toplevel):
+    """ Lays a picture of the window's current look over it, which the mouse passes through. """
+
+    x, y = toplevel.winfo_rootx(), toplevel.winfo_rooty()
+    width, height = toplevel.winfo_width(), toplevel.winfo_height()
+
+    snapshot = ImageTk.PhotoImage(_grab_window(toplevel.winfo_id(), width, height), master=toplevel)
+
+    cover = tkinter.Toplevel(toplevel)
+    cover.withdraw()
+    cover.overrideredirect(True)
+    cover.configure(bg=COVER_KEY_COLOR)
+    cover.attributes("-transparentcolor", COVER_KEY_COLOR)
+    cover.attributes("-topmost", True)
+    cover.geometry(f"{width}x{height}+{x}+{y}")
+
+    label = tkinter.Label(cover, image=snapshot, borderwidth=0, highlightthickness=0, bg=COVER_KEY_COLOR)
+    label.image = snapshot
+    label.place(x=0, y=0)
+
+    cover.deiconify()
+
+    # Before any message is handled, so the window under the mouse never sees it leave.
+    hwnd = _user32.GetParent(cover.winfo_id())
+    _user32.SetWindowLongW(hwnd, GWL_EXSTYLE, _user32.GetWindowLongW(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE)
+
+    cover.update()
+
+    return cover
+
+_redraw_frozen = False
+
+@contextmanager
+def frozen_redraw(widget):
+    """
+    Hides the UI changes made inside the block behind a snapshot of the window, then shows them at once.
+
+    Tk lays out and paints every widget in separate passes of the event loop, so panels
+    would otherwise appear piece by piece over several frames.
+
+    Args:
+        widget (tkinter.Misc): any widget of the window being changed.
+    """
+
+    global _redraw_frozen
+
+    toplevel = widget.winfo_toplevel()
+
+    # Nothing is on screen to flicker yet, or an outer block already reveals everything.
+    if _redraw_frozen or not toplevel.winfo_viewable():
+        yield
+        return
+
+    # The cover is topmost, so over a background window it would hide whatever overlaps it.
+    if _user32.GetForegroundWindow() != _user32.GetParent(toplevel.winfo_id()):
+        yield
+        return
+
+    _redraw_frozen = True
+
+    try:
+        cover = _cover_with_snapshot(toplevel)
+
+        try:
+            yield
+
+            # Lays out and paints everything under the cover.
+            toplevel.update()
+        finally:
+            cover.destroy()
+    finally:
+        _redraw_frozen = False
+
+def show_when_drawn(window):
+    """ Maps a toplevel fully transparent, so it only appears once its widgets are drawn. """
+
+    window.attributes("-alpha", 0)
+    window.deiconify()
+    window.update()
+    window.attributes("-alpha", 1)
 
 def read_file_nonblocking(file: Path, callback):
     def worker():

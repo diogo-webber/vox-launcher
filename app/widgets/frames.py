@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw, ImageTk
 from strings import STRINGS, get_readable_system_language
 from constants import APP_VERSION, COLOR, SERVER_STATUS, OFFSET, SIZE, FRAME_GAP, FONT_SIZE, LOGGER, RADIUS_LG, Pos, Size
 from widgets.buttons import RelativeXImageButton, ImageButton, CustomButton
-from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHighlightData, PeriodicTask, read_file_nonblocking
+from helpers import load_lua_file, disable_bind, resource_path, get_memory_usage, open_folder, TextHighlightData, PeriodicTask, read_file_nonblocking, frozen_redraw
 from shard_server import DedicatedServerShard, STARTING_STEPS
 from fonts import FONT
 
@@ -362,7 +362,7 @@ class ShardLogPanel():
 
         self.topbar = LogsTopBar(master=self.root, server=self.server, shard=self.shard)
 
-        self.textbox = CTkTextbox(
+        self.textbox = CustomTextbox(
             master = self.root,
             width = SIZE.LOGS_TEXTBOX.w,
             height = SIZE.LOGS_TEXTBOX.h,
@@ -486,16 +486,18 @@ class ShardLogPanel():
     def show(self, *args, **kwargs):
         self._visible = True
 
-        self.root.place(
-            x=OFFSET.LOGS_PANEL.x,
-            y=OFFSET.LOGS_PANEL.y,
-        )
+        with frozen_redraw(self.master):
+            self.root.place(
+                x=OFFSET.LOGS_PANEL.x,
+                y=OFFSET.LOGS_PANEL.y,
+            )
+
+            self.root.lift()
+            self.highlight_text()
 
         self.bind = self.master.bind("<Escape>", self.on_escape)
         self.search_bind = self.master.bind("<Control-f>", self.search_bar.show)
 
-        self.root.lift()
-        self.highlight_text()
         self._mouse_scroll_event()
 
         if self.server.is_running():
@@ -529,8 +531,9 @@ class ShardLogPanel():
 
         self._visible = False
 
-        self.search_bar.hide()
-        self.root.place_forget()
+        with frozen_redraw(self.master):
+            self.search_bar.hide()
+            self.root.place_forget()
 
         self.topbar.stop_tracking_memory()
 
@@ -790,6 +793,26 @@ class ShardLogPanel():
 
         else:
             self._mouse_scroll_event()
+
+
+class CustomTextbox(CTkTextbox):
+    """ CTkTextbox whose scrollbar poll is cancelled on destroy, as CTk's leftover poll can call a new lambda that reused its Tcl name. """
+
+    _scrollbar_job = None
+
+    def _check_if_scrollbars_needed(self, event=None, continue_loop=False):
+        # Content changes call this directly, so the poll can skip the work while nothing is shown.
+        if not continue_loop or self.winfo_viewable():
+            super()._check_if_scrollbars_needed(event)
+
+        if continue_loop:
+            self._scrollbar_job = self.after(self._scrollbar_update_time, self._check_if_scrollbars_needed, None, True)
+
+    def destroy(self):
+        if self._scrollbar_job:
+            self.after_cancel(self._scrollbar_job)
+
+        super().destroy()
 
 
 class CustomFrame(CTkFrame):
@@ -1060,7 +1083,7 @@ class ShardFrame(CustomFrame):
         self.shard_log_panel.reset_text()
 
 
-class TextBoxAsLabel(CTkTextbox):
+class TextBoxAsLabel(CustomTextbox):
     def __init__(self, master):
         super().__init__(
             master = master,

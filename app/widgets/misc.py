@@ -10,7 +10,7 @@ from strings import STRINGS
 from constants import COLOR, SIZE, POS, Size, PATCH_NOTES_URL, CLUSTER_STATS_PADX
 from settings_manager import Settings
 from widgets.frames import CustomFrame
-from helpers import resource_path, open_file, open_github_issue, open_url, add_folder_to_zip, can_update_in_place, stage_update
+from helpers import resource_path, open_file, open_github_issue, open_url, add_folder_to_zip, can_update_in_place, stage_update, frozen_redraw, show_when_drawn
 from fonts import FONT
 
 class ClusterStats:
@@ -75,22 +75,25 @@ class ClusterStats:
         return title_label
 
     def update(self, data: dict):
-        self.show()
-
         for k, v in data.items():
             if k in self.STAT_KEYS:
                 getattr(self, k).set(str(v))
 
+        self.show()
+
     def show(self):
-        shown = bool(self._frame.winfo_manager())
+        if self._frame.winfo_manager():
+            return
 
-        self._frame.place(
-            x=POS.CLUSTER_STATS.x,
-            y=POS.CLUSTER_STATS.y,
-        )
+        # The baseline is measured once placed, so it would be seen jumping into line.
+        with frozen_redraw(self._frame):
+            self._frame.place(
+                x=POS.CLUSTER_STATS.x,
+                y=POS.CLUSTER_STATS.y,
+            )
 
-        if not shown and self.baseline_reference is not None:
-            self._align_baseline()
+            if self.baseline_reference is not None:
+                self._align_baseline()
 
     @staticmethod
     def _baseline(label):
@@ -133,6 +136,8 @@ class Tooltip:
         self.pos = pos
         self.image_size = image_size
         self.tooltip = None
+        self._tooltip_text = None
+        self._wanted = False
         self.taskid = None
         self.above = above
         self.show_when_disabled = show_when_disabled
@@ -199,15 +204,45 @@ class Tooltip:
         self.taskid = self.widget.after(0 if warm else self.HOVER_DELAY, self.show_tooltip)
 
     def show_tooltip(self):
+        self.taskid = None
+        self._wanted = True
+
         if self.cursor:
             self.widget.configure(cursor=self.cursor)
 
+        tooltip = None
+
+        try:
+            # Kept between hovers, so a window is only built when the text changes and never left behind.
+            if self.tooltip is None or self._tooltip_text != self.text:
+                self._build_tooltip()
+
+            tooltip = self.tooltip
+
+            self._position_tooltip()
+
+            show_when_drawn(tooltip)
+
+            # The pointer left while it was being drawn.
+            if not self._wanted:
+                tooltip.withdraw()
+
+        except TclError:
+            # Its widget was destroyed meanwhile, unless a nested call replaced it with a new one.
+            if tooltip is None or self.tooltip is tooltip:
+                self.tooltip = None
+
+    def _build_tooltip(self):
+        if self.tooltip is not None:
+            self.tooltip.destroy()
+
         self.tooltip = Toplevel(self.widget)
+        self.tooltip.withdraw() # Otherwise it's mapped at the screen's corner before being positioned.
         self.tooltip.wm_overrideredirect(True)
         self.tooltip.configure(bg=TOOLTIP_TRANSPARENT_COLOR)
         self.tooltip.wm_attributes("-transparentcolor", TOOLTIP_TRANSPARENT_COLOR)
 
-        self.tooltip_frame = CustomFrame(
+        frame = CustomFrame(
             master=self.tooltip,
             color=COLOR.GRAY,
             size=Size(0, 0),
@@ -217,15 +252,15 @@ class Tooltip:
             border_width=2,
         )
 
-        padding = self.tooltip_frame._apply_widget_scaling(TOOLTIP_PADDING)
-        line_gap = self.tooltip_frame._apply_widget_scaling(TOOLTIP_LINE_GAP)
+        padding = frame._apply_widget_scaling(TOOLTIP_PADDING)
+        line_gap = frame._apply_widget_scaling(TOOLTIP_LINE_GAP)
 
         # One label per line, so the gap between them can be controlled.
         lines = self.text.split("\n")
 
         for index, line in enumerate(lines):
             label = CTkLabel(
-                self.tooltip_frame,
+                frame,
                 width=0,
                 height=0,
                 text=line,
@@ -243,47 +278,51 @@ class Tooltip:
                 ),
             )
 
-        self.tooltip_frame.pack()
+        frame.pack()
 
-        try:
-            self.tooltip_frame.update()
+        # Sizes propagate in idle tasks, so this measures without handling any pending events.
+        frame.update_idletasks()
 
-            tooltip_width  = self.tooltip_frame.winfo_reqwidth()
-            tooltip_height = self.tooltip_frame.winfo_reqheight()
+        self._tooltip_text = self.text
+        self._tooltip_size = (frame.winfo_reqwidth(), frame.winfo_reqheight())
+        self._tooltip_gap = frame._apply_widget_scaling(TOOLTIP_GAP)
+        self._tooltip_margin = frame._apply_widget_scaling(TOOLTIP_WINDOW_MARGIN)
 
-            gap = self.tooltip_frame._apply_widget_scaling(TOOLTIP_GAP)
-            margin = self.tooltip_frame._apply_widget_scaling(TOOLTIP_WINDOW_MARGIN)
+    def _position_tooltip(self):
+        tooltip_width, tooltip_height = self._tooltip_size
 
-            window = self.widget.winfo_toplevel()
+        gap = self._tooltip_gap
+        margin = self._tooltip_margin
 
-            window_left   = window.winfo_rootx()    + margin
-            window_top    = window.winfo_rooty()    + margin
-            window_right  = window_left + window.winfo_width()  - margin * 2
-            window_bottom = window_top  + window.winfo_height() - margin * 2
+        window = self.widget.winfo_toplevel()
 
-            above_y = self.anchor.winfo_rooty() - tooltip_height - gap
-            below_y = self.anchor.winfo_rooty() + self.anchor.winfo_height() + gap
+        window_left   = window.winfo_rootx()    + margin
+        window_top    = window.winfo_rooty()    + margin
+        window_right  = window_left + window.winfo_width()  - margin * 2
+        window_bottom = window_top  + window.winfo_height() - margin * 2
 
-            # Centered on the anchor, flipped to the other side when there's no room.
-            x = self.anchor.winfo_rootx() + self.anchor.winfo_width()/2 - tooltip_width/2
-            y = self.above and above_y or below_y
+        above_y = self.anchor.winfo_rooty() - tooltip_height - gap
+        below_y = self.anchor.winfo_rooty() + self.anchor.winfo_height() + gap
 
-            if self.above and y < window_top:
-                y = below_y
+        # Centered on the anchor, flipped to the other side when there's no room.
+        x = self.anchor.winfo_rootx() + self.anchor.winfo_width()/2 - tooltip_width/2
+        y = self.above and above_y or below_y
 
-            elif not self.above and y + tooltip_height > window_bottom:
-                y = above_y
+        if self.above and y < window_top:
+            y = below_y
 
-            # Never overflow the app window.
-            x = max(window_left, min(x, window_right  - tooltip_width))
-            y = max(window_top,  min(y, window_bottom - tooltip_height))
+        elif not self.above and y + tooltip_height > window_bottom:
+            y = above_y
 
-            self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
-        except Exception:
-            # Tooltip was destroyed during update() by a pending <Leave> event.
-            self.tooltip = None
+        # Never overflow the app window.
+        x = max(window_left, min(x, window_right  - tooltip_width))
+        y = max(window_top,  min(y, window_bottom - tooltip_height))
+
+        self.tooltip.wm_geometry(f"+{round(x)}+{round(y)}")
 
     def hide_tooltip(self, event=None):
+        self._wanted = False
+
         if self.cursor:
             self.widget.configure(cursor="arrow")
 
@@ -292,9 +331,8 @@ class Tooltip:
 
             self.taskid = None
 
-        if self.tooltip:
-            self.tooltip.destroy()
-            self.tooltip = None
+        if self.tooltip is not None and self.tooltip.winfo_exists() and self.tooltip.winfo_ismapped():
+            self.tooltip.withdraw()
 
             Tooltip._last_closed = time.monotonic()
 
@@ -449,7 +487,7 @@ class PopUp:
 
         self.popup.bind("<Escape>", lambda event: self.dismiss())
 
-        self.popup.deiconify()
+        show_when_drawn(self.popup)
         self.popup.focus_force()  # Without focus the key bindings never fire.
 
         self.root.wait_window(self.popup)

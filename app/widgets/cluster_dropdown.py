@@ -10,7 +10,7 @@ from strings import STRINGS
 from fonts import FONT
 from widgets.dropdown import OverlaidButton, OverlaidRightAnchoredButton, bind_overlay
 from widgets.misc import Tooltip
-from helpers import resource_path, redraw_safe_size, list_clusters, get_cluster_details, get_cluster_error, get_shard_names
+from helpers import resource_path, redraw_safe_size, list_clusters, get_cluster_details, get_cluster_error, get_shard_names, frozen_redraw
 
 logger = logging.getLogger(LOGGER)
 
@@ -94,6 +94,7 @@ class ClusterDropdown:
 
         self._locked = False # True while the server runs.
         self._panel_open = False
+        self._cards_key = None # What the built cards show, so they are only rebuilt when it changes.
 
         image = ctk.CTkImage(Image.open(resource_path("assets/dropdown.png")), size=(self.ARROW_SIZE, self.ARROW_SIZE))
 
@@ -176,12 +177,13 @@ class ClusterDropdown:
 
         self.selected_folder = folder
 
-        self.close_menu()
-        self._update_button()
-        self._set_valid(True)
+        with frozen_redraw(self.app):
+            self.close_menu()
+            self._update_button()
+            self._set_valid(True)
 
-        if changed or force:
-            self._apply_selection(load)
+            if changed or force:
+                self._apply_selection(load)
 
         if changed and not load:
             self.app.save_entries_data()
@@ -321,11 +323,25 @@ class ClusterDropdown:
         return STRINGS.CLUSTER_SELECT.PLAYED_DATE.format(date=played.strftime("%x"))
 
     def _build_cards(self):
+        details = [get_cluster_details(self.directory, folder) for folder, _ in self.options]
+
+        # The played text depends on the day too.
+        cards_key = (details, date.today())
+
+        if cards_key == self._cards_key:
+            for card in self.panel.winfo_children():
+                # A card can be left hovered when the panel closed under the pointer.
+                if getattr(card, "_rest_border_color", None):
+                    card._on_leave()
+
+            return
+
+        self._cards_key = cards_key
+
         for child in self.panel.winfo_children():
             child.destroy()
 
         width = self.panel.content_width
-        details = [get_cluster_details(self.directory, folder) for folder, _ in self.options]
 
         # Three cards without a description fill the panel between the usual gaps. Heights are split in
         # whole, even screen pixels, which CTk draws cleanly, instead of snapping each one down to a logical size.
@@ -440,15 +456,20 @@ class ClusterDropdown:
         elif self._can_open():
             self.tooltip.hide_tooltip()
 
-            self._build_cards()
+            with frozen_redraw(self.app):
+                self._build_cards()
 
-            self.panel.place(x=POS.SHARD_GROUP.x, y=POS.SHARD_GROUP.y)
-            self.panel._parent_frame.lift()
-            self.panel._parent_canvas.yview_moveto(0)
+                self.panel.place(x=POS.SHARD_GROUP.x, y=POS.SHARD_GROUP.y)
+                self.panel._parent_frame.lift()
+                self.panel._parent_canvas.yview_moveto(0)
 
             self._panel_open = True
 
     def close_menu(self):
-        self.panel.place_forget()
+        if not self._panel_open:
+            return
+
+        with frozen_redraw(self.app):
+            self.panel.place_forget()
 
         self._panel_open = False

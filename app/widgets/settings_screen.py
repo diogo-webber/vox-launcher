@@ -1,16 +1,16 @@
-from customtkinter import CTkLabel, CTkTextbox, CTkFrame, CTkSwitch, CTkImage
+from customtkinter import CTkLabel, CTkFrame, CTkSwitch, CTkImage
 from PIL import Image
 from tkinter import END
 import re
 
-from widgets.frames import CustomFrame
+from widgets.frames import CustomFrame, CustomTextbox
 from widgets.dropdown import CustomDropdown
 from widgets.buttons import CustomButton, ImageButton
 from widgets.misc import Tooltip
 from constants import COLOR, RADIUS_LG, SIZE, POS, OFFSET, FONT_SIZE, WINDOW_MARGIN, SETTINGS_WINDOW_MARGIN, WINDOW_HEIGHT, WINDOW_WIDTH, RADIUS_MD, Pos, Size
 from strings import STRINGS, get_default_language_code
 from fonts import FONT
-from helpers import open_github_issue, resource_path, open_folder, open_url
+from helpers import open_github_issue, resource_path, open_folder, open_url, frozen_redraw
 from settings_manager import Settings
 
 # Options Vox passes itself. The game matches flags by substring, so anything containing one collides.
@@ -163,7 +163,7 @@ class SettingsScreen():
 
         # -------------------------- #
 
-        self.arguments_entry = CTkTextbox(
+        self.arguments_entry = CustomTextbox(
             master = self.root,
             corner_radius=RADIUS_LG,
             border_color=COLOR.GRAY,
@@ -301,12 +301,13 @@ class SettingsScreen():
     def show(self, *args, **kwargs):
         self._visible = True
 
-        self.root.place(
-            x=OFFSET.SETTINGS_PANEL.x,
-            y=OFFSET.SETTINGS_PANEL.y,
-        )
+        with frozen_redraw(self.master):
+            self.root.place(
+                x=OFFSET.SETTINGS_PANEL.x,
+                y=OFFSET.SETTINGS_PANEL.y,
+            )
 
-        self.root.lift()
+            self.root.lift()
 
         self.bind = self.master.bind("<Escape>", self.hide)
 
@@ -321,7 +322,9 @@ class SettingsScreen():
                 return # Don't do anything...
 
         self._visible = False
-        self.root.place_forget()
+
+        with frozen_redraw(self.master):
+            self.root.place_forget()
 
         if self.bind:
             self.master.unbind("<Escape>", self.bind)
