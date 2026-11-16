@@ -10,7 +10,7 @@ from strings import STRINGS
 from constants import COLOR, SIZE, POS, Size, PATCH_NOTES_URL, CLUSTER_STATS_PADX
 from settings_manager import Settings
 from widgets.frames import CustomFrame
-from helpers import resource_path, open_file, open_github_issue, open_url, add_folder_to_zip, can_update_in_place, stage_update, frozen_redraw, show_when_drawn
+from helpers import resource_path, open_file, open_github_issue, open_url, add_folder_to_zip, can_update_in_place, stage_update, frozen_redraw, show_when_drawn, set_window_enabled, set_window_owner
 from fonts import FONT
 
 class ClusterStats:
@@ -338,10 +338,12 @@ class Tooltip:
 
 class PopUp:
     danger = False # Styles the primary button as a destructive action.
+    overlay_alpha = 0.20
 
     def __init__(self, root):
         self.root = root
         self.popup = None
+        self.overlay = None
         self.confirmed = None
         self.slider_value = None
         self.button_1_text = STRINGS.POPUP.CLOSE
@@ -355,8 +357,9 @@ class PopUp:
         self.confirmed = None
         self.slider_value = None
 
-        self.popup = CTkToplevel(self.root, fg_color=COLOR.GRAY)
+        self.popup = CTkToplevel(self.root, fg_color=TOOLTIP_TRANSPARENT_COLOR)
         self.popup.wm_overrideredirect(True)
+        self.popup.wm_attributes("-transparentcolor", TOOLTIP_TRANSPARENT_COLOR)
         self.popup.grab_set()  # Make other windows not clickable.
 
         # Each button spans two columns, so all four must stay equal or they end up different widths.
@@ -377,7 +380,8 @@ class PopUp:
             master=self.popup,
             width=SIZE.POPUP.w,
             wraplength=SIZE.POPUP.w,
-            fg_color="transparent",
+            bg_color=COLOR.GRAY,
+            fg_color=COLOR.GRAY,
             text_color=COLOR.WHITE,
             text=text,
             font=FONT.POPUP,
@@ -387,6 +391,7 @@ class PopUp:
         self.popup.button_1 = CTkButton(
             master=self.popup,
             width=110,
+            bg_color=COLOR.GRAY,
             fg_color=self.danger and COLOR.RED or COLOR.GRAY_HOVER,
             hover_color=self.danger and COLOR.RED_HOVER or COLOR.SCROLLBAR,
             text_color=self.danger and COLOR.TEXT_ON_DANGER or COLOR.WHITE,
@@ -401,6 +406,7 @@ class PopUp:
         self.popup.button_2 = CTkButton(
             master=self.popup,
             width=110,
+            bg_color=COLOR.GRAY,
             fg_color=COLOR.DARK_GRAY,
             hover_color=COLOR.MID_GRAY,
             text_color=COLOR.WHITE,
@@ -428,6 +434,7 @@ class PopUp:
                 number_of_steps=to - from_,
                 to=to,
                 command=self._slider_event,
+                bg_color=COLOR.GRAY,
                 button_color=COLOR.WHITE,
                 button_hover_color=COLOR.WHITE,
                 progress_color=COLOR.WHITE,
@@ -441,7 +448,8 @@ class PopUp:
                 master=self.popup,
                 width=0,
                 wraplength=0,
-                fg_color="transparent",
+                bg_color=COLOR.GRAY,
+                fg_color=COLOR.GRAY,
                 text_color=COLOR.WHITE,
                 textvariable=self._slider_text,
                 font=FONT.TEXTBOX,
@@ -464,7 +472,7 @@ class PopUp:
         popup_height = self.popup.winfo_reqheight()
 
         self.popup._frame.configure(
-            bg_color = COLOR.DARK_GRAY,
+            bg_color = TOOLTIP_TRANSPARENT_COLOR,
             width = popup_width / self.popup._frame._apply_widget_scaling(1.0),
             height = popup_height / self.popup._frame._apply_widget_scaling(1.0),
         )
@@ -487,16 +495,60 @@ class PopUp:
 
         self.popup.bind("<Escape>", lambda event: self.dismiss())
 
+        self._show_overlay()
+        set_window_enabled(self.root, False)
+        set_window_owner(self.popup, self.root)
+
         show_when_drawn(self.popup)
+        self.popup.lift()
         self.popup.focus_force()  # Without focus the key bindings never fire.
 
         self.root.wait_window(self.popup)
 
+        try:
+            self._close()  # Only does anything if the popup was destroyed from outside.
+
+        except TclError:
+            pass  # The whole app is being torn down.
+
         return self.confirmed, self.slider_value
 
+    def _show_overlay(self):
+        """ Dims the app window under the popup. """
+
+        self.overlay = Toplevel(self.root, bg="black")
+        self.overlay.withdraw()
+        self.overlay.wm_overrideredirect(True)
+        self.overlay.attributes("-alpha", self.overlay_alpha)
+
+        self.overlay.wm_geometry("{}x{}+{}+{}".format(
+            self.root.winfo_width(),
+            self.root.winfo_height(),
+            self.root.winfo_rootx(),
+            self.root.winfo_rooty(),
+        ))
+
+        self.overlay.update_idletasks()  # Creates the native window, which the owner is set on.
+        set_window_owner(self.overlay, self.root)
+
+        self.overlay.deiconify()
+        self.overlay.update()
+
+        # A disabled window can't be activated, so clicking the dim never raises it over the popup.
+        set_window_enabled(self.overlay, False)
+
     def _close(self):
+        # Before the popup goes away, or Windows hands activation to another app.
+        set_window_enabled(self.root, True)
+
+        if self.overlay:
+            self.overlay.destroy()
+            self.overlay = None
+
         if self.popup:
-            self.popup.grab_release()
+            if self.popup.winfo_exists():
+                self.popup.grab_release()
+
             self.popup.destroy()
             self.popup = None
 

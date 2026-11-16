@@ -1233,6 +1233,9 @@ _user32.GetParent.argtypes = [ctypes.wintypes.HWND]
 _user32.GetForegroundWindow.restype = ctypes.wintypes.HWND
 _user32.GetWindowLongW.argtypes = [ctypes.wintypes.HWND, ctypes.c_int]
 _user32.SetWindowLongW.argtypes = [ctypes.wintypes.HWND, ctypes.c_int, ctypes.c_long]
+_user32.SetWindowLongPtrW.restype = ctypes.c_void_p
+_user32.SetWindowLongPtrW.argtypes = [ctypes.wintypes.HWND, ctypes.c_int, ctypes.c_void_p]
+_user32.EnableWindow.argtypes = [ctypes.wintypes.HWND, ctypes.wintypes.BOOL]
 _gdi32.CreateCompatibleDC.restype = ctypes.wintypes.HDC
 _gdi32.CreateCompatibleDC.argtypes = [ctypes.wintypes.HDC]
 _gdi32.CreateCompatibleBitmap.restype = ctypes.wintypes.HBITMAP
@@ -1363,6 +1366,18 @@ def show_when_drawn(window):
     window.deiconify()
     window.update()
     window.attributes("-alpha", 1)
+
+def set_window_enabled(window, enabled):
+    """ Disabled windows ignore all input, including title bar dragging. """
+
+    _user32.EnableWindow(_user32.GetParent(window.winfo_id()), bool(enabled))
+
+def set_window_owner(window, owner):
+    """ Keeps window above owner and hides it with it. Tk's transient() does nothing for overrideredirect windows. """
+
+    GWLP_HWNDPARENT = -8
+
+    _user32.SetWindowLongPtrW(_user32.GetParent(window.winfo_id()), GWLP_HWNDPARENT, _user32.GetParent(owner.winfo_id()))
 
 def read_file_nonblocking(file: Path, callback):
     def worker():
