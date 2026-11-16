@@ -369,8 +369,8 @@ class ShardLogPanel():
             corner_radius = self.corner_radius,
             fg_color = COLOR.DARK_GRAY,
             text_color = COLOR.WHITE,
-            scrollbar_button_color = COLOR.GRAY,
-            scrollbar_button_hover_color = COLOR.GRAY_HOVER,
+            scrollbar_button_color = COLOR.SCROLLBAR,
+            scrollbar_button_hover_color = COLOR.SCROLLBAR_HOVER,
             font = FONT.TEXTBOX_ARIAL,
             state = DISABLED,
         )
@@ -823,7 +823,7 @@ class PlaceHolderShardFrame(CustomFrame):
             master=self,
             height=0,
             text=STRINGS.SHARD_NAME.EMPTY,
-            text_color=COLOR.GRAY_HOVER,
+            text_color=COLOR.PLACEHOLDER_TEXT,
             fg_color="transparent",
             font=FONT.SHARD_STATUS,
         )
@@ -1130,8 +1130,8 @@ class ScrollableShardGroupFrame(CTkScrollableFrame):
             width=self._width,
             height=self._height,
             border_width=0,
-            scrollbar_button_color=COLOR.DARK_GRAY,
-            scrollbar_button_hover_color=COLOR.DARK_GRAY,
+            scrollbar_button_color=COLOR.SCROLLBAR,
+            scrollbar_button_hover_color=COLOR.SCROLLBAR_HOVER,
             **kwargs
         )
 
@@ -1167,6 +1167,7 @@ class ScrollableShardGroupFrame(CTkScrollableFrame):
             self.hide_tooltip()
 
             self.app.launch_button.enable()
+            self.app.launch_tooltip.set_text("")
 
         self._create_grid()
 
@@ -1197,6 +1198,7 @@ class ScrollableShardGroupFrame(CTkScrollableFrame):
         self.show_tooltip()
 
         self.app.launch_button.disable()
+        self.app.launch_tooltip.set_text(STRINGS.LAUNCH_BUTTON.DISABLED_HINT)
 
     def start_all_shards(self):
         for frame in self.get_shards():

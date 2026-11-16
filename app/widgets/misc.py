@@ -123,13 +123,14 @@ TOOLTIP_WINDOW_MARGIN = 14
 TOOLTIP_TRANSPARENT_COLOR = "#010203"  # Keyed out by the window manager, so it must not appear in the tooltip.
 
 class Tooltip:
-    def __init__(self, master=None, text="", image=None, pos=None, image_size=None, onclick=None, widget=None, above=False, anchor=None):
+    def __init__(self, master=None, text="", image=None, pos=None, image_size=None, onclick=None, widget=None, above=False, anchor=None, show_when_disabled=False):
         self.text = text
         self.pos = pos
         self.image_size = image_size
         self.tooltip = None
         self.taskid = None
         self.above = above
+        self.show_when_disabled = show_when_disabled
         self.cursor = onclick and "hand2" or None
 
         if widget is not None:
@@ -182,7 +183,7 @@ class Tooltip:
             return False # Widget has no state, so it can't be disabled.
 
     def show_tooltip_with_delay(self, event=None):
-        if not self.text or self._is_disabled():
+        if not self.text or (self._is_disabled() and not self.show_when_disabled):
             return
 
         if self.taskid:

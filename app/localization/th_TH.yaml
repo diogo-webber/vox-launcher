@@ -66,6 +66,7 @@ LAUNCH_BUTTON:
     CANCEL: ยกเลิก
     SAVE_QUIT: บันทึก/หยุด
     STOPPING: กำลังหยุด
+    DISABLED_HINT: เลือกโลกที่ใช้ได้เพื่อเริ่ม
 
 SHARD_STATUS:
     OFFLINE:    ออฟไลน์
@@ -125,6 +126,7 @@ SMALL_BUTTON:
     QUIT: หยุด
     RESET: รีสตาร์ท
     ROLLBACK: ย้อนกลับ
+    SAVED: บันทึกแล้ว
 
 BUTTON_TOOLTIP:
     SETTINGS: ตั้งค่า

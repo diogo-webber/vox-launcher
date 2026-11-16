@@ -82,6 +82,7 @@ DEBUG_MODE = LOGGER == "development"
 DEBUG_FORCE_PATCH_NOTES = False
 
 PROCESS_DPI_PER_MONITOR_AWARE = 2
+SAVE_FEEDBACK_MS = 2000
 
 # ------------------------------------------------------------------------------------ #
 
@@ -239,10 +240,13 @@ class App(CTk):
 
         self.launch_button.text = launch_buton_text
 
+        # Explains why the button is disabled; the shard group fills in its text.
+        self.launch_tooltip = Tooltip(widget=self.launch_button, above=True, show_when_disabled=True)
+
         self.save_button = CustomButton(
             master=self,
             text=STRINGS.SMALL_BUTTON.SAVE,
-            command=partial(self.execute_special_command, "c_save()", announcement=STRINGS.COMMAND_ANNOUNCEMENT.SAVE),
+            command=self.save_world,
             font=FONT.SMALL_BUTTON,
             size=SIZE.SMALL_BUTTON,
             pos=POS.SAVE_BUTTON,
@@ -379,6 +383,19 @@ class App(CTk):
             self.master_shard.stop()
         else:
             self.shard_group.start_all_shards()
+
+    def save_world(self):
+        self.execute_special_command("c_save()", announcement=STRINGS.COMMAND_ANNOUNCEMENT.SAVE)
+
+        # The command's result isn't observable, so this only confirms it was sent.
+        self.save_button.configure(text=STRINGS.SMALL_BUTTON.SAVED)
+        self.save_button.disable()
+
+        self.after(SAVE_FEEDBACK_MS, self._restore_save_button)
+
+    def _restore_save_button(self):
+        self.save_button.configure(text=STRINGS.SMALL_BUTTON.SAVE)
+        self.save_button.enable()
 
     def execute_special_command(self, command, announcement=None, slider_fn=None, confirmation_text=None):
         if confirmation_text:

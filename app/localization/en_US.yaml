@@ -73,6 +73,7 @@ LAUNCH_BUTTON:
     CANCEL: CANCEL
     SAVE_QUIT: SAVE / STOP
     STOPPING: STOPPING
+    DISABLED_HINT: Pick a valid world to launch
 
 SHARD_STATUS:
     OFFLINE:    Offline
@@ -135,6 +136,7 @@ SMALL_BUTTON:
     QUIT: Stop
     RESET: Restart
     ROLLBACK: Rollback
+    SAVED: Saved
 
 # Shown on hover, over buttons that have an icon but no label. Keep these short.
 BUTTON_TOOLTIP:

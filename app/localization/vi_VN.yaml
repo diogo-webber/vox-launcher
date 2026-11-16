@@ -61,6 +61,7 @@ LAUNCH_BUTTON:
     CANCEL: HUỶ
     SAVE_QUIT: LƯU / DỪNG
     STOPPING: ĐANG DỪNG
+    DISABLED_HINT: Chọn một thế giới hợp lệ để khởi chạy
 
 SHARD_STATUS:
     OFFLINE:    Ngoại tuyến
@@ -120,6 +121,7 @@ SMALL_BUTTON:
     QUIT: Dừng
     RESET: Khởi động lại
     ROLLBACK: Rollback
+    SAVED: Đã lưu
 
 BUTTON_TOOLTIP:
     SETTINGS: Cài đặt

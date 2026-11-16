@@ -31,8 +31,8 @@ class WorldPanel(ctk.CTkScrollableFrame):
             corner_radius=self.RADIUS,
             border_width=2,
             border_color=COLOR.GRAY_HOVER,
-            scrollbar_button_color=COLOR.DARK_GRAY,
-            scrollbar_button_hover_color=COLOR.DARK_GRAY,
+            scrollbar_button_color=COLOR.SCROLLBAR,
+            scrollbar_button_hover_color=COLOR.SCROLLBAR_HOVER,
         )
 
         self._scrollbar.configure(
@@ -362,7 +362,11 @@ class ClusterDropdown:
 
         card.configure(fg_color=COLOR.DARK_GRAY, hover_color=COLOR.MID_GRAY)
 
+        if details.folder == self.selected_folder:
+            card.configure(border_width=1, border_color=COLOR.SCROLLBAR)
+
         card.pack(fill="x", pady=(0, 0 if last else FRAME_GAP))
+
 
         # Info chips on the right, packed from the right edge inwards.
         texts = [self._game_mode_text(details.game_mode), self._played_text(details.last_played), self._mods_text(details.mods), details.folder]

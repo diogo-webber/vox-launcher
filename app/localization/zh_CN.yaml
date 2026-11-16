@@ -67,6 +67,7 @@ LAUNCH_BUTTON:
     CANCEL: 取消
     SAVE_QUIT: 保存并退出
     STOPPING: 正在关闭
+    DISABLED_HINT: 请选择一个有效的世界后再启动
 
 SHARD_STATUS:
     OFFLINE:    离线
@@ -126,6 +127,7 @@ SMALL_BUTTON:
     QUIT: 关闭
     RESET: 重启
     ROLLBACK: 回档
+    SAVED: 已保存
 
 BUTTON_TOOLTIP:
     SETTINGS: 设置

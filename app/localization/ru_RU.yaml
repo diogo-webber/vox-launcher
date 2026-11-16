@@ -67,6 +67,7 @@ LAUNCH_BUTTON:
     CANCEL: ОТМЕНА
     SAVE_QUIT: СОХРАНИТЬ / ОСТАНОВИТЬ
     STOPPING: ОСТАНОВКА
+    DISABLED_HINT: Выберите подходящий мир для запуска
 
 SHARD_STATUS:
     OFFLINE:    Офлайн
@@ -126,6 +127,7 @@ SMALL_BUTTON:
     QUIT: Остановить
     RESET: Перезапустить
     ROLLBACK: Откатить
+    SAVED: Сохранено
 
 BUTTON_TOOLTIP:
     SETTINGS: Настройки

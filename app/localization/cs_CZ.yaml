@@ -67,6 +67,7 @@ LAUNCH_BUTTON:
     CANCEL: ZRUŠIT
     SAVE_QUIT: ULOŽIT / ZASTAVIT
     STOPPING: ZASTAVUJE SE
+    DISABLED_HINT: Vyberte platný svět ke spuštění
 
 SHARD_STATUS:
     OFFLINE:    Offline
@@ -126,6 +127,7 @@ SMALL_BUTTON:
     QUIT: Ukončit
     RESET: Restartovat
     ROLLBACK: Vrátit zpět
+    SAVED: Uloženo
 
 BUTTON_TOOLTIP:
     SETTINGS: Nastavení

@@ -37,6 +37,8 @@ class DropdownPopup:
             fg_color=COLOR.GRAY,
             bg_color=TOOLTIP_TRANSPARENT_COLOR,
             corner_radius=10,
+            scrollbar_button_color=COLOR.SCROLLBAR,
+            scrollbar_button_hover_color=COLOR.SCROLLBAR_HOVER,
         )
 
         self.list.pack(fill="both", expand=True)
@@ -172,6 +174,8 @@ class CustomDropdown():
         self.menu_frame = self.popup.list
 
         # Populate options
+        self._option_buttons = {}
+
         for i, (code, name) in enumerate(self.options):
             button = CustomButton(
                 master=self.menu_frame,
@@ -185,8 +189,22 @@ class CustomDropdown():
             )
             button.pack(fill="x")
 
+            self._option_buttons[code] = button
+
+        self._mark_selected()
+
         # Dismiss dropdown when clicking outside
         self.master.winfo_toplevel().bind("<Button-1>", self._on_root_click, add="+")
+
+    def _mark_selected(self):
+        for code, button in self._option_buttons.items():
+            selected = code == self.selected_code
+
+            # The list sits on GRAY, so hover needs a lighter step than the selection.
+            button.configure(
+                fg_color=selected and COLOR.GRAY_HOVER or COLOR.GRAY,
+                hover_color=COLOR.SCROLLBAR,
+            )
 
     def _on_root_click(self, event):
         if not self.popup.visible:
@@ -214,6 +232,7 @@ class CustomDropdown():
         self.selected_value.set(name)
         self.selected_code = code
         self.popup.hide()
+        self._mark_selected()
 
         if self.on_selected_option:
             self.on_selected_option(code, name)

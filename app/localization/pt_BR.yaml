@@ -65,6 +65,7 @@ LAUNCH_BUTTON:
     CANCEL: CANCELAR
     SAVE_QUIT: SALVAR / PARAR
     STOPPING: PARANDO
+    DISABLED_HINT: Escolha um mundo válido para iniciar
 
 SHARD_STATUS:
     OFFLINE:    Desligado
@@ -124,6 +125,7 @@ SMALL_BUTTON:
     QUIT: Parar
     RESET: Reiniciar
     ROLLBACK: Reverter
+    SAVED: Salvo
 
 BUTTON_TOOLTIP:
     SETTINGS: Configurações
